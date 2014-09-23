@@ -1,0 +1,6 @@
+# Visual Studio common files
+*.sdf
+*.suo
+*.opensdf
+Debug/
+MiniJavaComplier/Debug/
