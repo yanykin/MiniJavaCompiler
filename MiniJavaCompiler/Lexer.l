@@ -5,18 +5,14 @@
  * To generate the lexical analyzer run: "flex Lexer.l"
  */
  
-#include "Expression.h"
-#include "Parser.h"
- 
 #include <stdio.h>
  
 %}
  
-%option outfile="Lexer.c" header-file="Lexer.h"
+%option outfile="Lexer.cpp"
 %option warn nodefault
  
-%option reentrant noyywrap never-interactive nounistd
-%option bison-bridge
+%option noyywrap never-interactive
  
 LPAREN      "("
 RPAREN      ")"
@@ -29,12 +25,12 @@ WS          [ \r\n\t]*
 %%
  
 {WS}            { /* Skip blanks. */ }
-{NUMBER}        { sscanf(yytext, "%d", &yylval->value); return TOKEN_NUMBER; }
+{NUMBER}        { printf("%s", yytext); }
  
-{MULTIPLY}      { return TOKEN_MULTIPLY; }
-{PLUS}          { return TOKEN_PLUS; }
-{LPAREN}        { return TOKEN_LPAREN; }
-{RPAREN}        { return TOKEN_RPAREN; }
+{MULTIPLY}      { printf("%s", yytext); }
+{PLUS}          { printf("%s", yytext); }
+{LPAREN}        { printf("%s", yytext); }
+{RPAREN}        { printf("%s", yytext); }
 .               {  }
  
 %%
