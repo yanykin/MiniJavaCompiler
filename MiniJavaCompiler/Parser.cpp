@@ -1796,7 +1796,7 @@ extern void yyerror( char const* msg)
     std::cout << "Syntax Error: " << msg << std::endl;
 }
 
-extern int yylex()
+/* extern int yylex()
 {
     int c;
 
@@ -1825,4 +1825,4 @@ extern int yylex()
 	} else
 		++yylloc.last_column;
 	return c;
-}
+} */
