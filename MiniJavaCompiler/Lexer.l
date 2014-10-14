@@ -2,189 +2,210 @@
 
 %{ 
 	#include <cstdlib>
+	#include <iostream>
+	#include <cstring>
 	#include "Parser.hpp"
 	extern int yyparse();
+	static int line_num = 1;
+	static int column_num = 1;
 %}
- 
- 
-LEFT_CURLY_BRACE	"{"
-RIGHT_CURLY_BRACE	"}"
-LEFT_ROUND_BRACE	"("
-RIGHT_ROUND_BRACE	")"
-LEFT_SQUARE_BRACE	"["
-RIGHT_SQUARE_BRACE	"]"
-
-PLUS				"+"
-MINUS				"-"
-MULTIPLY			"*"
-LESS				"<"
-ASSIGN				"="
-DOT					"\."
-SEMICOLON			";"
-COMMA				","
-EXCLAMATION_MARK	"!"
-BINARY_AND			"&&"
  
 INTEGER_NUMBER		[0-9]+
 WHITESPACE			[ \r\n\t]*
-
-CLASS_KEYWORD		"class"
-PUBLIC_KEYWORD		"public"
-STATIC_KEYWORD		"static"
-VOID_KEYWORD		"void"
-EXTENDS_KEYWORD		"extends"
-RETURN_KEYWORD		"return"
-INT_KEYWORD			"int"
-BOOL_KEYWORD		"bool"
-IF_KEYWORD			"if"
-WHILE_KEYWORD		"while"
-TRUE_KEYWORD		"true"
-FALSE_KEYWORD		"false"
-THIS_KEYWORD		"this"
-NEW_KEYWORD			"new"
-
 IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
- 
+
+%x comment
+
 %%
- 
-{WHITESPACE} { 
-	/* Skip blanks. */
+"/*" {
+	column_num += strlen(yytext);
+	BEGIN(comment);
+}
+"//"[^\n]* {
+	std::cout << "comment\n";
 }
 
-{LEFT_CURLY_BRACE} {
-	// printf( "LeftCurlyBrace\n" );
-	return LEFT_CURLY_BRACE;
-}
-{RIGHT_CURLY_BRACE} {
-	// printf( "RightCurlyBrace\n" );
-	return RIGHT_CURLY_BRACE;
-}
-{LEFT_ROUND_BRACE} {
-	// printf( "LeftRoundBrace\n" );
-	return LEFT_ROUND_BRACE;
-}
-{RIGHT_ROUND_BRACE} {
-	// printf( "RightRoundBrace\n" );
-	return RIGHT_ROUND_BRACE;
-}
-{LEFT_SQUARE_BRACE} {
-	// printf( "LeftSquareBrace\n" );
-	return LEFT_SQUARE_BRACE;
-}
-{RIGHT_SQUARE_BRACE} {
-	//printf( "RightSquareBrace\n" );
-	return RIGHT_SQUARE_BRACE;
+[ \r\t]* {
+	column_num += strlen(yytext);
 }
 
-{PLUS} {
-	//printf( "Plus\n" );
-	return PLUS;
+'\n' {
+	++line_num;
+	column_num = 1;
 }
-{MINUS} {
-	//printf( "Minus\n" );
-	return MINUS;
-}
-{MULTIPLY} {
-	// printf( "Multiply\n" );
-	return MULTIPLY;
-}
-{LESS} {
-	// printf( "Less\n" );
-	return LESS;
-}
-{ASSIGN} {
-	// printf( "Assign\n" );
-	return ASSIGN;
-}
-{DOT} {
-	// printf( "Dot\n" );
-	return DOT;
-}
-{SEMICOLON} {
-	// printf( "Semicolon\n" );
-	return SEMICOLON;
-}
-{COMMA} {
-	// printf( "Comma\n" );
-	return COMMA;
-}
-{EXCLAMATION_MARK} {
-	// printf( "ExclamationMark\n" );
-	return EXCLAMATION_MARK;
-}
-{BINARY_AND} {
-	// printf( "BinaryAnd\n" );
+
+"&&" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return BINARY_AND;
 }
  
 {INTEGER_NUMBER} {
-	// printf( "Integer(%s)\n", yytext );
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	yylval.int_val = atoi(yytext);
 	return INTEGER_NUMBER;
 }
-{WHITESPACE} {
-	/* */
-}
 
-{CLASS_KEYWORD} {
-	// printf( "classKeyword\n" );
+"class" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return CLASS_KEYWORD;
 }
-{STATIC_KEYWORD} {
-	// printf( "staticKeyword\n" );
+
+"static" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return STATIC_KEYWORD;
 }
-{VOID_KEYWORD} {
-	// printf( "voidKeyword\n" );
+
+"void" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return VOID_KEYWORD;
 }
-{PUBLIC_KEYWORD} {
-	// printf( "publicKeyword\n" );
+
+"public" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return PUBLIC_KEYWORD;
 }
-{EXTENDS_KEYWORD} {
-	// printf( "extendsKeyword\n" );
+
+"extends" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return EXTENDS_KEYWORD;
 }
-{RETURN_KEYWORD} {
-	// printf( "returnKeyword\n" );
+
+"return" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return RETURN_KEYWORD;
 }
-{INT_KEYWORD} {
-	// printf( "intKeyword\n" );
+
+"int" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return INT_KEYWORD;
 }
-{BOOL_KEYWORD} {
-	// printf( "boolKeyword\n" );
+
+"bool" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return BOOL_KEYWORD;
 }
-{IF_KEYWORD} {
-	// printf( "ifKeyword\n" );
+
+"if" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return IF_KEYWORD;
 }
-{WHILE_KEYWORD} {
-	// printf( "whileKeyword\n" );
+
+"while" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 	return WHILE_KEYWORD;
 }
-{TRUE_KEYWORD} {
-	printf( "trueKeyword\n" );
+
+"true" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 }
-{FALSE_KEYWORD} {
-	printf( "falseKeyword\n" );
+
+"false" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 }
-{THIS_KEYWORD} {
-	printf( "thisKeyword\n" );
+
+"this" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 }
-{NEW_KEYWORD} {
-	printf( "newKeyword\n" );
+
+"new" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 }
 
 {IDENTIFIER} {
 	printf( "Identifier(%s)\n", yytext );
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
 }
 
 . {
 	/* */
+}
+
+<comment>[^*\n]* {
+	column_num += strlen(yytext);
+	/* eat anything that's not a '*' */
+}
+
+<comment>"*"+[^*/\n]* {
+	column_num += strlen(yytext);
+	/* eat up '*'s not followed by '/'s */
+}
+
+<comment>'\n' {  
+	++line_num;
+	column_num = 1;
+}
+
+<comment>"*"+"/" {
+	column_num += strlen(yytext);
+	BEGIN(INITIAL);
 }
  
 %%

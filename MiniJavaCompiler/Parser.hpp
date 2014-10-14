@@ -48,36 +48,21 @@ extern int yydebug;
    enum yytokentype {
      INTEGER_NUMBER = 258,
      IDENTIFIER = 259,
-     DOT = 260,
-     CLASS_KEYWORD = 261,
-     PUBLIC_KEYWORD = 262,
-     STATIC_KEYWORD = 263,
-     VOID_KEYWORD = 264,
-     EXTENDS_KEYWORD = 265,
-     RETURN_KEYWORD = 266,
-     INT_KEYWORD = 267,
-     BOOL_KEYWORD = 268,
-     IF_KEYWORD = 269,
-     WHILE_KEYWORD = 270,
-     TRUE_KEYWORD = 271,
-     FALSE_KEYWORD = 272,
-     THIS_KEYWORD = 273,
-     NEW_KEYWORD = 274,
-     SEMICOLON = 275,
-     COMMA = 276,
-     ASSIGN = 277,
-     BINARY_AND = 278,
-     LESS = 279,
-     EXCLAMATION_MARK = 280,
-     MINUS = 281,
-     PLUS = 282,
-     MULTIPLY = 283,
-     LEFT_CURLY_BRACE = 284,
-     RIGHT_CURLY_BRACE = 285,
-     LEFT_ROUND_BRACE = 286,
-     RIGHT_ROUND_BRACE = 287,
-     LEFT_SQUARE_BRACE = 288,
-     RIGHT_SQUARE_BRACE = 289
+     CLASS_KEYWORD = 260,
+     PUBLIC_KEYWORD = 261,
+     STATIC_KEYWORD = 262,
+     VOID_KEYWORD = 263,
+     EXTENDS_KEYWORD = 264,
+     RETURN_KEYWORD = 265,
+     INT_KEYWORD = 266,
+     BOOL_KEYWORD = 267,
+     IF_KEYWORD = 268,
+     WHILE_KEYWORD = 269,
+     TRUE_KEYWORD = 270,
+     FALSE_KEYWORD = 271,
+     THIS_KEYWORD = 272,
+     NEW_KEYWORD = 273,
+     BINARY_AND = 274
    };
 #endif
 
@@ -92,7 +77,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 96 "Parser.hpp"
+#line 81 "Parser.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
