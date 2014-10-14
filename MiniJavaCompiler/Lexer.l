@@ -185,7 +185,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 }
 
 . {
-	/* */
+	++column_num;
 }
 
 <comment>[^*\n]* {
