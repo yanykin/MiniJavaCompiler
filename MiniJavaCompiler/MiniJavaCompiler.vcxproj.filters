@@ -41,4 +41,7 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Parser.output" />
+  </ItemGroup>
 </Project>

@@ -116,13 +116,22 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	return INT_KEYWORD;
 }
 
-"bool" {
+"boolean" {
 	yylloc.first_line = line_num;
 	yylloc.first_column = column_num;
 	column_num += strlen(yytext);
 	yylloc.last_line = line_num;
 	yylloc.last_column = column_num;
-	return BOOL_KEYWORD;
+	return BOOLEAN_KEYWORD;
+}
+
+"String" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return STRING_KEYWORD;
 }
 
 "if" {
@@ -132,6 +141,15 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	yylloc.last_line = line_num;
 	yylloc.last_column = column_num;
 	return IF_KEYWORD;
+}
+
+"else" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return ELSE_KEYWORD;
 }
 
 "while" {
@@ -149,6 +167,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	column_num += strlen(yytext);
 	yylloc.last_line = line_num;
 	yylloc.last_column = column_num;
+	return TRUE_KEYWORD;
 }
 
 "false" {
@@ -157,6 +176,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	column_num += strlen(yytext);
 	yylloc.last_line = line_num;
 	yylloc.last_column = column_num;
+	return FALSE_KEYWORD;
 }
 
 "this" {
@@ -165,6 +185,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	column_num += strlen(yytext);
 	yylloc.last_line = line_num;
 	yylloc.last_column = column_num;
+	return THIS_KEYWORD;
 }
 
 "new" {
@@ -173,10 +194,55 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	column_num += strlen(yytext);
 	yylloc.last_line = line_num;
 	yylloc.last_column = column_num;
+	return NEW_KEYWORD;
+}
+
+"println" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return PRINTLN_KEYWORD;
+}
+
+"length" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return LENGTH_KEYWORD;
+}
+
+"main" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return MAIN_KEYWORD;
+}
+
+"System" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return SYSTEM_KEYWORD;
+}
+
+"out" {
+	yylloc.first_line = line_num;
+	yylloc.first_column = column_num;
+	column_num += strlen(yytext);
+	yylloc.last_line = line_num;
+	yylloc.last_column = column_num;
+	return OUT_KEYWORD;
 }
 
 {IDENTIFIER} {
-	printf( "Identifier(%s)\n", yytext );
 	yylloc.first_line = line_num;
 	yylloc.first_column = column_num;
 	column_num += strlen(yytext);

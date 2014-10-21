@@ -34,7 +34,7 @@
 # define YY_YY_PARSER_HPP_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -55,14 +55,21 @@ extern int yydebug;
      EXTENDS_KEYWORD = 264,
      RETURN_KEYWORD = 265,
      INT_KEYWORD = 266,
-     BOOL_KEYWORD = 267,
-     IF_KEYWORD = 268,
-     WHILE_KEYWORD = 269,
-     TRUE_KEYWORD = 270,
-     FALSE_KEYWORD = 271,
-     THIS_KEYWORD = 272,
-     NEW_KEYWORD = 273,
-     BINARY_AND = 274
+     BOOLEAN_KEYWORD = 267,
+     STRING_KEYWORD = 268,
+     IF_KEYWORD = 269,
+     ELSE_KEYWORD = 270,
+     WHILE_KEYWORD = 271,
+     TRUE_KEYWORD = 272,
+     FALSE_KEYWORD = 273,
+     THIS_KEYWORD = 274,
+     NEW_KEYWORD = 275,
+     PRINTLN_KEYWORD = 276,
+     LENGTH_KEYWORD = 277,
+     MAIN_KEYWORD = 278,
+     SYSTEM_KEYWORD = 279,
+     OUT_KEYWORD = 280,
+     BINARY_AND = 281
    };
 #endif
 
@@ -71,13 +78,13 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 14 "Parser.y"
+#line 13 "Parser.y"
 
 	int int_val;
 
 
 /* Line 2058 of yacc.c  */
-#line 81 "Parser.hpp"
+#line 88 "Parser.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
