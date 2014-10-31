@@ -96,7 +96,7 @@ Statement:
 	| IDENTIFIER '[' Expression ']' '=' Expression ';'
 
 Expression:
-	Expression BINARY_AND Expression
+	Expression BINARY_AND Expression/
 	| Expression '<' Expression
 	| Expression '+' Expression
 	| Expression '-' Expression
@@ -107,9 +107,9 @@ Expression:
 	| FALSE_KEYWORD
 	| IDENTIFIER
 	| THIS_KEYWORD
-	| NEW_KEYWORD INT_KEYWORD '[' Expression ']'
-	| NEW_KEYWORD IDENTIFIER '(' ')'
-	| '!' Expression
+	| NEW_KEYWORD INT_KEYWORD '[' Expression ']' 
+	| NEW_KEYWORD IDENTIFIER '(' ')' 
+	| '!' Expression 
 	| '(' Expression ')'
 
 MethodExpression:
