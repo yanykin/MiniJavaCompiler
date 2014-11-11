@@ -12,12 +12,13 @@
 
 %union {
 	int int_val;
+	char* string_val;
 }
 
 
 %token <int_val> INTEGER_NUMBER
 %type <int_val> Expression
-%token IDENTIFIER
+%token <string_val> IDENTIFIER
 %token CLASS_KEYWORD PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD EXTENDS_KEYWORD RETURN_KEYWORD INT_KEYWORD BOOLEAN_KEYWORD STRING_KEYWORD IF_KEYWORD ELSE_KEYWORD WHILE_KEYWORD TRUE_KEYWORD FALSE_KEYWORD THIS_KEYWORD NEW_KEYWORD PRINTLN_KEYWORD LENGTH_KEYWORD MAIN_KEYWORD SYSTEM_KEYWORD OUT_KEYWORD
 %token ';'
 
@@ -96,7 +97,7 @@ Statement:
 	| IDENTIFIER '[' Expression ']' '=' Expression ';'
 
 Expression:
-	Expression BINARY_AND Expression/
+	Expression BINARY_AND Expression
 	| Expression '<' Expression
 	| Expression '+' Expression
 	| Expression '-' Expression

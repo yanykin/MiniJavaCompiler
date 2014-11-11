@@ -541,7 +541,15 @@ char *yytext;
 	static int line_num = 1;
 	static int column_num = 1;
 
-#line 545 "Lexer.cpp"
+	void update_location() {
+		yylloc.first_line = line_num;
+		yylloc.first_column = column_num;
+		column_num += strlen(yytext);
+		yylloc.last_line = line_num;
+		yylloc.last_column = column_num;
+	}
+
+#line 553 "Lexer.cpp"
 
 #define INITIAL 0
 #define comment 1
@@ -721,9 +729,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 19 "Lexer.l"
+#line 27 "Lexer.l"
 
-#line 727 "Lexer.cpp"
+#line 735 "Lexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -808,7 +816,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "Lexer.l"
+#line 28 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	BEGIN(comment);
@@ -816,14 +824,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 24 "Lexer.l"
+#line 32 "Lexer.l"
 {
-	std::cout << "comment\n";
+	
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 28 "Lexer.l"
+#line 36 "Lexer.l"
 {
 	column_num += strlen(yytext);
 }
@@ -831,7 +839,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 32 "Lexer.l"
+#line 40 "Lexer.l"
 {
 	++line_num;
 	column_num = 1;
@@ -839,25 +847,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 37 "Lexer.l"
+#line 45 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return BINARY_AND;
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "Lexer.l"
+#line 50 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	yylval.int_val = atoi(yytext);
 	return INTEGER_NUMBER;
 }
@@ -866,275 +866,193 @@ case 7:
 YY_RULE_SETUP
 #line 56 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return CLASS_KEYWORD;
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 65 "Lexer.l"
+#line 61 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return STATIC_KEYWORD;
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 74 "Lexer.l"
+#line 66 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return VOID_KEYWORD;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 83 "Lexer.l"
+#line 71 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return PUBLIC_KEYWORD;
 }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 92 "Lexer.l"
+#line 76 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return EXTENDS_KEYWORD;
 }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 101 "Lexer.l"
+#line 81 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return RETURN_KEYWORD;
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 110 "Lexer.l"
+#line 86 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return INT_KEYWORD;
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 119 "Lexer.l"
+#line 91 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return BOOLEAN_KEYWORD;
 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 128 "Lexer.l"
+#line 96 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return STRING_KEYWORD;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 137 "Lexer.l"
+#line 101 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return IF_KEYWORD;
 }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 146 "Lexer.l"
+#line 106 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return ELSE_KEYWORD;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 155 "Lexer.l"
+#line 111 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return WHILE_KEYWORD;
 }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 164 "Lexer.l"
+#line 116 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return TRUE_KEYWORD;
 }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 173 "Lexer.l"
+#line 121 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return FALSE_KEYWORD;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 182 "Lexer.l"
+#line 126 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return THIS_KEYWORD;
 }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 191 "Lexer.l"
+#line 131 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return NEW_KEYWORD;
 }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 200 "Lexer.l"
+#line 136 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return PRINTLN_KEYWORD;
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 209 "Lexer.l"
+#line 141 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return LENGTH_KEYWORD;
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 218 "Lexer.l"
+#line 146 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return MAIN_KEYWORD;
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 227 "Lexer.l"
+#line 151 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return SYSTEM_KEYWORD;
 }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 236 "Lexer.l"
+#line 156 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return OUT_KEYWORD;
 }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 245 "Lexer.l"
+#line 161 "Lexer.l"
 {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
+	int len = strlen(yytext);
+	yylval.string_val = new char[len + 1];
+	strncpy_s(yylval.string_val, len + 1, yytext, len);
+	yylval.string_val[len] = '\0';
+	return IDENTIFIER;
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 253 "Lexer.l"
+#line 170 "Lexer.l"
 {
-	++column_num;
+	update_location();
+	return yytext[0];
 }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 257 "Lexer.l"
+#line 175 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	/* eat anything that's not a '*' */
@@ -1142,7 +1060,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 262 "Lexer.l"
+#line 180 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	/* eat up '*'s not followed by '/'s */
@@ -1151,7 +1069,7 @@ YY_RULE_SETUP
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 267 "Lexer.l"
+#line 185 "Lexer.l"
 {  
 	++line_num;
 	column_num = 1;
@@ -1159,7 +1077,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 272 "Lexer.l"
+#line 190 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	BEGIN(INITIAL);
@@ -1167,10 +1085,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 277 "Lexer.l"
+#line 195 "Lexer.l"
 ECHO;
 	YY_BREAK
-#line 1174 "Lexer.cpp"
+#line 1092 "Lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 	yyterminate();
@@ -2165,7 +2083,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 276 "Lexer.l"
+#line 194 "Lexer.l"
 
 
  

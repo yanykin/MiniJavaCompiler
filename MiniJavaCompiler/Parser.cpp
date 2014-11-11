@@ -143,10 +143,11 @@ typedef union YYSTYPE
 #line 13 "Parser.y"
 
 	int int_val;
+	char* string_val;
 
 
 /* Line 387 of yacc.c  */
-#line 150 "Parser.cpp"
+#line 151 "Parser.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -187,7 +188,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 191 "Parser.cpp"
+#line 192 "Parser.cpp"
 
 #ifdef short
 # undef short
@@ -503,12 +504,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    42,    44,    46,    48,    50,    53,    55,
-      57,    60,    62,    64,    67,    69,    71,    73,    75,    78,
-      81,    82,    83,    84,    86,    88,    91,    92,    93,    94,
-      95,    96,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   116,   117,   119,
-     121,   123,   125,   128
+       0,    40,    40,    43,    45,    47,    49,    51,    54,    56,
+      58,    61,    63,    65,    68,    70,    72,    74,    76,    79,
+      82,    83,    84,    85,    87,    89,    92,    93,    94,    95,
+      96,    97,   100,   101,   102,   103,   104,   105,   106,   107,
+     108,   109,   110,   111,   112,   113,   114,   117,   118,   120,
+     122,   124,   126,   129
 };
 #endif
 
@@ -1622,7 +1623,7 @@ yyreduce:
     {
       
 /* Line 1792 of yacc.c  */
-#line 1626 "Parser.cpp"
+#line 1627 "Parser.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1861,7 +1862,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 131 "Parser.y"
+#line 132 "Parser.y"
 
 
 extern int yyerror( char* msg )

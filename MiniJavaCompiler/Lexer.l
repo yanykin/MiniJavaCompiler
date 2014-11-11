@@ -8,6 +8,14 @@
 	extern int yyparse();
 	static int line_num = 1;
 	static int column_num = 1;
+
+	void update_location() {
+		yylloc.first_line = line_num;
+		yylloc.first_column = column_num;
+		column_num += strlen(yytext);
+		yylloc.last_line = line_num;
+		yylloc.last_column = column_num;
+	}
 %}
  
 INTEGER_NUMBER		[0-9]+
@@ -22,7 +30,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	BEGIN(comment);
 }
 "//"[^\n]* {
-	std::cout << "comment\n";
+	
 }
 
 [ \r\t]* {
@@ -35,223 +43,133 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 }
 
 "&&" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return BINARY_AND;
 }
  
 {INTEGER_NUMBER} {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	yylval.int_val = atoi(yytext);
 	return INTEGER_NUMBER;
 }
 
 "class" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return CLASS_KEYWORD;
 }
 
 "static" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return STATIC_KEYWORD;
 }
 
 "void" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return VOID_KEYWORD;
 }
 
 "public" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return PUBLIC_KEYWORD;
 }
 
 "extends" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return EXTENDS_KEYWORD;
 }
 
 "return" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return RETURN_KEYWORD;
 }
 
 "int" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return INT_KEYWORD;
 }
 
 "boolean" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return BOOLEAN_KEYWORD;
 }
 
 "String" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return STRING_KEYWORD;
 }
 
 "if" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return IF_KEYWORD;
 }
 
 "else" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return ELSE_KEYWORD;
 }
 
 "while" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return WHILE_KEYWORD;
 }
 
 "true" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return TRUE_KEYWORD;
 }
 
 "false" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return FALSE_KEYWORD;
 }
 
 "this" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return THIS_KEYWORD;
 }
 
 "new" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return NEW_KEYWORD;
 }
 
 "println" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return PRINTLN_KEYWORD;
 }
 
 "length" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return LENGTH_KEYWORD;
 }
 
 "main" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return MAIN_KEYWORD;
 }
 
 "System" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return SYSTEM_KEYWORD;
 }
 
 "out" {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
 	return OUT_KEYWORD;
 }
 
 {IDENTIFIER} {
-	yylloc.first_line = line_num;
-	yylloc.first_column = column_num;
-	column_num += strlen(yytext);
-	yylloc.last_line = line_num;
-	yylloc.last_column = column_num;
+	update_location();
+	int len = strlen(yytext);
+	yylval.string_val = new char[len + 1];
+	strncpy_s(yylval.string_val, len + 1, yytext, len);
+	yylval.string_val[len] = '\0';
+	return IDENTIFIER;
 }
 
 . {
-	++column_num;
+	update_location();
+	return yytext[0];
 }
 
 <comment>[^*\n]* {

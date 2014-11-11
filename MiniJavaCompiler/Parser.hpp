@@ -81,10 +81,11 @@ typedef union YYSTYPE
 #line 13 "Parser.y"
 
 	int int_val;
+	char* string_val;
 
 
 /* Line 2058 of yacc.c  */
-#line 88 "Parser.hpp"
+#line 89 "Parser.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
