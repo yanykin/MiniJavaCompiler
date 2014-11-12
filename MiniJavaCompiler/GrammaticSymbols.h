@@ -1,11 +1,23 @@
 /*
 * ќписывает нетерминальные символы грамматики, каждому соответствует интерфейс (абстрактный класс)
 */
+#pragma once
+// #include "Visitor.h"
+class IVisitor;
+
+// ѕрограмма - начальный символ
+class IProgram
+{
+public:
+	virtual ~IProgram() { };
+	virtual int Accept( IVisitor *visitor ) const = 0;
+};
 
 // √лавный класс программы
 class IMainClassDeclaration {
 public:
 	virtual ~IMainClassDeclaration() { };
+	virtual int Accept( IVisitor *visitor ) const = 0;
 };
 
 // ќбъ€вление класса
@@ -13,6 +25,7 @@ class IClassDeclaration
 {
 public:
 	virtual ~IClassDeclaration() { };
+	virtual int Accept( IVisitor *visitor ) const = 0;
 };
 
 // ќбъ€вление переменной или пол€
@@ -20,14 +33,13 @@ class IVariableDeclaration
 {
 public:
 	virtual ~IVariableDeclaration() { };
-	
 };
 
 // ќбъ€вление метода класса
-class IMethonDeclaration
+class IMethodDeclaration
 {
 public:
-	virtual ~IMethonDeclaration() { };
+	virtual ~IMethodDeclaration() { };
 };
 
 // —писок параметров метода
@@ -65,6 +77,7 @@ public:
 	virtual ~IExpression() { };
 };
 
+/*
 // —писок выражений
 class IExpressionList
 {
@@ -78,3 +91,4 @@ class IExpressionRest
 public:
 	virtual ~IExpressionRest() { };
 };
+*/

@@ -3,7 +3,6 @@
 #include <cctype>
 #include "Parser.hpp"
 
-
 int main()
 {
 	int result = yyparse();

@@ -67,9 +67,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GrammaticRules.cpp" />
+    <ClCompile Include="GrammaticRules.h" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PrettyPrinter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -107,13 +110,16 @@
     <ClInclude Include="FormalRest.h" />
     <ClInclude Include="FormalRestListFormalRest.h" />
     <ClInclude Include="FormalRestList.h" />
+    <ClInclude Include="GrammaticSymbols.h" />
     <ClInclude Include="MethodDeclaration.h" />
     <ClInclude Include="MethodDeclarationList.h" />
     <ClInclude Include="MethodDeclarationListMethodDeclaration.h" />
     <ClInclude Include="MethodExpression.h" />
+    <ClInclude Include="PrettyPrinter.h" />
     <ClInclude Include="PublicKeyWordType.h" />
     <ClInclude Include="StatementStatementList.h" />
     <ClInclude Include="StatementList.h" />
+    <ClInclude Include="TerminalSymbols.h" />
     <ClInclude Include="TypeIdentifier.h" />
     <ClInclude Include="TypeIdentifierComma.h" />
     <ClInclude Include="TypeIdentifierFormalRestList.h" />

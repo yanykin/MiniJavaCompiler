@@ -537,6 +537,9 @@ char *yytext;
 	#include <iostream>
 	#include <cstring>
 	#include "Parser.hpp"
+
+	#include "GrammaticRules.h"
+
 	extern int yyparse();
 	static int line_num = 1;
 	static int column_num = 1;
@@ -549,7 +552,7 @@ char *yytext;
 		yylloc.last_column = column_num;
 	}
 
-#line 553 "Lexer.cpp"
+#line 556 "Lexer.cpp"
 
 #define INITIAL 0
 #define comment 1
@@ -729,9 +732,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 27 "Lexer.l"
+#line 30 "Lexer.l"
 
-#line 735 "Lexer.cpp"
+#line 738 "Lexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -816,7 +819,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "Lexer.l"
+#line 31 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	BEGIN(comment);
@@ -824,14 +827,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 32 "Lexer.l"
+#line 35 "Lexer.l"
 {
 	
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 36 "Lexer.l"
+#line 39 "Lexer.l"
 {
 	column_num += strlen(yytext);
 }
@@ -839,7 +842,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 40 "Lexer.l"
+#line 43 "Lexer.l"
 {
 	++line_num;
 	column_num = 1;
@@ -847,7 +850,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "Lexer.l"
+#line 48 "Lexer.l"
 {
 	update_location();
 	return BINARY_AND;
@@ -855,7 +858,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 50 "Lexer.l"
+#line 53 "Lexer.l"
 {
 	update_location();
 	yylval.int_val = atoi(yytext);
@@ -864,7 +867,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 56 "Lexer.l"
+#line 59 "Lexer.l"
 {
 	update_location();
 	return CLASS_KEYWORD;
@@ -872,7 +875,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 61 "Lexer.l"
+#line 64 "Lexer.l"
 {
 	update_location();
 	return STATIC_KEYWORD;
@@ -880,7 +883,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 66 "Lexer.l"
+#line 69 "Lexer.l"
 {
 	update_location();
 	return VOID_KEYWORD;
@@ -888,7 +891,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 71 "Lexer.l"
+#line 74 "Lexer.l"
 {
 	update_location();
 	return PUBLIC_KEYWORD;
@@ -896,7 +899,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 76 "Lexer.l"
+#line 79 "Lexer.l"
 {
 	update_location();
 	return EXTENDS_KEYWORD;
@@ -904,7 +907,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 81 "Lexer.l"
+#line 84 "Lexer.l"
 {
 	update_location();
 	return RETURN_KEYWORD;
@@ -912,7 +915,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 86 "Lexer.l"
+#line 89 "Lexer.l"
 {
 	update_location();
 	return INT_KEYWORD;
@@ -920,7 +923,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 91 "Lexer.l"
+#line 94 "Lexer.l"
 {
 	update_location();
 	return BOOLEAN_KEYWORD;
@@ -928,7 +931,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 96 "Lexer.l"
+#line 99 "Lexer.l"
 {
 	update_location();
 	return STRING_KEYWORD;
@@ -936,7 +939,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 101 "Lexer.l"
+#line 104 "Lexer.l"
 {
 	update_location();
 	return IF_KEYWORD;
@@ -944,7 +947,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 106 "Lexer.l"
+#line 109 "Lexer.l"
 {
 	update_location();
 	return ELSE_KEYWORD;
@@ -952,7 +955,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 111 "Lexer.l"
+#line 114 "Lexer.l"
 {
 	update_location();
 	return WHILE_KEYWORD;
@@ -960,7 +963,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 116 "Lexer.l"
+#line 119 "Lexer.l"
 {
 	update_location();
 	return TRUE_KEYWORD;
@@ -968,7 +971,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 121 "Lexer.l"
+#line 124 "Lexer.l"
 {
 	update_location();
 	return FALSE_KEYWORD;
@@ -976,7 +979,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 126 "Lexer.l"
+#line 129 "Lexer.l"
 {
 	update_location();
 	return THIS_KEYWORD;
@@ -984,7 +987,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 131 "Lexer.l"
+#line 134 "Lexer.l"
 {
 	update_location();
 	return NEW_KEYWORD;
@@ -992,7 +995,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 136 "Lexer.l"
+#line 139 "Lexer.l"
 {
 	update_location();
 	return PRINTLN_KEYWORD;
@@ -1000,7 +1003,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 141 "Lexer.l"
+#line 144 "Lexer.l"
 {
 	update_location();
 	return LENGTH_KEYWORD;
@@ -1008,7 +1011,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 146 "Lexer.l"
+#line 149 "Lexer.l"
 {
 	update_location();
 	return MAIN_KEYWORD;
@@ -1016,7 +1019,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 151 "Lexer.l"
+#line 154 "Lexer.l"
 {
 	update_location();
 	return SYSTEM_KEYWORD;
@@ -1024,7 +1027,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 156 "Lexer.l"
+#line 159 "Lexer.l"
 {
 	update_location();
 	return OUT_KEYWORD;
@@ -1032,7 +1035,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 161 "Lexer.l"
+#line 164 "Lexer.l"
 {
 	update_location();
 	int len = strlen(yytext);
@@ -1044,7 +1047,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 170 "Lexer.l"
+#line 173 "Lexer.l"
 {
 	update_location();
 	return yytext[0];
@@ -1052,7 +1055,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 175 "Lexer.l"
+#line 178 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	/* eat anything that's not a '*' */
@@ -1060,7 +1063,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 180 "Lexer.l"
+#line 183 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	/* eat up '*'s not followed by '/'s */
@@ -1069,7 +1072,7 @@ YY_RULE_SETUP
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 185 "Lexer.l"
+#line 188 "Lexer.l"
 {  
 	++line_num;
 	column_num = 1;
@@ -1077,7 +1080,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 190 "Lexer.l"
+#line 193 "Lexer.l"
 {
 	column_num += strlen(yytext);
 	BEGIN(INITIAL);
@@ -1085,10 +1088,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 195 "Lexer.l"
+#line 198 "Lexer.l"
 ECHO;
 	YY_BREAK
-#line 1092 "Lexer.cpp"
+#line 1095 "Lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 	yyterminate();
@@ -2083,7 +2086,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 194 "Lexer.l"
+#line 197 "Lexer.l"
 
 
  

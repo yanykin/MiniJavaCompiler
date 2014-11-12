@@ -39,6 +39,18 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 2058 of yacc.c  */
+#line 14 "Parser.y"
+
+	#include "GrammaticSymbols.h"
+	#include "TerminalSymbols.h"
+
+	#include "PrettyPrinter.h"
+
+
+/* Line 2058 of yacc.c  */
+#line 54 "Parser.hpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -47,21 +59,21 @@ extern int yydebug;
       know about them.  */
    enum yytokentype {
      INTEGER_NUMBER = 258,
-     IDENTIFIER = 259,
-     CLASS_KEYWORD = 260,
-     PUBLIC_KEYWORD = 261,
-     STATIC_KEYWORD = 262,
-     VOID_KEYWORD = 263,
-     EXTENDS_KEYWORD = 264,
-     RETURN_KEYWORD = 265,
-     INT_KEYWORD = 266,
-     BOOLEAN_KEYWORD = 267,
-     STRING_KEYWORD = 268,
-     IF_KEYWORD = 269,
-     ELSE_KEYWORD = 270,
-     WHILE_KEYWORD = 271,
-     TRUE_KEYWORD = 272,
-     FALSE_KEYWORD = 273,
+     TRUE_KEYWORD = 259,
+     FALSE_KEYWORD = 260,
+     IDENTIFIER = 261,
+     CLASS_KEYWORD = 262,
+     PUBLIC_KEYWORD = 263,
+     STATIC_KEYWORD = 264,
+     VOID_KEYWORD = 265,
+     EXTENDS_KEYWORD = 266,
+     RETURN_KEYWORD = 267,
+     INT_KEYWORD = 268,
+     BOOLEAN_KEYWORD = 269,
+     STRING_KEYWORD = 270,
+     IF_KEYWORD = 271,
+     ELSE_KEYWORD = 272,
+     WHILE_KEYWORD = 273,
      THIS_KEYWORD = 274,
      NEW_KEYWORD = 275,
      PRINTLN_KEYWORD = 276,
@@ -78,14 +90,29 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 13 "Parser.y"
+#line 21 "Parser.y"
 
 	int int_val;
 	char* string_val;
 
+	IProgram* Program;
+	IMainClassDeclaration* MainClassDeclaration;
+	IStatement* Statement;
+	CIdentifier* Identifier;
+
+	IVariableDeclaration* VariableDeclaration;
+	IClassDeclaration* ClassDeclaration;
+	IMethodDeclaration* MethodDeclaration;
+
+	IFormalList* FormalList;
+
+	IExpression* Expression;
+
+	IType* Type;
+
 
 /* Line 2058 of yacc.c  */
-#line 89 "Parser.hpp"
+#line 116 "Parser.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

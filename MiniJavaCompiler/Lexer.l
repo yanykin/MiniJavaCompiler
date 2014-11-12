@@ -5,6 +5,9 @@
 	#include <iostream>
 	#include <cstring>
 	#include "Parser.hpp"
+
+	#include "GrammaticRules.h"
+
 	extern int yyparse();
 	static int line_num = 1;
 	static int column_num = 1;

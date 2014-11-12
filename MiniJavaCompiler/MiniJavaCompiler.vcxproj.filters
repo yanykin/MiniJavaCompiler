@@ -81,6 +81,15 @@
     <ClCompile Include="Parser.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="GrammaticRules.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="PrettyPrinter.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="GrammaticRules.cpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -132,9 +141,6 @@
     </ClInclude>
     <ClInclude Include="BinaryAnd.h">
       <Filter>Заголовочные файлы\Expressions</Filter>
-    </ClInclude>
-    <ClInclude Include="Visitor.h">
-      <Filter>Заголовочные файлы\Visitors</Filter>
     </ClInclude>
     <ClInclude Include="Statment.h">
       <Filter>Заголовочные файлы\Statements</Filter>
@@ -270,6 +276,18 @@
     </ClInclude>
     <ClInclude Include="ExtendsKeyWordIdentifier.h">
       <Filter>Заголовочные файлы\ClassExtends</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammaticSymbols.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="TerminalSymbols.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitor.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="PrettyPrinter.h">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
