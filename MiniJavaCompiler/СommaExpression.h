@@ -2,7 +2,7 @@
 #include "Exp.h"
 #include "ExpressionRest.h"
 
-class ÑommaExpression : ExpressionRest
+class CommaExpression : ExpressionRest
 {
 public:
 	virtual void accept(Visitor & v)
