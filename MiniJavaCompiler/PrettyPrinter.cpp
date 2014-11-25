@@ -1,19 +1,58 @@
 #include "PrettyPrinter.h"
+#include <iostream>
+#include "GrammaticRules.h"
+
+using namespace std;
 
 void CPrettyPrinter::Visit( const CProgram* node )
 {
+	cout << "=== Program on MiniJava ===" << endl;
+	IMainClassDeclaration* mainClass = node->GetMainClassDeclaration();
+	if ( mainClass )
+	{
+		mainClass->Accept( this );
+	}
 
+	IClassDeclaration* classDeclarations = node->GetClassDeclarationsList();
+	if ( classDeclarations )
+	{
+		classDeclarations->Accept( this );
+	}
 }
 
 
 void CPrettyPrinter::Visit( const CMainClassDeclaration* node )
 {
-
+	cout << "Main class " << node->GetClassName() << endl;
+	IStatement* statements = node->GetClassStatements();
+	if ( statements )
+	{
+		statements->Accept( this );
+	}
 }
 
 void CPrettyPrinter::Visit( const CClassDeclaration* node )
 {
+	cout << "Class " << node->GetClassName() << endl;
+	IVariableDeclaration* fieldsList = node->GetFieldsList();
+	if ( fieldsList )
+	{
+		cout << "Declared fields:" << endl;
+		fieldsList->Accept( this );
+	}
+	else {
+		cout << "No fields." << endl;
+	}
 
+	IMethodDeclaration* methodsList = node->GetMethodsList();
+	if ( methodsList )
+	{
+		cout << "Declared methods:" << endl;
+		methodsList->Accept( this );
+	}
+	else {
+		cout << "No methods." << endl;
+	}
 }
 
 void CPrettyPrinter::Visit( const CClassExtendsDeclaration* node )

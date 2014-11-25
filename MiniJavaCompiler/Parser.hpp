@@ -41,7 +41,7 @@ extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 2058 of yacc.c  */
-#line 14 "Parser.y"
+#line 13 "Parser.y"
 
 	#include "GrammaticRules.h"
 	#include "GrammaticSymbols.h"
@@ -91,7 +91,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 22 "Parser.y"
+#line 23 "Parser.y"
 
 	int int_val;
 	char* string_val;
@@ -143,7 +143,7 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (void);
+int yyparse (IProgram* &mainProgram);
 #else
 int yyparse ();
 #endif

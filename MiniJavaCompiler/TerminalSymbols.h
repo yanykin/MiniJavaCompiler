@@ -8,7 +8,7 @@
 class CIdentifier
 {
 public:
-	CIdentifier() {};
+	CIdentifier(const char* _identifier): identifier(_identifier) {};
 	std::string getString() {
 		return identifier;
 	}

@@ -3,10 +3,9 @@
 %{
     #include <iostream>
     #include <cmath>
-
 	#include "GrammaticRules.h"
 
-	extern int yyerror( char* msg );
+	extern int yyerror( IProgram* mainProgram, char* msg );
     extern int yylex();
 %}
 %locations
@@ -18,6 +17,8 @@
 
 	#include "PrettyPrinter.h"
 }
+
+%parse-param {IProgram* &mainProgram}
 
 %union {
 	int int_val;
@@ -43,7 +44,7 @@
 %token <int_val> INTEGER_NUMBER
 %token <int_val> TRUE_KEYWORD
 %token <int_val> FALSE_KEYWORD
-%token <Identifier> IDENTIFIER
+%token <string_val> IDENTIFIER
 
 %type <Program> Program
 %type <MainClassDeclaration> MainClassDeclaration
@@ -89,16 +90,12 @@
 
 Program:
 	MainClassDeclaration ClassDeclarationList {
-		std::cout << "Reducing for starting token" << std::endl;
-		CPrettyPrinter *prettyPrinter = new CPrettyPrinter();
-		$$ = new CProgram($1, $2);
-		$$->Accept(prettyPrinter);
-		delete prettyPrinter;
+		mainProgram = $$ = new CProgram($1, $2);
 	}
 
 MainClassDeclaration:
 	CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}' {
-		$$ = new CMainClassDeclaration($2, $12, $15);
+		$$ = new CMainClassDeclaration(new CIdentifier($2), new CIdentifier($12), $15);
 	}
 
 ClassDeclarationList:
@@ -111,10 +108,10 @@ ClassDeclarationList:
 
 ClassDeclaration:
 	CLASS_KEYWORD IDENTIFIER '{'  VariableDeclarationList MethodDeclarationList '}' {
-		$$ = new CClassDeclaration($2, $4, $5);
+		$$ = new CClassDeclaration(new CIdentifier($2), $4, $5);
 	}
 	| CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{'  VariableDeclarationList MethodDeclarationList '}' {
-		$$ = new CClassExtendsDeclaration($2, $4, $6, $7);
+		$$ = new CClassExtendsDeclaration(new CIdentifier($2), new CIdentifier($4), $6, $7);
 	}
 
 VariableDeclarationList:
@@ -127,7 +124,7 @@ VariableDeclarationList:
 
 VariableDeclaration:
 	Type IDENTIFIER ';' {
-		$$ = new CVariableDeclaration($1, $2);		
+		$$ = new CVariableDeclaration($1, new CIdentifier($2));		
 	}
 
 MethodDeclarationList:
@@ -140,7 +137,7 @@ MethodDeclarationList:
 
 MethodDeclaration:
 	PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}' {
-		$$ = new CMethodDeclaration($2, $3, $5, $8, $9, $11);
+		$$ = new CMethodDeclaration($2, new CIdentifier($3), $5, $8, $9, $11);
 	}
 
 FormalList:
@@ -148,7 +145,7 @@ FormalList:
 		$$ = NULL;
 	}
 	| Type IDENTIFIER FormalRestList {
-		$$ = new CFormalRestList(new CFormalList($1, $2), $3);
+		$$ = new CFormalRestList(new CFormalList($1, new CIdentifier($2)), $3);
 	}
 
 
@@ -162,7 +159,7 @@ FormalRestList:
 
 FormalRest:
 	',' Type IDENTIFIER {
-		$$ = new CFormalList($2, $3);
+		$$ = new CFormalList($2, new CIdentifier($3));
 	}
 
 Type:
@@ -176,7 +173,7 @@ Type:
 		$$ = new CBuiltInType(TBuiltInType::BT_INTEGER);
 	}
 	| IDENTIFIER {
-		$$ = new CUserType($1);
+		$$ = new CUserType(new CIdentifier($1));
 	}
 
 StatementList:
@@ -201,10 +198,10 @@ Statement:
 		$$ = new CPrintStatement($7);
 	}
 	| IDENTIFIER '=' Expression ';' {
-		$$ = new CAssignmentStatement($1, $3);
+		$$ = new CAssignmentStatement(new CIdentifier($1), $3);
 	}
 	| IDENTIFIER '[' Expression ']' '=' Expression ';' {
-		$$ = new CArrayElementAssignmentStatement($1, $3, $6);
+		$$ = new CArrayElementAssignmentStatement(new CIdentifier($1), $3, $6);
 	}
 
 Expression:
@@ -227,7 +224,7 @@ Expression:
 		$$ = new CLengthExpression($1);	
 	}
 	| Expression '.' IDENTIFIER '(' ExpressionList ')' {
-		$$ = new CMethodCallExpression($1, $3, $5);
+		$$ = new CMethodCallExpression($1, new CIdentifier($3), $5);
 	}
 	| INTEGER_NUMBER {
 		$$ = new CIntegerOrBooleanExpression($1, VT_INTEGER);
@@ -239,7 +236,7 @@ Expression:
 		$$ = new CIntegerOrBooleanExpression($1, VT_BOOLEAN);
 	}
 	| IDENTIFIER {
-		$$ = new CIdentifierExpression($1);
+		$$ = new CIdentifierExpression(new CIdentifier($1));
 	}
 	| THIS_KEYWORD {
 		$$ = new CThisExpression();
@@ -248,7 +245,7 @@ Expression:
 		$$ = new CNewIntegerArrayExpression($4);	
 	}
 	| NEW_KEYWORD IDENTIFIER '(' ')' {
-		$$ = new CNewObjectExpression($2);	
+		$$ = new CNewObjectExpression(new CIdentifier($2));	
 	}
 	| '!' Expression  {
 		$$ = new CNegationExpression($2);
@@ -281,7 +278,7 @@ ExpressionRest:
 
 %%
 
-extern int yyerror( char* msg )
+extern int yyerror( IProgram* mainProgram, char* msg )
 {
     std::cout << "Syntax error at line " << yylloc.first_line << ", column " << yylloc.first_column << ": " << msg << std::endl;
 	return -1;

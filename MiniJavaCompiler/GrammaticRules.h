@@ -14,6 +14,8 @@ public:
 	CProgram( IMainClassDeclaration *_mainClassDeclaration, IClassDeclaration *_classDeclarationList ) :
 	mainClassDeclaration(_mainClassDeclaration), classDeclarationsList(_classDeclarationList) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+	IMainClassDeclaration* GetMainClassDeclaration() const { return mainClassDeclaration; };
+	IClassDeclaration* GetClassDeclarationsList() const { return classDeclarationsList; };
 private:
 	IMainClassDeclaration *mainClassDeclaration; // объявление главного класса
 	IClassDeclaration *classDeclarationsList; // список объявлений классов
@@ -26,6 +28,11 @@ public:
 	CMainClassDeclaration(CIdentifier *_className, CIdentifier *_argumentName, IStatement *_statement):
 		className(_className), argumentName(_argumentName), statement(_statement) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetClassName() const { return className->getString(); };
+	std::string GetArgumentName() const { return argumentName->getString(); };
+	IStatement* GetClassStatements() const { return statement; };
+
 private:
 	CIdentifier *className; // Название класса
 	CIdentifier *argumentName; // Имя аргумента
@@ -40,6 +47,10 @@ public:
 		className( _className ), fieldsList( _fieldsList ), methodsList( _methodsList ) { };
 	std::string getClassName() const;
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetClassName() const { return className->getString(); };
+	IVariableDeclaration* GetFieldsList() const { return fieldsList; };
+	IMethodDeclaration* GetMethodsList() const { return methodsList; };
 private:
 	CIdentifier *className; // Название класса
 	IVariableDeclaration *fieldsList; // Список полей класса
