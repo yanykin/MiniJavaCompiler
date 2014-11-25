@@ -12,6 +12,7 @@
 %locations
 
 %code requires {
+	#include "GrammaticRules.h"
 	#include "GrammaticSymbols.h"
 	#include "TerminalSymbols.h"
 

@@ -115,6 +115,7 @@
     <ClInclude Include="MethodDeclarationList.h" />
     <ClInclude Include="MethodDeclarationListMethodDeclaration.h" />
     <ClInclude Include="MethodExpression.h" />
+    <ClInclude Include="NonTerminalSymbols.h" />
     <ClInclude Include="PrettyPrinter.h" />
     <ClInclude Include="PublicKeyWordType.h" />
     <ClInclude Include="StatementStatementList.h" />

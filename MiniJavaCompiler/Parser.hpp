@@ -43,6 +43,7 @@ extern int yydebug;
 /* Line 2058 of yacc.c  */
 #line 14 "Parser.y"
 
+	#include "GrammaticRules.h"
 	#include "GrammaticSymbols.h"
 	#include "TerminalSymbols.h"
 
@@ -50,7 +51,7 @@ extern int yydebug;
 
 
 /* Line 2058 of yacc.c  */
-#line 54 "Parser.hpp"
+#line 55 "Parser.hpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -90,7 +91,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 21 "Parser.y"
+#line 22 "Parser.y"
 
 	int int_val;
 	char* string_val;
@@ -112,7 +113,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 116 "Parser.hpp"
+#line 117 "Parser.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

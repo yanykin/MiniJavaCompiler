@@ -1,5 +1,5 @@
+/*
 #include "GrammaticRules.h"
-#include "Visitor.h"
 
 int CProgram::Accept( IVisitor *visitor ) const
 {
@@ -8,6 +8,7 @@ int CProgram::Accept( IVisitor *visitor ) const
 	classDeclarationsList->Accept( visitor );
 	return 0;
 }
+
 
 int CMainClassDeclaration::Accept( IVisitor *visitor ) const
 {
@@ -28,3 +29,4 @@ int CClassExtendsDeclaration::Accept( IVisitor *visitor ) const
 {
 	return visitor->Visit( this );
 }
+*/
