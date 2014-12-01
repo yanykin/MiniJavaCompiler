@@ -1,3 +1,7 @@
+State 21 conflicts: 1 shift/reduce
+State 51 conflicts: 1 shift/reduce
+
+
 Grammar
 
     0 $accept: Program $end
@@ -13,7 +17,7 @@ Grammar
     6                 | CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList '}'
 
     7 VariableDeclarationList: /* empty */
-    8                        | VariableDeclarationList VariableDeclaration
+    8                        | VariableDeclaration VariableDeclarationList
 
     9 VariableDeclaration: Type IDENTIFIER ';'
 
@@ -26,7 +30,7 @@ Grammar
    14           | Type IDENTIFIER FormalRestList
 
    15 FormalRestList: /* empty */
-   16               | FormalRestList FormalRest
+   16               | FormalRest FormalRestList
 
    17 FormalRest: ',' Type IDENTIFIER
 
@@ -277,668 +281,684 @@ State 14
 
     5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' . VariableDeclarationList MethodDeclarationList '}'
 
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
+
     $default  reduce using rule 7 (VariableDeclarationList)
 
-    VariableDeclarationList  go to state 17
+    VariableDeclarationList  go to state 20
+    VariableDeclaration      go to state 21
+    Type                     go to state 22
 
 
 State 15
 
     2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD . VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
 
-    VOID_KEYWORD  shift, and go to state 18
+    VOID_KEYWORD  shift, and go to state 23
 
 
 State 16
 
     6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER . '{' VariableDeclarationList MethodDeclarationList '}'
 
-    '{'  shift, and go to state 19
+    '{'  shift, and go to state 24
 
 
 State 17
-
-    5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' VariableDeclarationList . MethodDeclarationList '}'
-    8 VariableDeclarationList: VariableDeclarationList . VariableDeclaration
-
-    IDENTIFIER       shift, and go to state 20
-    PUBLIC_KEYWORD   shift, and go to state 21
-    INT_KEYWORD      shift, and go to state 22
-    BOOLEAN_KEYWORD  shift, and go to state 23
-
-    $default  reduce using rule 10 (MethodDeclarationList)
-
-    VariableDeclaration    go to state 24
-    MethodDeclarationList  go to state 25
-    MethodDeclaration      go to state 26
-    Type                   go to state 27
-
-
-State 18
-
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD . MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
-
-    MAIN_KEYWORD  shift, and go to state 28
-
-
-State 19
-
-    6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' . VariableDeclarationList MethodDeclarationList '}'
-
-    $default  reduce using rule 7 (VariableDeclarationList)
-
-    VariableDeclarationList  go to state 29
-
-
-State 20
 
    21 Type: IDENTIFIER .
 
     $default  reduce using rule 21 (Type)
 
 
-State 21
-
-   12 MethodDeclaration: PUBLIC_KEYWORD . Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
-
-    IDENTIFIER       shift, and go to state 20
-    INT_KEYWORD      shift, and go to state 22
-    BOOLEAN_KEYWORD  shift, and go to state 23
-
-    Type  go to state 30
-
-
-State 22
+State 18
 
    18 Type: INT_KEYWORD . '[' ']'
    20     | INT_KEYWORD .
 
-    '['  shift, and go to state 31
+    '['  shift, and go to state 25
 
     $default  reduce using rule 20 (Type)
 
 
-State 23
+State 19
 
    19 Type: BOOLEAN_KEYWORD .
 
     $default  reduce using rule 19 (Type)
 
 
+State 20
+
+    5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' VariableDeclarationList . MethodDeclarationList '}'
+
+    PUBLIC_KEYWORD  shift, and go to state 26
+
+    $default  reduce using rule 10 (MethodDeclarationList)
+
+    MethodDeclarationList  go to state 27
+    MethodDeclaration      go to state 28
+
+
+State 21
+
+    8 VariableDeclarationList: VariableDeclaration . VariableDeclarationList
+
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
+
+    IDENTIFIER  [reduce using rule 7 (VariableDeclarationList)]
+    $default    reduce using rule 7 (VariableDeclarationList)
+
+    VariableDeclarationList  go to state 29
+    VariableDeclaration      go to state 21
+    Type                     go to state 22
+
+
+State 22
+
+    9 VariableDeclaration: Type . IDENTIFIER ';'
+
+    IDENTIFIER  shift, and go to state 30
+
+
+State 23
+
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD . MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
+
+    MAIN_KEYWORD  shift, and go to state 31
+
+
 State 24
 
-    8 VariableDeclarationList: VariableDeclarationList VariableDeclaration .
+    6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' . VariableDeclarationList MethodDeclarationList '}'
 
-    $default  reduce using rule 8 (VariableDeclarationList)
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
+
+    $default  reduce using rule 7 (VariableDeclarationList)
+
+    VariableDeclarationList  go to state 32
+    VariableDeclaration      go to state 21
+    Type                     go to state 22
 
 
 State 25
 
-    5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList . '}'
+   18 Type: INT_KEYWORD '[' . ']'
 
-    '}'  shift, and go to state 32
+    ']'  shift, and go to state 33
 
 
 State 26
 
-   11 MethodDeclarationList: MethodDeclaration . MethodDeclarationList
+   12 MethodDeclaration: PUBLIC_KEYWORD . Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
 
-    PUBLIC_KEYWORD  shift, and go to state 21
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
 
-    $default  reduce using rule 10 (MethodDeclarationList)
-
-    MethodDeclarationList  go to state 33
-    MethodDeclaration      go to state 26
+    Type  go to state 34
 
 
 State 27
 
-    9 VariableDeclaration: Type . IDENTIFIER ';'
+    5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList . '}'
 
-    IDENTIFIER  shift, and go to state 34
+    '}'  shift, and go to state 35
 
 
 State 28
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD . '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
+   11 MethodDeclarationList: MethodDeclaration . MethodDeclarationList
 
-    '('  shift, and go to state 35
+    PUBLIC_KEYWORD  shift, and go to state 26
+
+    $default  reduce using rule 10 (MethodDeclarationList)
+
+    MethodDeclarationList  go to state 36
+    MethodDeclaration      go to state 28
 
 
 State 29
 
-    6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' VariableDeclarationList . MethodDeclarationList '}'
-    8 VariableDeclarationList: VariableDeclarationList . VariableDeclaration
+    8 VariableDeclarationList: VariableDeclaration VariableDeclarationList .
 
-    IDENTIFIER       shift, and go to state 20
-    PUBLIC_KEYWORD   shift, and go to state 21
-    INT_KEYWORD      shift, and go to state 22
-    BOOLEAN_KEYWORD  shift, and go to state 23
-
-    $default  reduce using rule 10 (MethodDeclarationList)
-
-    VariableDeclaration    go to state 24
-    MethodDeclarationList  go to state 36
-    MethodDeclaration      go to state 26
-    Type                   go to state 27
+    $default  reduce using rule 8 (VariableDeclarationList)
 
 
 State 30
 
-   12 MethodDeclaration: PUBLIC_KEYWORD Type . IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
+    9 VariableDeclaration: Type IDENTIFIER . ';'
 
-    IDENTIFIER  shift, and go to state 37
+    ';'  shift, and go to state 37
 
 
 State 31
 
-   18 Type: INT_KEYWORD '[' . ']'
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD . '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
 
-    ']'  shift, and go to state 38
+    '('  shift, and go to state 38
 
 
 State 32
 
-    5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList '}' .
+    6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' VariableDeclarationList . MethodDeclarationList '}'
 
-    $default  reduce using rule 5 (ClassDeclaration)
+    PUBLIC_KEYWORD  shift, and go to state 26
+
+    $default  reduce using rule 10 (MethodDeclarationList)
+
+    MethodDeclarationList  go to state 39
+    MethodDeclaration      go to state 28
 
 
 State 33
-
-   11 MethodDeclarationList: MethodDeclaration MethodDeclarationList .
-
-    $default  reduce using rule 11 (MethodDeclarationList)
-
-
-State 34
-
-    9 VariableDeclaration: Type IDENTIFIER . ';'
-
-    ';'  shift, and go to state 39
-
-
-State 35
-
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' . STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
-
-    STRING_KEYWORD  shift, and go to state 40
-
-
-State 36
-
-    6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList . '}'
-
-    '}'  shift, and go to state 41
-
-
-State 37
-
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER . '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
-
-    '('  shift, and go to state 42
-
-
-State 38
 
    18 Type: INT_KEYWORD '[' ']' .
 
     $default  reduce using rule 18 (Type)
 
 
-State 39
+State 34
+
+   12 MethodDeclaration: PUBLIC_KEYWORD Type . IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
+
+    IDENTIFIER  shift, and go to state 40
+
+
+State 35
+
+    5 ClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList '}' .
+
+    $default  reduce using rule 5 (ClassDeclaration)
+
+
+State 36
+
+   11 MethodDeclarationList: MethodDeclaration MethodDeclarationList .
+
+    $default  reduce using rule 11 (MethodDeclarationList)
+
+
+State 37
 
     9 VariableDeclaration: Type IDENTIFIER ';' .
 
     $default  reduce using rule 9 (VariableDeclaration)
 
 
+State 38
+
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' . STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
+
+    STRING_KEYWORD  shift, and go to state 41
+
+
+State 39
+
+    6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList . '}'
+
+    '}'  shift, and go to state 42
+
+
 State 40
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD . '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER . '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
 
-    '['  shift, and go to state 43
+    '('  shift, and go to state 43
 
 
 State 41
+
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD . '[' ']' IDENTIFIER ')' '{' Statement '}' '}'
+
+    '['  shift, and go to state 44
+
+
+State 42
 
     6 ClassDeclaration: CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{' VariableDeclarationList MethodDeclarationList '}' .
 
     $default  reduce using rule 6 (ClassDeclaration)
 
 
-State 42
+State 43
 
    12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' . FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
 
-    IDENTIFIER       shift, and go to state 20
-    INT_KEYWORD      shift, and go to state 22
-    BOOLEAN_KEYWORD  shift, and go to state 23
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
 
     $default  reduce using rule 13 (FormalList)
 
-    FormalList  go to state 44
-    Type        go to state 45
-
-
-State 43
-
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' . ']' IDENTIFIER ')' '{' Statement '}' '}'
-
-    ']'  shift, and go to state 46
+    FormalList  go to state 45
+    Type        go to state 46
 
 
 State 44
 
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList . ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' . ']' IDENTIFIER ')' '{' Statement '}' '}'
 
-    ')'  shift, and go to state 47
+    ']'  shift, and go to state 47
 
 
 State 45
 
-   14 FormalList: Type . IDENTIFIER FormalRestList
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList . ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
 
-    IDENTIFIER  shift, and go to state 48
+    ')'  shift, and go to state 48
 
 
 State 46
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' . IDENTIFIER ')' '{' Statement '}' '}'
+   14 FormalList: Type . IDENTIFIER FormalRestList
 
     IDENTIFIER  shift, and go to state 49
 
 
 State 47
 
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' . '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' . IDENTIFIER ')' '{' Statement '}' '}'
 
-    '{'  shift, and go to state 50
+    IDENTIFIER  shift, and go to state 50
 
 
 State 48
 
-   14 FormalList: Type IDENTIFIER . FormalRestList
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' . '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
 
-    $default  reduce using rule 15 (FormalRestList)
-
-    FormalRestList  go to state 51
+    '{'  shift, and go to state 51
 
 
 State 49
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER . ')' '{' Statement '}' '}'
+   14 FormalList: Type IDENTIFIER . FormalRestList
 
-    ')'  shift, and go to state 52
+    ','  shift, and go to state 52
+
+    $default  reduce using rule 15 (FormalRestList)
+
+    FormalRestList  go to state 53
+    FormalRest      go to state 54
 
 
 State 50
 
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' . VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER . ')' '{' Statement '}' '}'
 
-    $default  reduce using rule 7 (VariableDeclarationList)
-
-    VariableDeclarationList  go to state 53
+    ')'  shift, and go to state 55
 
 
 State 51
 
-   14 FormalList: Type IDENTIFIER FormalRestList .
-   16 FormalRestList: FormalRestList . FormalRest
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' . VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}'
 
-    ','  shift, and go to state 54
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
 
-    $default  reduce using rule 14 (FormalList)
+    IDENTIFIER  [reduce using rule 7 (VariableDeclarationList)]
+    $default    reduce using rule 7 (VariableDeclarationList)
 
-    FormalRest  go to state 55
+    VariableDeclarationList  go to state 56
+    VariableDeclaration      go to state 21
+    Type                     go to state 22
 
 
 State 52
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' . '{' Statement '}' '}'
+   17 FormalRest: ',' . Type IDENTIFIER
 
-    '{'  shift, and go to state 56
+    IDENTIFIER       shift, and go to state 17
+    INT_KEYWORD      shift, and go to state 18
+    BOOLEAN_KEYWORD  shift, and go to state 19
+
+    Type  go to state 57
 
 
 State 53
 
-    8 VariableDeclarationList: VariableDeclarationList . VariableDeclaration
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList . StatementList RETURN_KEYWORD Expression ';' '}'
+   14 FormalList: Type IDENTIFIER FormalRestList .
 
-    IDENTIFIER       shift, and go to state 57
-    INT_KEYWORD      shift, and go to state 22
-    BOOLEAN_KEYWORD  shift, and go to state 23
-    IF_KEYWORD       shift, and go to state 58
-    WHILE_KEYWORD    shift, and go to state 59
-    SYSTEM_KEYWORD   shift, and go to state 60
-    '{'              shift, and go to state 61
-
-    $default  reduce using rule 22 (StatementList)
-
-    VariableDeclaration  go to state 24
-    Type                 go to state 27
-    StatementList        go to state 62
-    Statement            go to state 63
+    $default  reduce using rule 14 (FormalList)
 
 
 State 54
 
-   17 FormalRest: ',' . Type IDENTIFIER
+   16 FormalRestList: FormalRest . FormalRestList
 
-    IDENTIFIER       shift, and go to state 20
-    INT_KEYWORD      shift, and go to state 22
-    BOOLEAN_KEYWORD  shift, and go to state 23
+    ','  shift, and go to state 52
 
-    Type  go to state 64
+    $default  reduce using rule 15 (FormalRestList)
+
+    FormalRestList  go to state 58
+    FormalRest      go to state 54
 
 
 State 55
 
-   16 FormalRestList: FormalRestList FormalRest .
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' . '{' Statement '}' '}'
 
-    $default  reduce using rule 16 (FormalRestList)
+    '{'  shift, and go to state 59
 
 
 State 56
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' . Statement '}' '}'
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList . StatementList RETURN_KEYWORD Expression ';' '}'
 
-    IDENTIFIER      shift, and go to state 65
-    IF_KEYWORD      shift, and go to state 58
-    WHILE_KEYWORD   shift, and go to state 59
-    SYSTEM_KEYWORD  shift, and go to state 60
-    '{'             shift, and go to state 61
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
 
-    Statement  go to state 66
+    $default  reduce using rule 22 (StatementList)
+
+    StatementList  go to state 65
+    Statement      go to state 66
 
 
 State 57
 
-   21 Type: IDENTIFIER .
-   28 Statement: IDENTIFIER . '=' Expression ';'
-   29          | IDENTIFIER . '[' Expression ']' '=' Expression ';'
+   17 FormalRest: ',' Type . IDENTIFIER
 
-    '='  shift, and go to state 67
-    '['  shift, and go to state 68
-
-    $default  reduce using rule 21 (Type)
+    IDENTIFIER  shift, and go to state 67
 
 
 State 58
 
-   25 Statement: IF_KEYWORD . '(' Expression ')' Statement ELSE_KEYWORD Statement
+   16 FormalRestList: FormalRest FormalRestList .
 
-    '('  shift, and go to state 69
+    $default  reduce using rule 16 (FormalRestList)
 
 
 State 59
 
-   26 Statement: WHILE_KEYWORD . '(' Expression ')' Statement
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' . Statement '}' '}'
 
-    '('  shift, and go to state 70
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
+
+    Statement  go to state 68
 
 
 State 60
 
-   27 Statement: SYSTEM_KEYWORD . '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' ';'
+   28 Statement: IDENTIFIER . '=' Expression ';'
+   29          | IDENTIFIER . '[' Expression ']' '=' Expression ';'
 
-    '.'  shift, and go to state 71
+    '='  shift, and go to state 69
+    '['  shift, and go to state 70
 
 
 State 61
 
-   24 Statement: '{' . StatementList '}'
+   25 Statement: IF_KEYWORD . '(' Expression ')' Statement ELSE_KEYWORD Statement
 
-    IDENTIFIER      shift, and go to state 65
-    IF_KEYWORD      shift, and go to state 58
-    WHILE_KEYWORD   shift, and go to state 59
-    SYSTEM_KEYWORD  shift, and go to state 60
-    '{'             shift, and go to state 61
-
-    $default  reduce using rule 22 (StatementList)
-
-    StatementList  go to state 72
-    Statement      go to state 63
+    '('  shift, and go to state 71
 
 
 State 62
 
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList . RETURN_KEYWORD Expression ';' '}'
+   26 Statement: WHILE_KEYWORD . '(' Expression ')' Statement
 
-    RETURN_KEYWORD  shift, and go to state 73
+    '('  shift, and go to state 72
 
 
 State 63
 
-   23 StatementList: Statement . StatementList
+   27 Statement: SYSTEM_KEYWORD . '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' ';'
 
-    IDENTIFIER      shift, and go to state 65
-    IF_KEYWORD      shift, and go to state 58
-    WHILE_KEYWORD   shift, and go to state 59
-    SYSTEM_KEYWORD  shift, and go to state 60
-    '{'             shift, and go to state 61
-
-    $default  reduce using rule 22 (StatementList)
-
-    StatementList  go to state 74
-    Statement      go to state 63
+    '.'  shift, and go to state 73
 
 
 State 64
 
-   17 FormalRest: ',' Type . IDENTIFIER
+   24 Statement: '{' . StatementList '}'
 
-    IDENTIFIER  shift, and go to state 75
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
+
+    $default  reduce using rule 22 (StatementList)
+
+    StatementList  go to state 74
+    Statement      go to state 66
 
 
 State 65
 
-   28 Statement: IDENTIFIER . '=' Expression ';'
-   29          | IDENTIFIER . '[' Expression ']' '=' Expression ';'
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList . RETURN_KEYWORD Expression ';' '}'
 
-    '='  shift, and go to state 67
-    '['  shift, and go to state 68
+    RETURN_KEYWORD  shift, and go to state 75
 
 
 State 66
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement . '}' '}'
+   23 StatementList: Statement . StatementList
 
-    '}'  shift, and go to state 76
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
+
+    $default  reduce using rule 22 (StatementList)
+
+    StatementList  go to state 76
+    Statement      go to state 66
 
 
 State 67
-
-   28 Statement: IDENTIFIER '=' . Expression ';'
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 85
-
-
-State 68
-
-   29 Statement: IDENTIFIER '[' . Expression ']' '=' Expression ';'
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 86
-
-
-State 69
-
-   25 Statement: IF_KEYWORD '(' . Expression ')' Statement ELSE_KEYWORD Statement
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 87
-
-
-State 70
-
-   26 Statement: WHILE_KEYWORD '(' . Expression ')' Statement
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 88
-
-
-State 71
-
-   27 Statement: SYSTEM_KEYWORD '.' . OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' ';'
-
-    OUT_KEYWORD  shift, and go to state 89
-
-
-State 72
-
-   24 Statement: '{' StatementList . '}'
-
-    '}'  shift, and go to state 90
-
-
-State 73
-
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD . Expression ';' '}'
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 91
-
-
-State 74
-
-   23 StatementList: Statement StatementList .
-
-    $default  reduce using rule 23 (StatementList)
-
-
-State 75
 
    17 FormalRest: ',' Type IDENTIFIER .
 
     $default  reduce using rule 17 (FormalRest)
 
 
+State 68
+
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement . '}' '}'
+
+    '}'  shift, and go to state 77
+
+
+State 69
+
+   28 Statement: IDENTIFIER '=' . Expression ';'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 86
+
+
+State 70
+
+   29 Statement: IDENTIFIER '[' . Expression ']' '=' Expression ';'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 87
+
+
+State 71
+
+   25 Statement: IF_KEYWORD '(' . Expression ')' Statement ELSE_KEYWORD Statement
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 88
+
+
+State 72
+
+   26 Statement: WHILE_KEYWORD '(' . Expression ')' Statement
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 89
+
+
+State 73
+
+   27 Statement: SYSTEM_KEYWORD '.' . OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' ';'
+
+    OUT_KEYWORD  shift, and go to state 90
+
+
+State 74
+
+   24 Statement: '{' StatementList . '}'
+
+    '}'  shift, and go to state 91
+
+
+State 75
+
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD . Expression ';' '}'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 92
+
+
 State 76
 
-    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' . '}'
+   23 StatementList: Statement StatementList .
 
-    '}'  shift, and go to state 92
+    $default  reduce using rule 23 (StatementList)
 
 
 State 77
+
+    2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' . '}'
+
+    '}'  shift, and go to state 93
+
+
+State 78
 
    37 Expression: INTEGER_NUMBER .
 
     $default  reduce using rule 37 (Expression)
 
 
-State 78
+State 79
 
    38 Expression: TRUE_KEYWORD .
 
     $default  reduce using rule 38 (Expression)
 
 
-State 79
+State 80
 
    39 Expression: FALSE_KEYWORD .
 
     $default  reduce using rule 39 (Expression)
 
 
-State 80
+State 81
 
    40 Expression: IDENTIFIER .
 
     $default  reduce using rule 40 (Expression)
 
 
-State 81
+State 82
 
    41 Expression: THIS_KEYWORD .
 
     $default  reduce using rule 41 (Expression)
 
 
-State 82
+State 83
 
    42 Expression: NEW_KEYWORD . INT_KEYWORD '[' Expression ']'
    43           | NEW_KEYWORD . IDENTIFIER '(' ')'
 
-    IDENTIFIER   shift, and go to state 93
-    INT_KEYWORD  shift, and go to state 94
-
-
-State 83
-
-   44 Expression: '!' . Expression
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 95
+    IDENTIFIER   shift, and go to state 94
+    INT_KEYWORD  shift, and go to state 95
 
 
 State 84
 
-   45 Expression: '(' . Expression ')'
+   44 Expression: '!' . Expression
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
 
     Expression  go to state 96
 
 
 State 85
+
+   45 Expression: '(' . Expression ')'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 97
+
+
+State 86
 
    28 Statement: IDENTIFIER '=' Expression . ';'
    30 Expression: Expression . BINARY_AND Expression
@@ -949,16 +969,16 @@ State 85
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    ';'         shift, and go to state 97
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
+    ';'         shift, and go to state 98
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
 
 
-State 86
+State 87
 
    29 Statement: IDENTIFIER '[' Expression . ']' '=' Expression ';'
    30 Expression: Expression . BINARY_AND Expression
@@ -969,16 +989,16 @@ State 86
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-    ']'         shift, and go to state 104
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
+    ']'         shift, and go to state 105
 
 
-State 87
+State 88
 
    25 Statement: IF_KEYWORD '(' Expression . ')' Statement ELSE_KEYWORD Statement
    30 Expression: Expression . BINARY_AND Expression
@@ -989,16 +1009,16 @@ State 87
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-    ')'         shift, and go to state 105
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
+    ')'         shift, and go to state 106
 
 
-State 88
+State 89
 
    26 Statement: WHILE_KEYWORD '(' Expression . ')' Statement
    30 Expression: Expression . BINARY_AND Expression
@@ -1009,30 +1029,30 @@ State 88
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-    ')'         shift, and go to state 106
-
-
-State 89
-
-   27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD . '.' PRINTLN_KEYWORD '(' Expression ')' ';'
-
-    '.'  shift, and go to state 107
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
+    ')'         shift, and go to state 107
 
 
 State 90
+
+   27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD . '.' PRINTLN_KEYWORD '(' Expression ')' ';'
+
+    '.'  shift, and go to state 108
+
+
+State 91
 
    24 Statement: '{' StatementList '}' .
 
     $default  reduce using rule 24 (Statement)
 
 
-State 91
+State 92
 
    12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression . ';' '}'
    30 Expression: Expression . BINARY_AND Expression
@@ -1043,52 +1063,34 @@ State 91
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    ';'         shift, and go to state 108
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
+    ';'         shift, and go to state 109
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
 
 
-State 92
+State 93
 
     2 MainClassDeclaration: CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}' .
 
     $default  reduce using rule 2 (MainClassDeclaration)
 
 
-State 93
+State 94
 
    43 Expression: NEW_KEYWORD IDENTIFIER . '(' ')'
 
-    '('  shift, and go to state 109
-
-
-State 94
-
-   42 Expression: NEW_KEYWORD INT_KEYWORD . '[' Expression ']'
-
-    '['  shift, and go to state 110
+    '('  shift, and go to state 110
 
 
 State 95
 
-   30 Expression: Expression . BINARY_AND Expression
-   31           | Expression . '<' Expression
-   32           | Expression . '+' Expression
-   33           | Expression . '-' Expression
-   34           | Expression . '*' Expression
-   35           | Expression . '.' LENGTH_KEYWORD
-   36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
-   44           | '!' Expression .
+   42 Expression: NEW_KEYWORD INT_KEYWORD . '[' Expression ']'
 
-    '+'  shift, and go to state 101
-    '-'  shift, and go to state 102
-    '*'  shift, and go to state 103
-
-    $default  reduce using rule 44 (Expression)
+    '['  shift, and go to state 111
 
 
 State 96
@@ -1100,205 +1102,223 @@ State 96
    34           | Expression . '*' Expression
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
-   45           | '(' Expression . ')'
+   44           | '!' Expression .
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-    ')'         shift, and go to state 111
+    '+'  shift, and go to state 102
+    '-'  shift, and go to state 103
+    '*'  shift, and go to state 104
+
+    $default  reduce using rule 44 (Expression)
 
 
 State 97
+
+   30 Expression: Expression . BINARY_AND Expression
+   31           | Expression . '<' Expression
+   32           | Expression . '+' Expression
+   33           | Expression . '-' Expression
+   34           | Expression . '*' Expression
+   35           | Expression . '.' LENGTH_KEYWORD
+   36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
+   45           | '(' Expression . ')'
+
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
+    ')'         shift, and go to state 112
+
+
+State 98
 
    28 Statement: IDENTIFIER '=' Expression ';' .
 
     $default  reduce using rule 28 (Statement)
 
 
-State 98
+State 99
 
    35 Expression: Expression '.' . LENGTH_KEYWORD
    36           | Expression '.' . IDENTIFIER '(' ExpressionList ')'
 
-    IDENTIFIER      shift, and go to state 112
-    LENGTH_KEYWORD  shift, and go to state 113
-
-
-State 99
-
-   30 Expression: Expression BINARY_AND . Expression
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 114
+    IDENTIFIER      shift, and go to state 113
+    LENGTH_KEYWORD  shift, and go to state 114
 
 
 State 100
 
-   31 Expression: Expression '<' . Expression
+   30 Expression: Expression BINARY_AND . Expression
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
 
     Expression  go to state 115
 
 
 State 101
 
-   32 Expression: Expression '+' . Expression
+   31 Expression: Expression '<' . Expression
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
 
     Expression  go to state 116
 
 
 State 102
 
-   33 Expression: Expression '-' . Expression
+   32 Expression: Expression '+' . Expression
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
 
     Expression  go to state 117
 
 
 State 103
 
-   34 Expression: Expression '*' . Expression
+   33 Expression: Expression '-' . Expression
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
 
     Expression  go to state 118
 
 
 State 104
 
-   29 Statement: IDENTIFIER '[' Expression ']' . '=' Expression ';'
+   34 Expression: Expression '*' . Expression
 
-    '='  shift, and go to state 119
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 119
 
 
 State 105
 
-   25 Statement: IF_KEYWORD '(' Expression ')' . Statement ELSE_KEYWORD Statement
+   29 Statement: IDENTIFIER '[' Expression ']' . '=' Expression ';'
 
-    IDENTIFIER      shift, and go to state 65
-    IF_KEYWORD      shift, and go to state 58
-    WHILE_KEYWORD   shift, and go to state 59
-    SYSTEM_KEYWORD  shift, and go to state 60
-    '{'             shift, and go to state 61
-
-    Statement  go to state 120
+    '='  shift, and go to state 120
 
 
 State 106
 
-   26 Statement: WHILE_KEYWORD '(' Expression ')' . Statement
+   25 Statement: IF_KEYWORD '(' Expression ')' . Statement ELSE_KEYWORD Statement
 
-    IDENTIFIER      shift, and go to state 65
-    IF_KEYWORD      shift, and go to state 58
-    WHILE_KEYWORD   shift, and go to state 59
-    SYSTEM_KEYWORD  shift, and go to state 60
-    '{'             shift, and go to state 61
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
 
     Statement  go to state 121
 
 
 State 107
 
-   27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' . PRINTLN_KEYWORD '(' Expression ')' ';'
+   26 Statement: WHILE_KEYWORD '(' Expression ')' . Statement
 
-    PRINTLN_KEYWORD  shift, and go to state 122
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
+
+    Statement  go to state 122
 
 
 State 108
 
-   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' . '}'
+   27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' . PRINTLN_KEYWORD '(' Expression ')' ';'
 
-    '}'  shift, and go to state 123
+    PRINTLN_KEYWORD  shift, and go to state 123
 
 
 State 109
 
-   43 Expression: NEW_KEYWORD IDENTIFIER '(' . ')'
+   12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' . '}'
 
-    ')'  shift, and go to state 124
+    '}'  shift, and go to state 124
 
 
 State 110
 
-   42 Expression: NEW_KEYWORD INT_KEYWORD '[' . Expression ']'
+   43 Expression: NEW_KEYWORD IDENTIFIER '(' . ')'
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 125
+    ')'  shift, and go to state 125
 
 
 State 111
+
+   42 Expression: NEW_KEYWORD INT_KEYWORD '[' . Expression ']'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 126
+
+
+State 112
 
    45 Expression: '(' Expression ')' .
 
     $default  reduce using rule 45 (Expression)
 
 
-State 112
+State 113
 
    36 Expression: Expression '.' IDENTIFIER . '(' ExpressionList ')'
 
-    '('  shift, and go to state 126
+    '('  shift, and go to state 127
 
 
-State 113
+State 114
 
    35 Expression: Expression '.' LENGTH_KEYWORD .
 
     $default  reduce using rule 35 (Expression)
 
 
-State 114
+State 115
 
    30 Expression: Expression . BINARY_AND Expression
    30           | Expression BINARY_AND Expression .
@@ -1309,15 +1329,15 @@ State 114
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '<'  shift, and go to state 100
-    '+'  shift, and go to state 101
-    '-'  shift, and go to state 102
-    '*'  shift, and go to state 103
+    '<'  shift, and go to state 101
+    '+'  shift, and go to state 102
+    '-'  shift, and go to state 103
+    '*'  shift, and go to state 104
 
     $default  reduce using rule 30 (Expression)
 
 
-State 115
+State 116
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1328,14 +1348,14 @@ State 115
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '+'  shift, and go to state 101
-    '-'  shift, and go to state 102
-    '*'  shift, and go to state 103
+    '+'  shift, and go to state 102
+    '-'  shift, and go to state 103
+    '*'  shift, and go to state 104
 
     $default  reduce using rule 31 (Expression)
 
 
-State 116
+State 117
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1346,12 +1366,12 @@ State 116
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '*'  shift, and go to state 103
+    '*'  shift, and go to state 104
 
     $default  reduce using rule 32 (Expression)
 
 
-State 117
+State 118
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1362,12 +1382,12 @@ State 117
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '*'  shift, and go to state 103
+    '*'  shift, and go to state 104
 
     $default  reduce using rule 33 (Expression)
 
 
-State 118
+State 119
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1381,58 +1401,58 @@ State 118
     $default  reduce using rule 34 (Expression)
 
 
-State 119
+State 120
 
    29 Statement: IDENTIFIER '[' Expression ']' '=' . Expression ';'
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
 
-    Expression  go to state 127
-
-
-State 120
-
-   25 Statement: IF_KEYWORD '(' Expression ')' Statement . ELSE_KEYWORD Statement
-
-    ELSE_KEYWORD  shift, and go to state 128
+    Expression  go to state 128
 
 
 State 121
+
+   25 Statement: IF_KEYWORD '(' Expression ')' Statement . ELSE_KEYWORD Statement
+
+    ELSE_KEYWORD  shift, and go to state 129
+
+
+State 122
 
    26 Statement: WHILE_KEYWORD '(' Expression ')' Statement .
 
     $default  reduce using rule 26 (Statement)
 
 
-State 122
+State 123
 
    27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD . '(' Expression ')' ';'
 
-    '('  shift, and go to state 129
+    '('  shift, and go to state 130
 
 
-State 123
+State 124
 
    12 MethodDeclaration: PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}' .
 
     $default  reduce using rule 12 (MethodDeclaration)
 
 
-State 124
+State 125
 
    43 Expression: NEW_KEYWORD IDENTIFIER '(' ')' .
 
     $default  reduce using rule 43 (Expression)
 
 
-State 125
+State 126
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1443,35 +1463,35 @@ State 125
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
    42           | NEW_KEYWORD INT_KEYWORD '[' Expression . ']'
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-    ']'         shift, and go to state 130
-
-
-State 126
-
-   36 Expression: Expression '.' IDENTIFIER '(' . ExpressionList ')'
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    $default  reduce using rule 46 (ExpressionList)
-
-    Expression      go to state 131
-    ExpressionList  go to state 132
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
+    ']'         shift, and go to state 131
 
 
 State 127
+
+   36 Expression: Expression '.' IDENTIFIER '(' . ExpressionList ')'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    $default  reduce using rule 46 (ExpressionList)
+
+    Expression      go to state 132
+    ExpressionList  go to state 133
+
+
+State 128
 
    29 Statement: IDENTIFIER '[' Expression ']' '=' Expression . ';'
    30 Expression: Expression . BINARY_AND Expression
@@ -1482,52 +1502,52 @@ State 127
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    ';'         shift, and go to state 133
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-
-
-State 128
-
-   25 Statement: IF_KEYWORD '(' Expression ')' Statement ELSE_KEYWORD . Statement
-
-    IDENTIFIER      shift, and go to state 65
-    IF_KEYWORD      shift, and go to state 58
-    WHILE_KEYWORD   shift, and go to state 59
-    SYSTEM_KEYWORD  shift, and go to state 60
-    '{'             shift, and go to state 61
-
-    Statement  go to state 134
+    ';'         shift, and go to state 134
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
 
 
 State 129
 
-   27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' . Expression ')' ';'
+   25 Statement: IF_KEYWORD '(' Expression ')' Statement ELSE_KEYWORD . Statement
 
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
+    IDENTIFIER      shift, and go to state 60
+    IF_KEYWORD      shift, and go to state 61
+    WHILE_KEYWORD   shift, and go to state 62
+    SYSTEM_KEYWORD  shift, and go to state 63
+    '{'             shift, and go to state 64
 
-    Expression  go to state 135
+    Statement  go to state 135
 
 
 State 130
+
+   27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' . Expression ')' ';'
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 136
+
+
+State 131
 
    42 Expression: NEW_KEYWORD INT_KEYWORD '[' Expression ']' .
 
     $default  reduce using rule 42 (Expression)
 
 
-State 131
+State 132
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1538,42 +1558,42 @@ State 131
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
    47 ExpressionList: Expression . ExpressionRestList
 
-    ','         shift, and go to state 136
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
+    ','         shift, and go to state 137
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
 
     $default  reduce using rule 48 (ExpressionRestList)
 
-    ExpressionRestList  go to state 137
-    ExpressionRest      go to state 138
-
-
-State 132
-
-   36 Expression: Expression '.' IDENTIFIER '(' ExpressionList . ')'
-
-    ')'  shift, and go to state 139
+    ExpressionRestList  go to state 138
+    ExpressionRest      go to state 139
 
 
 State 133
+
+   36 Expression: Expression '.' IDENTIFIER '(' ExpressionList . ')'
+
+    ')'  shift, and go to state 140
+
+
+State 134
 
    29 Statement: IDENTIFIER '[' Expression ']' '=' Expression ';' .
 
     $default  reduce using rule 29 (Statement)
 
 
-State 134
+State 135
 
    25 Statement: IF_KEYWORD '(' Expression ')' Statement ELSE_KEYWORD Statement .
 
     $default  reduce using rule 25 (Statement)
 
 
-State 135
+State 136
 
    27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression . ')' ';'
    30 Expression: Expression . BINARY_AND Expression
@@ -1584,65 +1604,65 @@ State 135
    35           | Expression . '.' LENGTH_KEYWORD
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
-    ')'         shift, and go to state 140
-
-
-State 136
-
-   50 ExpressionRest: ',' . Expression
-
-    INTEGER_NUMBER  shift, and go to state 77
-    TRUE_KEYWORD    shift, and go to state 78
-    FALSE_KEYWORD   shift, and go to state 79
-    IDENTIFIER      shift, and go to state 80
-    THIS_KEYWORD    shift, and go to state 81
-    NEW_KEYWORD     shift, and go to state 82
-    '!'             shift, and go to state 83
-    '('             shift, and go to state 84
-
-    Expression  go to state 141
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
+    ')'         shift, and go to state 141
 
 
 State 137
+
+   50 ExpressionRest: ',' . Expression
+
+    INTEGER_NUMBER  shift, and go to state 78
+    TRUE_KEYWORD    shift, and go to state 79
+    FALSE_KEYWORD   shift, and go to state 80
+    IDENTIFIER      shift, and go to state 81
+    THIS_KEYWORD    shift, and go to state 82
+    NEW_KEYWORD     shift, and go to state 83
+    '!'             shift, and go to state 84
+    '('             shift, and go to state 85
+
+    Expression  go to state 142
+
+
+State 138
 
    47 ExpressionList: Expression ExpressionRestList .
 
     $default  reduce using rule 47 (ExpressionList)
 
 
-State 138
+State 139
 
    49 ExpressionRestList: ExpressionRest . ExpressionRestList
 
-    ','  shift, and go to state 136
+    ','  shift, and go to state 137
 
     $default  reduce using rule 48 (ExpressionRestList)
 
-    ExpressionRestList  go to state 142
-    ExpressionRest      go to state 138
+    ExpressionRestList  go to state 143
+    ExpressionRest      go to state 139
 
 
-State 139
+State 140
 
    36 Expression: Expression '.' IDENTIFIER '(' ExpressionList ')' .
 
     $default  reduce using rule 36 (Expression)
 
 
-State 140
+State 141
 
    27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' . ';'
 
-    ';'  shift, and go to state 143
+    ';'  shift, and go to state 144
 
 
-State 141
+State 142
 
    30 Expression: Expression . BINARY_AND Expression
    31           | Expression . '<' Expression
@@ -1653,24 +1673,24 @@ State 141
    36           | Expression . '.' IDENTIFIER '(' ExpressionList ')'
    50 ExpressionRest: ',' Expression .
 
-    '.'         shift, and go to state 98
-    BINARY_AND  shift, and go to state 99
-    '<'         shift, and go to state 100
-    '+'         shift, and go to state 101
-    '-'         shift, and go to state 102
-    '*'         shift, and go to state 103
+    '.'         shift, and go to state 99
+    BINARY_AND  shift, and go to state 100
+    '<'         shift, and go to state 101
+    '+'         shift, and go to state 102
+    '-'         shift, and go to state 103
+    '*'         shift, and go to state 104
 
     $default  reduce using rule 50 (ExpressionRest)
 
 
-State 142
+State 143
 
    49 ExpressionRestList: ExpressionRest ExpressionRestList .
 
     $default  reduce using rule 49 (ExpressionRestList)
 
 
-State 143
+State 144
 
    27 Statement: SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' ';' .
 

@@ -8,6 +8,9 @@ class CPrettyPrinter : public IVisitor
 {
 public:
 	CPrettyPrinter() {};
+
+	void PrintTabs( size_t tabs );
+
 	void Visit( const CProgram* node );
 	void Visit( const CMainClassDeclaration* node );
 	void Visit( const CClassDeclaration* node );

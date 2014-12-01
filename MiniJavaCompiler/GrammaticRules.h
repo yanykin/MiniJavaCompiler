@@ -51,6 +51,7 @@ public:
 	std::string GetClassName() const { return className->getString(); };
 	IVariableDeclaration* GetFieldsList() const { return fieldsList; };
 	IMethodDeclaration* GetMethodsList() const { return methodsList; };
+
 private:
 	CIdentifier *className; // Название класса
 	IVariableDeclaration *fieldsList; // Список полей класса
@@ -64,6 +65,10 @@ public:
 	CClassDeclarationList( IClassDeclaration *_classDeclaration, IClassDeclaration *_nextClassDeclaration ) :
 		classDeclaration( _classDeclaration ), nextClassDeclaration( _nextClassDeclaration ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IClassDeclaration* GetClassDeclaration() const { return classDeclaration; };
+	IClassDeclaration *GetNextClassDeclaration() const { return nextClassDeclaration; };
+
 private:
 	IClassDeclaration *classDeclaration; // связанные данные элемента списка
 	IClassDeclaration *nextClassDeclaration; // ссылка на следующий элемент
@@ -76,6 +81,11 @@ public:
 	CClassExtendsDeclaration( CIdentifier *_className, CIdentifier *_superClassName, IVariableDeclaration *_fieldsList, IMethodDeclaration *_methodsList ) :
 		className( _className ), superClassName( _superClassName ), fieldsList( _fieldsList ), methodsList( _methodsList ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetClassName() const { return className->getString(); };
+	std::string GetSuperClassName() const { return superClassName->getString(); };
+	IVariableDeclaration* GetFieldsList() const { return fieldsList; };
+	IMethodDeclaration* GetMethodsList() const { return methodsList; };
 private:
 	CIdentifier *className; // Название класса
 	CIdentifier *superClassName; // Название класса, от которого происходит наследование
@@ -90,6 +100,9 @@ public:
 	CVariableDeclaration( IType *_type, CIdentifier *_variableName) :
 		type( _type ), variableName( _variableName ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetName() const { return variableName->getString(); };
+	IType* GetType() const { return type;  };
 private:
 	IType *type; // тип данных
 	CIdentifier *variableName; // имя переменной	
@@ -99,12 +112,16 @@ private:
 class CVariableDeclarationList : public IVariableDeclaration
 {
 public:
-	CVariableDeclarationList(IVariableDeclaration *_variableDeclaration, IVariableDeclaration *_nextVariableDeclaration):
+	CVariableDeclarationList(IVariableDeclaration *_variableDeclaration, CVariableDeclarationList *_nextVariableDeclaration):
 	variableDeclaration(_variableDeclaration), nextVariableDeclaration(_nextVariableDeclaration) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	CVariableDeclarationList* GetNextVariableDeclaration() const { return nextVariableDeclaration; };
+	IVariableDeclaration* GetVariableDeclaration() const { return variableDeclaration; };
+
 private:
 	IVariableDeclaration *variableDeclaration; // связанные данные
-	IVariableDeclaration *nextVariableDeclaration; // ссылка на следующий элемент
+	CVariableDeclarationList *nextVariableDeclaration; // ссылка на следующий элемент
 };
 
 // Определение метода
@@ -114,6 +131,12 @@ public:
 	CMethodDeclaration( IType *_type, CIdentifier *_methodName, IFormalList *_formalList, IVariableDeclaration *_localVariablesList, IStatement *_statementList, IExpression *_returnExpression) :
 		type( _type ), methodName( _methodName ), formalList( _formalList ), localVariablesList( _localVariablesList ), statementList( _statementList ), returnExpression( _returnExpression ) { }
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetMethodName() const {return methodName->getString(); };
+	IType* GetType() const { return type; };
+	IFormalList* GetFormalList() const { return formalList; };
+	IStatement* GetStatements() const { return statementList; };
+
 private:
 	IType *type; // тип данных, который возвращает этот тип
 	CIdentifier *methodName; // имя метода
@@ -130,6 +153,10 @@ public:
 	CMethodDeclarationList(IMethodDeclaration *_methodDeclaration, IMethodDeclaration *_nextMethodDeclaration):
 	methodDeclaration(_methodDeclaration), nextMethodDeclaration(_nextMethodDeclaration) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IMethodDeclaration* GetMethodDeclaration() const { return methodDeclaration; };
+	IMethodDeclaration* GetNextMethodDeclaration() const { return nextMethodDeclaration; };
+
 private:
 	IMethodDeclaration *methodDeclaration; // определение метода (связанные данные)
 	IMethodDeclaration *nextMethodDeclaration; // ссылка на следующее определение метода
@@ -142,6 +169,10 @@ public:
 	CFormalList( IType *_type, CIdentifier *_parameterName ) :
 		type( _type ), parameterName( _parameterName ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetParameterName() const { return parameterName->getString(); };
+	IType* GetType() const { return type; };
+
 private:
 	IType *type; // тип переменной
 	CIdentifier *parameterName; // имя переменной
@@ -155,6 +186,10 @@ public:
 	CFormalRestList(IFormalList *_formalRest, IFormalList *_nextFormalRest):
 	formalRest(_formalRest), nextFormalRest(_nextFormalRest) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IFormalList* GetFormalRest() const { return formalRest; };
+	IFormalList* GetNextFormalRest() const { return nextFormalRest; };
+
 private:
 	IFormalList *formalRest; // параметр
 	IFormalList *nextFormalRest; // следующий параметр
@@ -194,6 +229,8 @@ class CBuiltInType : public IType {
 public:
 	CBuiltInType( TBuiltInType _type ) : type( _type ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	TBuiltInType GetType() const { return type; };
 private:
 	TBuiltInType type;
 };
@@ -203,6 +240,8 @@ class CUserType : public IType {
 public:
 	CUserType( CIdentifier *_typeName ) : typeName( _typeName ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetTypeName() const { return typeName->getString(); }
 private:
 	CIdentifier *typeName; // название класса
 };
@@ -215,6 +254,10 @@ public:
 	CStatementList( IStatement *_statement, IStatement *_nextStatement ) :
 		statement( _statement ), nextStatement( _nextStatement ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IStatement* GetStatement() const { return statement; };
+	IStatement* GetNextStatement() const { return nextStatement; };
+
 private:
 	IStatement *statement; // целевые данные элемента
 	IStatement *nextStatement; // следующий элемент списка
@@ -226,6 +269,9 @@ class CStatementBlock : public IStatement
 public:
 	CStatementBlock( IStatement *_statementsList ) : statementsList( _statementsList ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IStatement* GetStatementList() const { return statementsList; };
+
 private:
 	IStatement *statementsList; // операторы в данном блоке
 };

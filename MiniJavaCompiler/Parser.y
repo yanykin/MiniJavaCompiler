@@ -30,6 +30,8 @@
 	CIdentifier* Identifier;
 
 	IVariableDeclaration* VariableDeclaration;
+	CVariableDeclarationList* VariableDeclarationList;
+
 	IClassDeclaration* ClassDeclaration;
 	IMethodDeclaration* MethodDeclaration;
 
@@ -54,7 +56,7 @@
 %type <Type> Type
 
 %type <VariableDeclaration> VariableDeclaration
-%type <VariableDeclaration> VariableDeclarationList
+%type <VariableDeclarationList> VariableDeclarationList
 
 %type <MethodDeclaration> MethodDeclaration
 %type <MethodDeclaration> MethodDeclarationList
@@ -118,8 +120,8 @@ VariableDeclarationList:
 	/* empty */ {
 		$$ = NULL;
 	}
-	| VariableDeclarationList VariableDeclaration {
-		$$ = new CVariableDeclarationList($2, $1);
+	| VariableDeclaration VariableDeclarationList {
+		$$ = new CVariableDeclarationList($1, $2);
 	}
 
 VariableDeclaration:
@@ -153,8 +155,8 @@ FormalRestList:
 	/* empty */ {
 		$$ = NULL;
 	}
-	| FormalRestList FormalRest {
-		$$ = new CFormalRestList($2, $1);
+	| FormalRest FormalRestList {
+		$$ = new CFormalRestList($1, $2);
 	}
 
 FormalRest:

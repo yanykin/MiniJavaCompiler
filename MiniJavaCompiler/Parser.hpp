@@ -102,6 +102,8 @@ typedef union YYSTYPE
 	CIdentifier* Identifier;
 
 	IVariableDeclaration* VariableDeclaration;
+	CVariableDeclarationList* VariableDeclarationList;
+
 	IClassDeclaration* ClassDeclaration;
 	IMethodDeclaration* MethodDeclaration;
 
@@ -113,7 +115,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 117 "Parser.hpp"
+#line 119 "Parser.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
