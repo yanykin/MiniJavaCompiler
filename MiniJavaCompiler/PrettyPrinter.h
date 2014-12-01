@@ -7,9 +7,17 @@
 class CPrettyPrinter : public IVisitor
 {
 public:
-	CPrettyPrinter() {};
+	CPrettyPrinter(): marginInTabs(0) {};
 
-	void PrintTabs( size_t tabs );
+	// Печатает заданное число отступов
+	void PrintTabs( size_t tabs ) const;
+	// Печатает отступ в соответствии с текущим уровнем вложения
+	void PrintMargin() const;
+	// Увеличивает и уменьшает отступ
+	void IncreaseMargin() { marginInTabs += 1; };
+	void DecreaseMargin() { if ( marginInTabs > 0 ) marginInTabs -= 1; };
+	void SetMargin( size_t value ) { marginInTabs = value; };
+
 
 	void Visit( const CProgram* node );
 	void Visit( const CMainClassDeclaration* node );
@@ -43,5 +51,9 @@ public:
 	void Visit( const CNegationExpression* node );
 	void Visit( const CParenthesesExpression* node );
 	void Visit( const CExpressionList* node );
+
+private:
+	static std::string marginString; // строка, которая будет печататься как отступ
+	size_t marginInTabs; // задаёт уровень отступа, на котором нужно производить печать
 };
 

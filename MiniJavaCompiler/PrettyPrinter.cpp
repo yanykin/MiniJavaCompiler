@@ -4,10 +4,19 @@
 
 using namespace std;
 
-void CPrettyPrinter::PrintTabs( size_t tabs )
+std::string CPrettyPrinter::marginString = "    ";
+
+void CPrettyPrinter::PrintTabs( size_t tabs ) const
 {
 	for ( size_t i = 0; i < tabs; i++ ) {
-		cout << "   ";
+		cout << marginString;
+	}
+}
+
+void CPrettyPrinter::PrintMargin() const
+{
+	for ( size_t i = 0; i < marginInTabs; i++ ) {
+		cout << marginString;
 	}
 }
 
@@ -36,8 +45,13 @@ void CPrettyPrinter::Visit( const CMainClassDeclaration* node )
 	PrintTabs( 1 );
 	cout << "Main class " << node->GetClassName() << endl;
 	IStatement* statements = node->GetClassStatements();
+	PrintTabs( 2 );
+	cout << "Declared methods:" << endl;
+	PrintTabs( 3 );
+	cout << "main(String[] " << node->GetArgumentName() << ") -> void" << endl;
 	if ( statements )
 	{
+		PrintTabs( 4 );
 		statements->Accept( this );
 	}
 }
@@ -146,6 +160,7 @@ void CPrettyPrinter::Visit( const CMethodDeclaration* node )
 
 	IStatement *statementList = node->GetStatements();
 	if ( statementList ) {
+		SetMargin( 4 );
 		statementList->Accept( this );
 		cout << endl;
 	}
@@ -154,6 +169,7 @@ void CPrettyPrinter::Visit( const CMethodDeclaration* node )
 void CPrettyPrinter::Visit( const CMethodDeclarationList* node )
 {
 	IMethodDeclaration* methodDeclaraion = node->GetMethodDeclaration();
+	// PrintMargin();
 	methodDeclaraion->Accept( this );
 
 	IMethodDeclaration* nextMethodDeclaration = node->GetNextMethodDeclaration();
@@ -213,8 +229,9 @@ void CPrettyPrinter::Visit( const CStatementList* node )
 	IStatement* statement = node->GetStatement();
 	IStatement* nextStatement = node->GetNextStatement();
 
-	PrintTabs( 4 );
+	PrintMargin();
 	statement->Accept( this );
+
 	if ( nextStatement ) {
 		nextStatement->Accept( this );
 	}
@@ -224,7 +241,9 @@ void CPrettyPrinter::Visit( const CStatementBlock* node )
 {
 	IStatement* block = node->GetStatementList();
 	if ( block ) {
+		IncreaseMargin();
 		block->Accept( this );
+		DecreaseMargin();
 	}
 }
 
