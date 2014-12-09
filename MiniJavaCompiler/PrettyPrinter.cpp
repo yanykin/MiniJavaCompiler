@@ -22,7 +22,6 @@ void CPrettyPrinter::PrintMargin() const
 
 void CPrettyPrinter::Visit( const CProgram* node )
 {
-	cout << "=== Program on MiniJava ===" << endl;
 	IMainClassDeclaration* mainClass = node->GetMainClassDeclaration();
 	if ( mainClass )
 	{
@@ -34,80 +33,61 @@ void CPrettyPrinter::Visit( const CProgram* node )
 	{
 		classDeclarations->Accept( this );
 	}
-	else {
-		cout << "No other classes" << endl;
-	}
 }
 
 
 void CPrettyPrinter::Visit( const CMainClassDeclaration* node )
 {
-	PrintTabs( 1 );
-	cout << "Main class " << node->GetClassName() << endl;
+	cout << "class " << node->GetClassName() << endl;
+	cout << "{" << endl;
 	IStatement* statements = node->GetClassStatements();
-	PrintTabs( 2 );
-	cout << "Declared methods:" << endl;
-	PrintTabs( 3 );
-	cout << "main(String[] " << node->GetArgumentName() << ") -> void" << endl;
+	PrintTabs( 1 );
+	cout << "public static void main(String[] " << node->GetArgumentName() << ")" << endl;
+	PrintTabs( 1 ); cout << "{" << endl;
 	if ( statements )
 	{
-		PrintTabs( 4 );
+		PrintTabs( 2 );
 		statements->Accept( this );
 	}
+	PrintTabs( 1 ); cout << "}" << endl;
+	cout << "}" << endl;
 }
 
 void CPrettyPrinter::Visit( const CClassDeclaration* node )
 {
-	PrintTabs( 1 );
-	cout << "Class " << node->GetClassName() << endl;
-	IVariableDeclaration* fieldsList = node->GetFieldsList();
-	PrintTabs( 2 );
+	cout << "class " << node->GetClassName() << endl;
+	cout << "{" << endl;
+	IVariableDeclaration* fieldsList = node->GetFieldsList();	
 	if ( fieldsList )
 	{
-		cout << "Declared fields:" << endl;
 		fieldsList->Accept( this );
 	}
-	else {
-		cout << "No fields." << endl;
-	}
-
-	PrintTabs( 2 );
+	
 	IMethodDeclaration* methodsList = node->GetMethodsList();
 	if ( methodsList )
 	{
-		cout << "Declared methods:" << endl;
 		methodsList->Accept( this );
 	}
-	else {
-		cout << "No methods." << endl;
-	}
+
+	cout << "}" << endl;
 }
 
 void CPrettyPrinter::Visit( const CClassExtendsDeclaration* node )
 {
-	PrintTabs( 1 );
-	cout << endl  << "Class " << node->GetClassName() << " extends from class " << node->GetSuperClassName() << endl;
+	cout << "class " << node->GetClassName() << " extends " << node->GetSuperClassName() << endl;
+	cout << "{" << endl;
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
-	PrintTabs( 2 );
 	if ( fieldsList )
 	{
-		cout << "Declared fields:" << endl;
 		fieldsList->Accept( this );
 	}
-	else {
-		cout << "No fields." << endl;
-	}
 
-	PrintTabs( 2 );
 	IMethodDeclaration* methodsList = node->GetMethodsList();
 	if ( methodsList )
 	{
-		cout << "Declared methods:" << endl;
 		methodsList->Accept( this );
 	}
-	else {
-		cout << "No methods." << endl;
-	}
+	cout << "}" << endl;
 }
 
 void CPrettyPrinter::Visit( const CClassDeclarationList* node )
@@ -123,47 +103,58 @@ void CPrettyPrinter::Visit( const CClassDeclarationList* node )
 
 void CPrettyPrinter::Visit( const CVariableDeclaration* node )
 {
-	PrintTabs( 3 );
 	string name = node->GetName();
 	IType* type = node->GetType();
-	cout << name << " : ";
-	type->Accept( this );
 
-	cout << endl;
+	type->Accept( this );
+	cout << " " << name;
 }
 
 void CPrettyPrinter::Visit( const CVariableDeclarationList* node )
 {
 	IVariableDeclaration* variableDeclaration = node->GetVariableDeclaration();
-	variableDeclaration->Accept( this );
-
+	
 	CVariableDeclarationList* nextVariableDeclaration = node->GetNextVariableDeclaration();
 	if ( nextVariableDeclaration ) {
 		nextVariableDeclaration->Accept( this );
 	}
+
+	PrintTabs( 1 );
+	variableDeclaration->Accept( this );
+	cout << ";" << endl;
 }
 
 void CPrettyPrinter::Visit( const CMethodDeclaration* node )
 {
-	PrintTabs( 3 );
+	PrintTabs( 1 );
 	string name = node->GetMethodName();
 	IType* type = node->GetType();
 	// cout << "Method ";
-	cout << name << "(";
+	cout << "public ";
+	type->Accept( this );
+	cout << " " << name << "(";
 	IFormalList* formalList = node->GetFormalList();
 	if ( formalList ) {
 		formalList->Accept( this );
 	}
-	cout << ") -> ";
-	type->Accept( this );
-	cout << endl;
+	cout << ")" << endl;
 
+	PrintTabs( 1 ); cout << "{" << endl;
 	IStatement *statementList = node->GetStatements();
 	if ( statementList ) {
-		SetMargin( 4 );
+		SetMargin( 2 );
 		statementList->Accept( this );
 		cout << endl;
 	}
+	
+	IExpression* returnExpression = node->GetReturnExpression();
+	PrintTabs( 2 );
+	cout << "return ";
+	returnExpression->Accept( this );
+	cout << ";" << endl;
+	PrintTabs( 1 ); cout << "}" << endl;
+
+	
 }
 
 void CPrettyPrinter::Visit( const CMethodDeclarationList* node )
@@ -183,8 +174,8 @@ void CPrettyPrinter::Visit( const CFormalList* node )
 	string name = node->GetParameterName();
 	IType* type = node->GetType();
 	
-	cout << name << " : ";
 	type->Accept( this );
+	cout << " " << name;
 }
 
 void CPrettyPrinter::Visit( const CFormalRestList* node )
@@ -201,26 +192,23 @@ void CPrettyPrinter::Visit( const CFormalRestList* node )
 
 void CPrettyPrinter::Visit( const CBuiltInType* node )
 {
-	// cout << "builtin type ";
 	switch ( node->GetType() )
 	{
 	case BT_BOOLEAN:
 		cout << "boolean";
 		break;
 	case BT_INTEGER:
-		cout << "integer";
+		cout << "int";
 		break;
 	case BT_INTEGER_ARRAY:
-		cout << "integer[]";
+		cout << "int[]";
 	default:
 		break;
 	}
-	cout;
 }
 
 void CPrettyPrinter::Visit( const CUserType* node )
 {
-	// cout << "user type ";
 	cout << node->GetTypeName();
 }
 
@@ -229,7 +217,6 @@ void CPrettyPrinter::Visit( const CStatementList* node )
 	IStatement* statement = node->GetStatement();
 	IStatement* nextStatement = node->GetNextStatement();
 
-	PrintMargin();
 	statement->Accept( this );
 
 	if ( nextStatement ) {
@@ -241,93 +228,223 @@ void CPrettyPrinter::Visit( const CStatementBlock* node )
 {
 	IStatement* block = node->GetStatementList();
 	if ( block ) {
+
+		PrintMargin();
+		cout << "{" << endl;
+
 		IncreaseMargin();
 		block->Accept( this );
 		DecreaseMargin();
+
+		PrintMargin();
+		cout << "}" << endl;
 	}
 }
 
 void CPrettyPrinter::Visit( const CIfStatement* node )
 {
-	cout << "IF statement" << endl;
+	IStatement* trueStatement = node->GetTrueStatement();
+	IStatement* falseStatement = node->GetFalseStatement();
+	IExpression* condition = node->GetCondition();
+
+	PrintMargin();
+	cout << "if (";
+	condition->Accept( this );
+	cout << ")" << endl;
+	PrintMargin();
+	cout << "{" << endl;
+	IncreaseMargin();
+	// PrintMargin();
+	trueStatement->Accept( this );
+	DecreaseMargin();
+	PrintMargin();
+	cout << "}" << endl;
+
+	PrintMargin();
+	cout << "else" << endl;
+	PrintMargin();
+	cout << "{" << endl;
+	IncreaseMargin();
+	// PrintMargin();
+	falseStatement->Accept( this );
+	DecreaseMargin();
+	PrintMargin();
+	cout << "}" << endl;
 }
 
 void CPrettyPrinter::Visit( const CWhileStatement* node )
 {
-	cout << "WHILE statement" << endl;
+	IExpression* condition = node->GetCondition();
+	IStatement* statement = node->GetStatement();
+
+	PrintMargin();
+	cout << "while (";
+	condition->Accept( this );
+	cout << " )" << endl;
+
+	PrintMargin();
+	cout << "{" << endl;
+	IncreaseMargin();
+	statement->Accept( this );
+	DecreaseMargin();
+	PrintMargin();
+	cout << "}" << endl;
 }
 
 void CPrettyPrinter::Visit( const CPrintStatement* node )
 {
-	cout << "Print statement" << endl;
+	IExpression *expression = node->GetExpression();
+	PrintMargin();
+	cout << "System.out.println(";
+	expression->Accept( this );
+	cout << ");" << endl;
 }
 
 void CPrettyPrinter::Visit( const CAssignmentStatement* node )
 {
-	cout << "Assignment statement" << endl;
+	IExpression *expression = node->GetRightValue();
+	PrintMargin();
+	cout << node->GetVariableName() << " = ";
+	expression->Accept( this );
+	cout << ";" << endl;
 }
 
 void CPrettyPrinter::Visit( const CArrayElementAssignmentStatement* node )
 {
-	cout << "Array element assignment statement" << endl;
+	IExpression* index = node->GetIndexExpression();
+	IExpression* value = node->GetRightValue();
+	PrintMargin();
+	cout << node->GetArrayName() << "[";
+	index->Accept( this );
+	cout << "] = ";
+	value->Accept( this );
+	cout << ";" << endl;
 }
 
 void CPrettyPrinter::Visit( const CBinaryOperatorExpression* node )
 {
+	IExpression* leftValue = node->GetLeftValue();
+	IExpression* rightValue = node->GetRightValue();
 
+	leftValue->Accept( this );
+	switch ( node->GetOperator() )
+	{
+	case BO_PLUS:
+		cout << " + ";
+		break;
+	case BO_MINUS:
+		cout << " - ";
+		break;
+	case BO_MULTIPLY:
+		cout << " * ";
+		break;
+	case BO_LESS:
+		cout << " < ";
+		break;
+	case BO_LOGICAL_AND:
+		cout << " && ";
+		break;
+	default:
+		break; 
+	}
+	rightValue->Accept( this );
 }
 
 void CPrettyPrinter::Visit( const CIndexAccessExpression* node )
 {
+	IExpression *arrayExpression = node->GetArrayExpression();
+	IExpression *index = node->GetIndex();
 
+	arrayExpression->Accept( this );
+	cout << "[ ";
+	index->Accept( this );
+	cout << " ]";
 }
 
 void CPrettyPrinter::Visit( const CLengthExpression* node )
 {
-
+	IExpression* arrayExpression = node->GetArray();
+	arrayExpression->Accept( this );
+	cout << ".length()";
 }
 
 void CPrettyPrinter::Visit( const CMethodCallExpression* node )
 {
+	IExpression* object = node->GetObject();
+	IExpression* params = node->GetParams();
+	std::string methodName = node->GetMethodName();
 
+	object->Accept( this );
+	cout << "." << methodName << "(";
+	params->Accept( this );
+	cout << ")";
 }
 
 void CPrettyPrinter::Visit( const CIntegerOrBooleanExpression* node )
 {
-
+	int value = node->GetValue();
+	TValueType type = node->GetValueType();
+	if ( type == VT_BOOLEAN ) {
+		if ( value == 0 ) {
+			cout << "false";
+		}
+		else {
+			cout << "true";
+		}
+	}
+	else {
+		cout << value;
+	}
 }
 
 void CPrettyPrinter::Visit( const CIdentifierExpression* node )
 {
-
+	std::string name = node->GetVariableName();
+	cout << name;
 }
 
 void CPrettyPrinter::Visit( const CThisExpression* node )
 {
-
+	cout << "this";
 }
 
 void CPrettyPrinter::Visit( const CNewIntegerArrayExpression* node )
 {
-
+	IExpression* size = node->GetArraySize();
+	cout << "int[ ";
+	size->Accept( this );
+	cout << " ]";
 }
 
 void CPrettyPrinter::Visit( const CNewObjectExpression* node )
 {
-
+	std::string className = node->GetClass();
+	cout << "new " << className << "()";
 }
 
 void CPrettyPrinter::Visit( const CNegationExpression* node )
 {
-
+	IExpression* argument = node->GetArgument();
+	cout << " -";
+	argument->Accept( this );
 }
 
 void CPrettyPrinter::Visit( const CParenthesesExpression* node )
 {
-
+	IExpression* expression = node->GetExpression();
+	cout << "( ";
+	expression->Accept( this );
+	cout << " )";
 }
 
 void CPrettyPrinter::Visit( const CExpressionList* node )
 {
+	IExpression *expression = node->GetExpression();
+	IExpression *nextExpression = node->GetNextExpression();
 
+	expression->Accept( this );
+
+	if ( nextExpression ) {
+		nextExpression->Accept( this );
+	}
 }

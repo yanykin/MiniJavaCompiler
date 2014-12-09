@@ -73,6 +73,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PrettyPrinter.cpp" />
+    <ClCompile Include="SymbolTableBuilder.cpp" />
+    <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -120,6 +122,8 @@
     <ClInclude Include="PublicKeyWordType.h" />
     <ClInclude Include="StatementStatementList.h" />
     <ClInclude Include="StatementList.h" />
+    <ClInclude Include="SymbolTableBuilder.h" />
+    <ClInclude Include="Table.h" />
     <ClInclude Include="TerminalSymbols.h" />
     <ClInclude Include="TypeIdentifier.h" />
     <ClInclude Include="TypeIdentifierComma.h" />

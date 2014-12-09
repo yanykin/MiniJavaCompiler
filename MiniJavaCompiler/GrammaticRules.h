@@ -137,6 +137,10 @@ public:
 	IFormalList* GetFormalList() const { return formalList; };
 	IStatement* GetStatements() const { return statementList; };
 
+	IVariableDeclaration* GetLocalVariablesList() const { return localVariablesList; };
+
+	IExpression* GetReturnExpression() const { return returnExpression; };
+
 private:
 	IType *type; // тип данных, который возвращает этот тип
 	CIdentifier *methodName; // имя метода
@@ -283,6 +287,12 @@ public:
 	CIfStatement( IExpression *_condition, IStatement *_trueStatement, IStatement *_falseStatement ) :
 		condition( _condition ), trueStatement( _trueStatement ), falseStatement( _falseStatement ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IStatement* GetTrueStatement() const { return trueStatement; };
+	IStatement* GetFalseStatement() const { return falseStatement; };
+
+	IExpression* GetCondition() const { return condition; };
+
 private:
 	IExpression *condition; // условие, которое должно выполняться
 	IStatement *trueStatement; // оператор, выполняемый при истинном условии
@@ -296,6 +306,10 @@ public:
 	CWhileStatement( IExpression *_condition, IStatement *_trueStatement ) :
 		condition( _condition ), trueStatement( _trueStatement ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IStatement* GetStatement() const { return trueStatement; };
+	IExpression* GetCondition() const { return condition; };
+
 private:
 	IExpression *condition; // условие, которое должно выполняться
 	IStatement *trueStatement; // оператор, выполняемый при истинном условии
@@ -308,6 +322,8 @@ public:
 	CPrintStatement( IExpression *_expressionToPrint ) :
 		expressionToPrint( _expressionToPrint ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetExpression() const { return expressionToPrint; };
 private:
 	IExpression *expressionToPrint; // выражение, значение которого будет печататься
 };
@@ -319,6 +335,9 @@ public:
 	CAssignmentStatement( CIdentifier *_variableName, IExpression *_rightValue ) :
 		variableName( _variableName ), rightValue( _rightValue ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetVariableName() const { return variableName->getString(); };
+	IExpression* GetRightValue() const { return rightValue; };
 private:
 	CIdentifier *variableName; // имя переменной, которой будет присваиваться значение
 	IExpression *rightValue; // присваиваемое значение
@@ -331,6 +350,11 @@ public:
 	CArrayElementAssignmentStatement( CIdentifier *_arrayName, IExpression *_indexExpression, IExpression *_rightValue ):
 		arrayName(_arrayName), indexExpression(_indexExpression), rightValue(_rightValue) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetArrayName() const { return arrayName->getString(); };
+	IExpression* GetIndexExpression() const { return indexExpression; };
+	IExpression* GetRightValue() const { return rightValue; };
+
 private:
 	CIdentifier *arrayName; // имя массива
 	IExpression *indexExpression; // индекс массива
@@ -353,6 +377,11 @@ public:
 	CBinaryOperatorExpression( IExpression *_leftValue, IExpression *_rightValue, TBinaryOperator _binaryOperator ) : 
 		leftValue(_leftValue), rightValue(_rightValue), binaryOperator(_binaryOperator) { }
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetLeftValue() const { return leftValue; };
+	IExpression* GetRightValue() const { return rightValue; };
+	TBinaryOperator GetOperator() const { return binaryOperator;  };
+
 private:
 	IExpression *leftValue; // значение слева
 	IExpression *rightValue; // значение справа
@@ -366,6 +395,9 @@ public:
 	CIndexAccessExpression(IExpression *_arrayExpression, IExpression *_index) :
 	arrayExpression(_arrayExpression), index(_index) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetArrayExpression() const { return arrayExpression; };
+	IExpression* GetIndex() const { return index; };
 private:
 	IExpression *arrayExpression; // массив, к которому хотим обратиться
 	IExpression *index; // индекс элемента
@@ -377,6 +409,8 @@ class CLengthExpression : public IExpression
 public:
 	CLengthExpression( IExpression *_arrayExpression ) : arrayExpression( _arrayExpression ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetArray() const { return arrayExpression; };
 private:
 	IExpression *arrayExpression; // массив, к которому хотим обратиться
 };
@@ -388,6 +422,11 @@ public:
 	CMethodCallExpression(IExpression *_variableExpression, CIdentifier *_methodName, IExpression *_expressionList) :
 	variableExpression(_variableExpression), methodName(_methodName), expressionList(_expressionList) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetObject() const { return variableExpression; };
+	IExpression* GetParams() const { return expressionList; };
+	std::string GetMethodName() const { return methodName->getString(); }
+
 private:
 	IExpression *variableExpression; // переменная или объект, у которой вызываем метод
 	CIdentifier *methodName; // имя метода, который мы вызываем
@@ -405,6 +444,10 @@ public:
 	CIntegerOrBooleanExpression( int _value, TValueType _valueType ) :
 		value( _value ), valueType( _valueType ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	int GetValue() const { return value; };
+	TValueType GetValueType() const { return valueType; };
+
 private:
 	int value; // значение переменной
 	TValueType valueType; // тип переменной 
@@ -416,6 +459,8 @@ class CIdentifierExpression : public IExpression
 public:
 	CIdentifierExpression( CIdentifier *_variableName ) : variableName( _variableName ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetVariableName() const { return variableName->getString(); };
 private:
 	CIdentifier *variableName; // имя переменной, значение которой мы хотим получить
 };
@@ -434,6 +479,8 @@ class CNewIntegerArrayExpression : public IExpression
 public:
 	CNewIntegerArrayExpression( IExpression *_arraySize ) : arraySize(_arraySize) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetArraySize() const { return arraySize; };
 private:
 	IExpression *arraySize; // размер массива
 };
@@ -444,6 +491,8 @@ class CNewObjectExpression : public IExpression
 public:
 	CNewObjectExpression( CIdentifier *_className ) : className(_className) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	std::string GetClass() const { return className->getString(); };
 private:
 	CIdentifier *className; // класс, объект которого мы хотим создать
 };
@@ -454,6 +503,8 @@ class CNegationExpression : public IExpression
 public:
 	CNegationExpression( IExpression *_argument ) : argument(_argument) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetArgument() const { return argument; };
 private:
 	IExpression *argument; // значение, отрицание которого мы хотим получить
 };
@@ -464,6 +515,8 @@ class CParenthesesExpression : public IExpression
 public:
 	CParenthesesExpression( IExpression *_expression ) : expression(_expression) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetExpression() const { return expression; };
 private:
 	IExpression *expression; // выражение в скобках
 };
@@ -475,6 +528,10 @@ public:
 	CExpressionList(IExpression *_expression, IExpression *_nextExpression):
 	expression(_expression), nextExpression(_nextExpression) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
+
+	IExpression* GetExpression() const { return expression; };
+	IExpression* GetNextExpression() const { return nextExpression; };
+
 private:
 	IExpression *expression; // целевое значение элемента списка - выражение
 	IExpression *nextExpression; // следующий элемент списка

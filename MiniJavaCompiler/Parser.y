@@ -120,8 +120,8 @@ VariableDeclarationList:
 	/* empty */ {
 		$$ = NULL;
 	}
-	| VariableDeclaration VariableDeclarationList {
-		$$ = new CVariableDeclarationList($1, $2);
+	| VariableDeclarationList VariableDeclaration {
+		$$ = new CVariableDeclarationList($2, $1);
 	}
 
 VariableDeclaration:
