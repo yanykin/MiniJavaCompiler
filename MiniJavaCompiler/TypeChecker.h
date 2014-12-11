@@ -1,18 +1,20 @@
 /*
-* Реализация паттерна "Посетитель" для построения таблицы символов программы
+* Ещё одна реализация шаблона посетителя, который проверяет типы данных переменных и методов
 */
+
 #pragma once
 #include "Visitor.h"
 #include "Table.h"
+#include <assert.h>
 
-class CSymbolTableBuilder : public IVisitor
+class CTypeChecker : public IVisitor
 {
 public:
-	CSymbolTableBuilder(): isCorrect(true), currentClass( NULL ), currentMethod( NULL ) { };
-	
-	bool IsTableCorrect() const { return isCorrect; };
-	CSymbolsTable::CTable* GetConstructedTable() { return &table; };
+	CTypeChecker( CSymbolsTable::CTable *_table )
+		: table( _table ), currentClass(NULL), currentMethod(NULL), isCorrect(true) { assert( _table != NULL ); };
 
+	bool IsAllCorrect() const { return isCorrect; };
+	
 	void Visit( const CProgram* node );
 	void Visit( const CMainClassDeclaration* node );
 	void Visit( const CClassDeclaration* node );
@@ -46,14 +48,13 @@ public:
 	void Visit( const CParenthesesExpression* node );
 	void Visit( const CExpressionList* node );
 
-
 private:
-	bool isCorrect; // Флаг, означающий, что таблица символов у нас построена верно
+	bool isCorrect; // флаг, гласящий о том, что всё ли верно в программе с типами данных
 
 	CSymbolsTable::CClassInformation* currentClass; // Текущий класс, в котором находится посетитель
 	CSymbolsTable::CMethodInformation* currentMethod; // Текущий метод
 	CSymbolsTable::CType* lastTypeValue; // Переменная состояния
 
-	CSymbolsTable::CTable table; // таблица, которую мы строим
+	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемся 
 };
 

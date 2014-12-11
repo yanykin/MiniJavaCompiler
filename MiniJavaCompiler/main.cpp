@@ -4,6 +4,7 @@
 #include "Parser.hpp"
 
 #include "SymbolTableBuilder.h"
+#include "TypeChecker.h"
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
 	if ( result == 0 ) {
 		/*
 		std::cout << "Success." << std::endl;
-		std::cout << "Reducing for starting token." << std::endl;		
+		std::cout << "Reducing for starting token." << std::endl;
 		*/
 
 		/*
@@ -24,14 +25,15 @@ int main()
 
 		CSymbolTableBuilder *tableBuilder = new CSymbolTableBuilder();
 		mainProgram->Accept( tableBuilder );
-		if ( !tableBuilder->IsTableCorrect() ) {
-			std::cout << "There are some errors." << std::endl;
-		}
-		else {
-			std::cout << "Table builder says that all right!" << std::endl;
+		if ( tableBuilder->IsTableCorrect() ) {
+			CTypeChecker *typeChecker = new CTypeChecker( tableBuilder->GetConstructedTable() );
+			mainProgram->Accept( typeChecker );
+			if ( typeChecker->IsAllCorrect() ) {
+				std::cout << "Program is correct! :)" << std::endl;
+			}
+			delete typeChecker;
 		}
 		delete tableBuilder;
-		
 	}
 	else {
 		std::cout << "Fail." << std::endl;

@@ -1,10 +1,11 @@
-#include "SymbolTableBuilder.h"
+#include "TypeChecker.h"
 #include <iostream>
 #include "GrammaticRules.h"
 
 using namespace std;
+using namespace CSymbolsTable;
 
-void CSymbolTableBuilder::Visit( const CProgram* node )
+void CTypeChecker::Visit( const CProgram* node )
 {
 	IMainClassDeclaration* mainClass = node->GetMainClassDeclaration();
 	if ( mainClass )
@@ -20,20 +21,25 @@ void CSymbolTableBuilder::Visit( const CProgram* node )
 }
 
 
-void CSymbolTableBuilder::Visit( const CMainClassDeclaration* node )
+void CTypeChecker::Visit( const CMainClassDeclaration* node )
 {
+	// Заходим в класс
+	currentClass = table->GetClassByName( node->GetClassName() );
 	IStatement* statements = node->GetClassStatements();
-	
+
 	if ( statements )
 	{
 		statements->Accept( this );
 	}
+
+	// Выходим из класса
+	currentClass = NULL;
 }
 
-void CSymbolTableBuilder::Visit( const CClassDeclaration* node )
+void CTypeChecker::Visit( const CClassDeclaration* node )
 {
-	// Перешли в новый класс, создаём класс
-	currentClass = new CSymbolsTable::CClassInformation( node->GetClassName() );
+	// Заходим в класс
+	currentClass = table->GetClassByName( node->GetClassName() );
 
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
 	if ( fieldsList )
@@ -47,18 +53,14 @@ void CSymbolTableBuilder::Visit( const CClassDeclaration* node )
 		methodsList->Accept( this );
 	}
 
-	// После обхода полей и методов класса добавляем его в таблицу
-	if ( !table.AddClass( currentClass ) ) {
-		cout << "ERROR: duplicate class " << currentClass->GetName() << endl;
-		isCorrect = false;
-	}
+	// Выходим из класса
 	currentClass = NULL;
 }
 
-void CSymbolTableBuilder::Visit( const CClassExtendsDeclaration* node )
+void CTypeChecker::Visit( const CClassExtendsDeclaration* node )
 {
-	// Перешли в новый класс, создаём класс
-	currentClass = new CSymbolsTable::CClassInformation( node->GetClassName(), node->GetSuperClassName() );
+	// Заходим в класс
+	currentClass = table->GetClassByName( node->GetClassName() );
 
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
 	if ( fieldsList )
@@ -72,15 +74,11 @@ void CSymbolTableBuilder::Visit( const CClassExtendsDeclaration* node )
 		methodsList->Accept( this );
 	}
 
-	// После обхода полей и методов класса добавляем его в таблицу
-	if ( !table.AddClass( currentClass ) ) {
-		cout << "ERROR: duplicate class " << currentClass->GetName() << endl;
-		isCorrect = false;
-	}
+	// Выходим из класса
 	currentClass = NULL;
 }
 
-void CSymbolTableBuilder::Visit( const CClassDeclarationList* node )
+void CTypeChecker::Visit( const CClassDeclarationList* node )
 {
 	IClassDeclaration* classDeclaration = node->GetClassDeclaration();
 	classDeclaration->Accept( this );
@@ -91,33 +89,31 @@ void CSymbolTableBuilder::Visit( const CClassDeclarationList* node )
 	}
 }
 
-void CSymbolTableBuilder::Visit( const CVariableDeclaration* node )
+void CTypeChecker::Visit( const CVariableDeclaration* node )
 {
 	string name = node->GetName();
 	IType* type = node->GetType();
 
-	lastTypeValue = new CSymbolsTable::CType();
-	type->Accept( this );
-	// Если находимся внутри какого-то текущего метода, то добавляем как локальную переменную, иначе - как поле класса
-	CSymbolsTable::CVariableInformation* var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
+	// Проверяем наличие определённого класса
+	CType *varType;
 	if ( currentMethod ) {
-		if ( !currentMethod->AddLocalVariable( var ) ) {
-			cout << "ERROR: duplicate local variable " << var->GetName() << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
-			isCorrect = false;
-			delete lastTypeValue;
-		}
+		varType = currentMethod->GetLocalVariableType( node->GetName() );
 	}
 	else {
-		if ( !currentClass->AddField( var ) ) {
-			cout << "ERROR: duplicate field " << var->GetName() << " in class " << currentClass->GetName() <<endl;
-			isCorrect = false;
-			delete lastTypeValue;
-		}
+		varType = currentClass->GetFieldType( node->GetName() );
 	}
-	lastTypeValue = NULL;
+	
+	CClassInformation* info = table->GetClassByName( varType->className );
+
+	if ( varType->type == VAR_TYPE_CLASS && !info ) {
+		isCorrect = false;
+		cout << "ERROR: class " << varType->className << " is not declared" << endl;
+	}
+
+	type->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CVariableDeclarationList* node )
+void CTypeChecker::Visit( const CVariableDeclarationList* node )
 {
 	IVariableDeclaration* variableDeclaration = node->GetVariableDeclaration();
 
@@ -129,18 +125,15 @@ void CSymbolTableBuilder::Visit( const CVariableDeclarationList* node )
 	variableDeclaration->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CMethodDeclaration* node )
+void CTypeChecker::Visit( const CMethodDeclaration* node )
 {
-	// Перешли в описание метода
-	currentMethod = new CSymbolsTable::CMethodInformation( node->GetMethodName() );
+	// Заходим внутрь метода
+	currentMethod = currentClass->GetMethodByName( node->GetMethodName() );
 
 	// Переходим к возвращаемому типу
 	IType* type = node->GetType();
-	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
-	currentMethod->SetReturnType( lastTypeValue );
-	lastTypeValue = NULL;
-	
+
 	// Определение параметров
 	IFormalList* formalList = node->GetFormalList();
 	if ( formalList ) {
@@ -161,15 +154,11 @@ void CSymbolTableBuilder::Visit( const CMethodDeclaration* node )
 	IExpression* returnExpression = node->GetReturnExpression();
 	returnExpression->Accept( this );
 
-	// После добавления информации о методе добавляем его в класс
-	if ( !currentClass->AddMethod( currentMethod ) ) {
-		cout << "ERROR: redeclared method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
-		isCorrect = false;
-	}
+	// Выходим из метода
 	currentMethod = NULL;
 }
 
-void CSymbolTableBuilder::Visit( const CMethodDeclarationList* node )
+void CTypeChecker::Visit( const CMethodDeclarationList* node )
 {
 	IMethodDeclaration* methodDeclaraion = node->GetMethodDeclaration();
 	methodDeclaraion->Accept( this );
@@ -180,26 +169,16 @@ void CSymbolTableBuilder::Visit( const CMethodDeclarationList* node )
 	}
 }
 
-void CSymbolTableBuilder::Visit( const CFormalList* node )
+void CTypeChecker::Visit( const CFormalList* node )
 {
 	string name = node->GetParameterName();
 	IType* type = node->GetType();
 
 	// Переходим к типу
-	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
-	CSymbolsTable::CVariableInformation *var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
-	if ( !currentMethod->AddParameter( var ))
-	{
-		cout << "ERROR: duplicate argument " << var->GetName() << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
-		isCorrect = false;
-		delete var;
-		delete lastTypeValue;
-	}
-	lastTypeValue = NULL;
 }
 
-void CSymbolTableBuilder::Visit( const CFormalRestList* node )
+void CTypeChecker::Visit( const CFormalRestList* node )
 {
 	IFormalList* formalRest = node->GetFormalRest();
 	formalRest->Accept( this );
@@ -210,33 +189,18 @@ void CSymbolTableBuilder::Visit( const CFormalRestList* node )
 	}
 }
 
-void CSymbolTableBuilder::Visit( const CBuiltInType* node )
+void CTypeChecker::Visit( const CBuiltInType* node )
 {
 	// Для каждого типа мы создаём новую запись
-	
-	switch ( node->GetType() )
-	{
-	case BT_BOOLEAN:
-		lastTypeValue->type = CSymbolsTable::VAR_TYPE_BOOLEAN;
-		break;
-	case BT_INTEGER:
-		lastTypeValue->type = CSymbolsTable::VAR_TYPE_INTEGER;
-		break;
-	case BT_INTEGER_ARRAY:
-		lastTypeValue->type = CSymbolsTable::VAR_TYPE_INTEGER_ARRAY;
-		break;
-	default:
-		break;
-	}
+
 }
 
-void CSymbolTableBuilder::Visit( const CUserType* node )
+void CTypeChecker::Visit( const CUserType* node )
 {
-	lastTypeValue->type = CSymbolsTable::VAR_TYPE_CLASS;
-	lastTypeValue->className = node->GetTypeName();
+
 }
 
-void CSymbolTableBuilder::Visit( const CStatementList* node )
+void CTypeChecker::Visit( const CStatementList* node )
 {
 	IStatement* statement = node->GetStatement();
 	IStatement* nextStatement = node->GetNextStatement();
@@ -248,7 +212,7 @@ void CSymbolTableBuilder::Visit( const CStatementList* node )
 	}
 }
 
-void CSymbolTableBuilder::Visit( const CStatementBlock* node )
+void CTypeChecker::Visit( const CStatementBlock* node )
 {
 	IStatement* block = node->GetStatementList();
 	if ( block ) {
@@ -256,7 +220,7 @@ void CSymbolTableBuilder::Visit( const CStatementBlock* node )
 	}
 }
 
-void CSymbolTableBuilder::Visit( const CIfStatement* node )
+void CTypeChecker::Visit( const CIfStatement* node )
 {
 	IStatement* trueStatement = node->GetTrueStatement();
 	IStatement* falseStatement = node->GetFalseStatement();
@@ -269,7 +233,7 @@ void CSymbolTableBuilder::Visit( const CIfStatement* node )
 	falseStatement->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CWhileStatement* node )
+void CTypeChecker::Visit( const CWhileStatement* node )
 {
 	IExpression* condition = node->GetCondition();
 	IStatement* statement = node->GetStatement();
@@ -279,21 +243,21 @@ void CSymbolTableBuilder::Visit( const CWhileStatement* node )
 	statement->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CPrintStatement* node )
+void CTypeChecker::Visit( const CPrintStatement* node )
 {
 	IExpression *expression = node->GetExpression();
 
 	expression->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CAssignmentStatement* node )
+void CTypeChecker::Visit( const CAssignmentStatement* node )
 {
 	IExpression *expression = node->GetRightValue();
 
 	expression->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CArrayElementAssignmentStatement* node )
+void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 {
 	IExpression* index = node->GetIndexExpression();
 	IExpression* value = node->GetRightValue();
@@ -303,84 +267,84 @@ void CSymbolTableBuilder::Visit( const CArrayElementAssignmentStatement* node )
 	value->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CBinaryOperatorExpression* node )
+void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 {
 	IExpression* leftValue = node->GetLeftValue();
 	IExpression* rightValue = node->GetRightValue();
 
 	leftValue->Accept( this );
-	
+
 	rightValue->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CIndexAccessExpression* node )
+void CTypeChecker::Visit( const CIndexAccessExpression* node )
 {
 	IExpression *arrayExpression = node->GetArrayExpression();
 	IExpression *index = node->GetIndex();
 
 	arrayExpression->Accept( this );
-	
+
 	index->Accept( this );
-	
+
 }
 
-void CSymbolTableBuilder::Visit( const CLengthExpression* node )
+void CTypeChecker::Visit( const CLengthExpression* node )
 {
 	IExpression* arrayExpression = node->GetArray();
 	arrayExpression->Accept( this );
-	
+
 }
 
-void CSymbolTableBuilder::Visit( const CMethodCallExpression* node )
+void CTypeChecker::Visit( const CMethodCallExpression* node )
 {
 	IExpression* object = node->GetObject();
 	IExpression* params = node->GetParams();
 	std::string methodName = node->GetMethodName();
 
 	object->Accept( this );
-	
+
 	params->Accept( this );
-	
+
 }
 
-void CSymbolTableBuilder::Visit( const CIntegerOrBooleanExpression* node )
+void CTypeChecker::Visit( const CIntegerOrBooleanExpression* node )
 {
 	int value = node->GetValue();
 	TValueType type = node->GetValueType();
 }
 
-void CSymbolTableBuilder::Visit( const CIdentifierExpression* node )
+void CTypeChecker::Visit( const CIdentifierExpression* node )
 {
 }
 
-void CSymbolTableBuilder::Visit( const CThisExpression* node )
+void CTypeChecker::Visit( const CThisExpression* node )
 {
 }
 
-void CSymbolTableBuilder::Visit( const CNewIntegerArrayExpression* node )
+void CTypeChecker::Visit( const CNewIntegerArrayExpression* node )
 {
 	IExpression* size = node->GetArraySize();
 	size->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CNewObjectExpression* node )
+void CTypeChecker::Visit( const CNewObjectExpression* node )
 {
 	std::string className = node->GetClass();
 }
 
-void CSymbolTableBuilder::Visit( const CNegationExpression* node )
+void CTypeChecker::Visit( const CNegationExpression* node )
 {
 	IExpression* argument = node->GetArgument();
 	argument->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CParenthesesExpression* node )
+void CTypeChecker::Visit( const CParenthesesExpression* node )
 {
 	IExpression* expression = node->GetExpression();
 	expression->Accept( this );
 }
 
-void CSymbolTableBuilder::Visit( const CExpressionList* node )
+void CTypeChecker::Visit( const CExpressionList* node )
 {
 	IExpression *expression = node->GetExpression();
 	IExpression *nextExpression = node->GetNextExpression();

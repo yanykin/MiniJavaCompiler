@@ -75,6 +75,7 @@
     <ClCompile Include="PrettyPrinter.cpp" />
     <ClCompile Include="SymbolTableBuilder.cpp" />
     <ClCompile Include="Table.cpp" />
+    <ClCompile Include="TypeChecker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -125,6 +126,7 @@
     <ClInclude Include="SymbolTableBuilder.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="TerminalSymbols.h" />
+    <ClInclude Include="TypeChecker.h" />
     <ClInclude Include="TypeIdentifier.h" />
     <ClInclude Include="TypeIdentifierComma.h" />
     <ClInclude Include="TypeIdentifierFormalRestList.h" />
