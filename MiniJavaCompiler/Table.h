@@ -56,6 +56,8 @@ namespace CSymbolsTable {
 		// Возвращает тип данных для локальной переменной
 		CType* GetFieldType( std::string& fieldName );
 
+		
+
 	private:
 		std::string name; // имя класса
 		std::string baseClassName; // базовый класс, если используется
@@ -71,7 +73,8 @@ namespace CSymbolsTable {
 		CMethodInformation( std::string _name ) : name( _name ) {};
 		std::string GetName() const { return name; };
 
-		void SetReturnType( CType *_returnType ) { returnType = _returnType; };
+		void SetReturnType( CType *_returnType ) { returnType = _returnType; }
+		CType* GetReturnType() const { return returnType; };
 
 		bool AddParameter( CVariableInformation* param );
 		bool AddLocalVariable( CVariableInformation* variable );

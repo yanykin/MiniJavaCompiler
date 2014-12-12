@@ -40,7 +40,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	column_num += strlen(yytext);
 }
 
-'\n' {
+"\n" {
 	++line_num;
 	column_num = 1;
 }

@@ -107,7 +107,13 @@ void CTypeChecker::Visit( const CVariableDeclaration* node )
 
 	if ( varType->type == VAR_TYPE_CLASS && !info ) {
 		isCorrect = false;
-		cout << "ERROR: class " << varType->className << " is not declared" << endl;
+		if ( currentMethod ) {
+			cout << "ERROR: local variable " << name << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << varType->className << " is not declared" << endl;
+		}
+		else {
+			cout << "ERROR: field " << name << " in class " << currentClass->GetName() << ": class " << varType->className << " is not declared" << endl;
+		}
+		
 	}
 
 	type->Accept( this );
@@ -133,6 +139,13 @@ void CTypeChecker::Visit( const CMethodDeclaration* node )
 	// Переходим к возвращаемому типу
 	IType* type = node->GetType();
 	type->Accept( this );
+
+	// Получаем возвращаемый тип метода и проверяем его существование
+	CType *returnDeclaredType = currentMethod->GetReturnType();
+	if ( returnDeclaredType->type == VAR_TYPE_CLASS && !( table->GetClassByName( returnDeclaredType->className ) ) ){
+		isCorrect = false;
+		cout << "ERROR: return type in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->className << " is not declared" << endl;
+	}
 
 	// Определение параметров
 	IFormalList* formalList = node->GetFormalList();
@@ -176,6 +189,13 @@ void CTypeChecker::Visit( const CFormalList* node )
 
 	// Переходим к типу
 	type->Accept( this );
+
+	// Проверяем тип аргумента
+	CType* argumentType = currentMethod->GetArgumentType( name );
+	if ( argumentType->type == VAR_TYPE_CLASS && !(table->GetClassByName(argumentType->className)) ) {
+		isCorrect = false;
+		cout << "ERROR: agrument " << name << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << argumentType->className << " is not declared" << endl;
+	}
 }
 
 void CTypeChecker::Visit( const CFormalRestList* node )

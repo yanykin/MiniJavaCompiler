@@ -20,7 +20,8 @@ class Fac extends Base {
 		return num_aux ;
     }
 
-	public boolean Stub(int[] a, boolean b, int[] c, int d, Foo e) {	
+	public boolean Stub(int[] a, boolean b, int[] c, int d, Foo e) {
+		Integer my_integer;	
 		if (d < 6) {
 			System.out.println(a);
 			c[3] = 47;
@@ -30,7 +31,7 @@ class Fac extends Base {
 		return true;
 	}
 
-	public int[] GetArray1(bool flag_one, bool flag_two) {
+	public int[] GetArray1(boolean flag_one, boolean flag_two) {
 		int a; int b; int[] my_array;
 		return my_array; 
 	}
