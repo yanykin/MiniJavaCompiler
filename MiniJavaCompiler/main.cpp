@@ -17,11 +17,11 @@ int main()
 		std::cout << "Reducing for starting token." << std::endl;
 		*/
 
-		/*
+		
 		CPrettyPrinter *prettyPrinter = new CPrettyPrinter();
 		mainProgram->Accept( prettyPrinter );
 		delete prettyPrinter;
-		*/
+		
 
 		CSymbolTableBuilder *tableBuilder = new CSymbolTableBuilder();
 		mainProgram->Accept( tableBuilder );

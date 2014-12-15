@@ -67,7 +67,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GrammaticRules.cpp" />
     <ClCompile Include="GrammaticRules.h" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -98,73 +97,15 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrayAssign.h" />
-    <ClInclude Include="Assign.h" />
-    <ClInclude Include="BinaryAnd.h" />
-    <ClInclude Include="ClassDeclaration.h" />
-    <ClInclude Include="ClassExtends.h" />
-    <ClInclude Include="ClassKeyWordIdentifier.h" />
-    <ClInclude Include="ExpressionList.h" />
-    <ClInclude Include="ExpressionRest.h" />
-    <ClInclude Include="ExpressionRestExpressionRestList.h" />
-    <ClInclude Include="ExpressionRestList.h" />
-    <ClInclude Include="ExtendsKeyWordIdentifier.h" />
-    <ClInclude Include="FormalList.h" />
-    <ClInclude Include="FormalRest.h" />
-    <ClInclude Include="FormalRestListFormalRest.h" />
-    <ClInclude Include="FormalRestList.h" />
     <ClInclude Include="GrammaticSymbols.h" />
-    <ClInclude Include="MethodDeclaration.h" />
-    <ClInclude Include="MethodDeclarationList.h" />
-    <ClInclude Include="MethodDeclarationListMethodDeclaration.h" />
-    <ClInclude Include="MethodExpression.h" />
     <ClInclude Include="NonTerminalSymbols.h" />
     <ClInclude Include="PrettyPrinter.h" />
-    <ClInclude Include="PublicKeyWordType.h" />
-    <ClInclude Include="StatementStatementList.h" />
-    <ClInclude Include="StatementList.h" />
     <ClInclude Include="SymbolTableBuilder.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="TerminalSymbols.h" />
     <ClInclude Include="TypeChecker.h" />
-    <ClInclude Include="TypeIdentifier.h" />
-    <ClInclude Include="TypeIdentifierComma.h" />
-    <ClInclude Include="TypeIdentifierFormalRestList.h" />
-    <ClInclude Include="VariableDeclaration.h" />
-    <ClInclude Include="VariableDeclarationList.h" />
-    <ClInclude Include="VariableDeclarationListVariableDeclaration.h" />
-    <ClInclude Include="СommaExpression.h" />
-    <ClInclude Include="TypeBoolean.h" />
-    <ClInclude Include="BracketExp.h" />
-    <ClInclude Include="Div.h" />
-    <ClInclude Include="DotIdentifier.h" />
-    <ClInclude Include="DotLengthKeyWord.h" />
-    <ClInclude Include="Exp.h" />
-    <ClInclude Include="ExpressionExpressionRestList.h" />
-    <ClInclude Include="FalseKeyWord.h" />
-    <ClInclude Include="Identifier.h" />
-    <ClInclude Include="If.h" />
-    <ClInclude Include="TypeInt.h" />
-    <ClInclude Include="TypeIntArray.h" />
-    <ClInclude Include="IntegerNumber.h" />
-    <ClInclude Include="Less.h" />
-    <ClInclude Include="ExpressionMethodExpression.h" />
-    <ClInclude Include="Minus.h" />
-    <ClInclude Include="Mul.h" />
-    <ClInclude Include="NewKeyWordIdentif.h" />
-    <ClInclude Include="NewKeyWordIntKeyWord.h" />
-    <ClInclude Include="NotExp.h" />
     <ClInclude Include="Parser.hpp" />
-    <ClInclude Include="Plus.h" />
-    <ClInclude Include="BracketStatementList.h" />
-    <ClInclude Include="Statment.h" />
-    <ClInclude Include="TypeString.h" />
-    <ClInclude Include="SystemOutPrint.h" />
-    <ClInclude Include="ThisKeyWord.h" />
-    <ClInclude Include="TrueKeyWord.h" />
-    <ClInclude Include="Type.h" />
     <ClInclude Include="Visitor.h" />
-    <ClInclude Include="While.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
