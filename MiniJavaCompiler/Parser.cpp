@@ -58,6 +58,15 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
+/* "%code top" blocks.  */
+/* Line 349 of yacc.c  */
+#line 14 "Parser.y"
+
+	
+
+
+/* Line 349 of yacc.c  */
+#line 70 "Parser.cpp"
 
 
 
@@ -68,12 +77,13 @@
     #include <iostream>
     #include <cmath>
 	#include "GrammaticRules.h"
+	#include "CoordinatesHolder.h"
 
 	extern int yyerror( IProgram* mainProgram, char* msg );
     extern int yylex();
 
 /* Line 371 of yacc.c  */
-#line 77 "Parser.cpp"
+#line 87 "Parser.cpp"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -104,17 +114,16 @@ extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 387 of yacc.c  */
-#line 13 "Parser.y"
+#line 18 "Parser.y"
 
-	#include "GrammaticRules.h"
 	#include "GrammaticSymbols.h"
 	#include "TerminalSymbols.h"
 
-	#include "PrettyPrinter.h"
+	class CCoordinatesHolder;
 
 
 /* Line 387 of yacc.c  */
-#line 118 "Parser.cpp"
+#line 127 "Parser.cpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -154,7 +163,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 23 "Parser.y"
+#line 27 "Parser.y"
 
 	int int_val;
 	char* string_val;
@@ -178,7 +187,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 182 "Parser.cpp"
+#line 191 "Parser.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -219,7 +228,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 223 "Parser.cpp"
+#line 232 "Parser.cpp"
 
 #ifdef short
 # undef short
@@ -535,12 +544,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    94,    94,    99,   104,   107,   112,   115,   120,   123,
-     128,   133,   136,   141,   146,   149,   155,   158,   163,   168,
-     171,   174,   177,   182,   185,   190,   193,   196,   199,   202,
-     205,   210,   213,   216,   219,   222,   225,   228,   231,   234,
-     237,   240,   243,   246,   249,   252,   255,   260,   263,   268,
-     271,   276
+       0,    98,    98,   103,   108,   111,   116,   119,   124,   127,
+     132,   137,   140,   145,   150,   153,   159,   162,   167,   172,
+     175,   178,   181,   186,   189,   194,   197,   200,   203,   206,
+     209,   214,   217,   220,   223,   226,   229,   232,   235,   238,
+     241,   244,   247,   250,   253,   256,   259,   264,   267,   272,
+     275,   280
 };
 #endif
 
@@ -1661,23 +1670,23 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 94 "Parser.y"
+#line 98 "Parser.y"
     {
-		mainProgram = (yyval.Program) = new CProgram((yyvsp[(1) - (2)].MainClassDeclaration), (yyvsp[(2) - (2)].ClassDeclaration));
+		mainProgram = (yyval.Program) = new CProgram((yyloc), (yyvsp[(1) - (2)].MainClassDeclaration), (yyvsp[(2) - (2)].ClassDeclaration));
 	}
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 99 "Parser.y"
+#line 103 "Parser.y"
     {
-		(yyval.MainClassDeclaration) = new CMainClassDeclaration(new CIdentifier((yyvsp[(2) - (17)].string_val)), new CIdentifier((yyvsp[(12) - (17)].string_val)), (yyvsp[(15) - (17)].Statement));
+		(yyval.MainClassDeclaration) = new CMainClassDeclaration((yyloc), new CIdentifier((yyvsp[(2) - (17)].string_val)), new CIdentifier((yyvsp[(12) - (17)].string_val)), (yyvsp[(15) - (17)].Statement));
 	}
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 104 "Parser.y"
+#line 108 "Parser.y"
     {
 		(yyval.ClassDeclaration) = NULL;
 	}
@@ -1685,31 +1694,31 @@ yyreduce:
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 107 "Parser.y"
+#line 111 "Parser.y"
     {
-		(yyval.ClassDeclaration) = new CClassDeclarationList((yyvsp[(1) - (2)].ClassDeclaration), (yyvsp[(2) - (2)].ClassDeclaration));
+		(yyval.ClassDeclaration) = new CClassDeclarationList((yyloc), (yyvsp[(1) - (2)].ClassDeclaration), (yyvsp[(2) - (2)].ClassDeclaration));
 	}
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 112 "Parser.y"
+#line 116 "Parser.y"
     {
-		(yyval.ClassDeclaration) = new CClassDeclaration(new CIdentifier((yyvsp[(2) - (6)].string_val)), (yyvsp[(4) - (6)].VariableDeclarationList), (yyvsp[(5) - (6)].MethodDeclaration));
+		(yyval.ClassDeclaration) = new CClassDeclaration((yyloc), new CIdentifier((yyvsp[(2) - (6)].string_val)), (yyvsp[(4) - (6)].VariableDeclarationList), (yyvsp[(5) - (6)].MethodDeclaration));
 	}
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 115 "Parser.y"
+#line 119 "Parser.y"
     {
-		(yyval.ClassDeclaration) = new CClassExtendsDeclaration(new CIdentifier((yyvsp[(2) - (8)].string_val)), new CIdentifier((yyvsp[(4) - (8)].string_val)), (yyvsp[(6) - (8)].VariableDeclarationList), (yyvsp[(7) - (8)].MethodDeclaration));
+		(yyval.ClassDeclaration) = new CClassExtendsDeclaration((yyloc), new CIdentifier((yyvsp[(2) - (8)].string_val)), new CIdentifier((yyvsp[(4) - (8)].string_val)), (yyvsp[(6) - (8)].VariableDeclarationList), (yyvsp[(7) - (8)].MethodDeclaration));
 	}
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 120 "Parser.y"
+#line 124 "Parser.y"
     {
 		(yyval.VariableDeclarationList) = NULL;
 	}
@@ -1717,23 +1726,23 @@ yyreduce:
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 123 "Parser.y"
+#line 127 "Parser.y"
     {
-		(yyval.VariableDeclarationList) = new CVariableDeclarationList((yyvsp[(2) - (2)].VariableDeclaration), (yyvsp[(1) - (2)].VariableDeclarationList));
+		(yyval.VariableDeclarationList) = new CVariableDeclarationList((yyloc), (yyvsp[(2) - (2)].VariableDeclaration), (yyvsp[(1) - (2)].VariableDeclarationList));
 	}
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 128 "Parser.y"
+#line 132 "Parser.y"
     {
-		(yyval.VariableDeclaration) = new CVariableDeclaration((yyvsp[(1) - (3)].Type), new CIdentifier((yyvsp[(2) - (3)].string_val)));		
+		(yyval.VariableDeclaration) = new CVariableDeclaration((yyloc), (yyvsp[(1) - (3)].Type), new CIdentifier((yyvsp[(2) - (3)].string_val)));		
 	}
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 133 "Parser.y"
+#line 137 "Parser.y"
     {
 		(yyval.MethodDeclaration) = NULL;
 	}
@@ -1741,23 +1750,23 @@ yyreduce:
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 136 "Parser.y"
+#line 140 "Parser.y"
     {
-		(yyval.MethodDeclaration) = new CMethodDeclarationList((yyvsp[(1) - (2)].MethodDeclaration), (yyvsp[(2) - (2)].MethodDeclaration));
+		(yyval.MethodDeclaration) = new CMethodDeclarationList((yyloc), (yyvsp[(1) - (2)].MethodDeclaration), (yyvsp[(2) - (2)].MethodDeclaration));
 	}
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 141 "Parser.y"
+#line 145 "Parser.y"
     {
-		(yyval.MethodDeclaration) = new CMethodDeclaration((yyvsp[(2) - (13)].Type), new CIdentifier((yyvsp[(3) - (13)].string_val)), (yyvsp[(5) - (13)].FormalList), (yyvsp[(8) - (13)].VariableDeclarationList), (yyvsp[(9) - (13)].Statement), (yyvsp[(11) - (13)].Expression));
+		(yyval.MethodDeclaration) = new CMethodDeclaration((yyloc), (yyvsp[(2) - (13)].Type), new CIdentifier((yyvsp[(3) - (13)].string_val)), (yyvsp[(5) - (13)].FormalList), (yyvsp[(8) - (13)].VariableDeclarationList), (yyvsp[(9) - (13)].Statement), (yyvsp[(11) - (13)].Expression));
 	}
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 146 "Parser.y"
+#line 150 "Parser.y"
     {
 		(yyval.FormalList) = NULL;
 	}
@@ -1765,15 +1774,15 @@ yyreduce:
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 149 "Parser.y"
+#line 153 "Parser.y"
     {
-		(yyval.FormalList) = new CFormalRestList(new CFormalList((yyvsp[(1) - (3)].Type), new CIdentifier((yyvsp[(2) - (3)].string_val))), (yyvsp[(3) - (3)].FormalList));
+		(yyval.FormalList) = new CFormalRestList((yyloc), new CFormalList((yyloc), (yyvsp[(1) - (3)].Type), new CIdentifier((yyvsp[(2) - (3)].string_val))), (yyvsp[(3) - (3)].FormalList));
 	}
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 155 "Parser.y"
+#line 159 "Parser.y"
     {
 		(yyval.FormalList) = NULL;
 	}
@@ -1781,55 +1790,55 @@ yyreduce:
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 158 "Parser.y"
+#line 162 "Parser.y"
     {
-		(yyval.FormalList) = new CFormalRestList((yyvsp[(1) - (2)].FormalList), (yyvsp[(2) - (2)].FormalList));
+		(yyval.FormalList) = new CFormalRestList((yyloc), (yyvsp[(1) - (2)].FormalList), (yyvsp[(2) - (2)].FormalList));
 	}
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 163 "Parser.y"
+#line 167 "Parser.y"
     {
-		(yyval.FormalList) = new CFormalList((yyvsp[(2) - (3)].Type), new CIdentifier((yyvsp[(3) - (3)].string_val)));
+		(yyval.FormalList) = new CFormalList((yyloc), (yyvsp[(2) - (3)].Type), new CIdentifier((yyvsp[(3) - (3)].string_val)));
 	}
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 168 "Parser.y"
+#line 172 "Parser.y"
     {
-		(yyval.Type) = new CBuiltInType(TBuiltInType::BT_INTEGER_ARRAY);
+		(yyval.Type) = new CBuiltInType((yyloc), TBuiltInType::BT_INTEGER_ARRAY);
 	}
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 171 "Parser.y"
+#line 175 "Parser.y"
     {
-		(yyval.Type) = new CBuiltInType(TBuiltInType::BT_BOOLEAN);
+		(yyval.Type) = new CBuiltInType((yyloc), TBuiltInType::BT_BOOLEAN);
 	}
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 174 "Parser.y"
+#line 178 "Parser.y"
     {
-		(yyval.Type) = new CBuiltInType(TBuiltInType::BT_INTEGER);
+		(yyval.Type) = new CBuiltInType((yyloc), TBuiltInType::BT_INTEGER);
 	}
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 177 "Parser.y"
+#line 181 "Parser.y"
     {
-		(yyval.Type) = new CUserType(new CIdentifier((yyvsp[(1) - (1)].string_val)));
+		(yyval.Type) = new CUserType((yyloc), new CIdentifier((yyvsp[(1) - (1)].string_val)));
 	}
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 182 "Parser.y"
+#line 186 "Parser.y"
     {
 		(yyval.Statement) = NULL;
 	}
@@ -1837,191 +1846,191 @@ yyreduce:
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 185 "Parser.y"
+#line 189 "Parser.y"
     {
-		(yyval.Statement) = new CStatementList((yyvsp[(1) - (2)].Statement), (yyvsp[(2) - (2)].Statement));
+		(yyval.Statement) = new CStatementList((yyloc), (yyvsp[(1) - (2)].Statement), (yyvsp[(2) - (2)].Statement));
 	}
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 190 "Parser.y"
+#line 194 "Parser.y"
     {
-		(yyval.Statement) = new CStatementBlock((yyvsp[(2) - (3)].Statement));
+		(yyval.Statement) = new CStatementBlock((yyloc), (yyvsp[(2) - (3)].Statement));
 	}
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 193 "Parser.y"
+#line 197 "Parser.y"
     {
-		(yyval.Statement) = new CIfStatement((yyvsp[(3) - (7)].Expression), (yyvsp[(5) - (7)].Statement), (yyvsp[(7) - (7)].Statement));
+		(yyval.Statement) = new CIfStatement((yyloc), (yyvsp[(3) - (7)].Expression), (yyvsp[(5) - (7)].Statement), (yyvsp[(7) - (7)].Statement));
 	}
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 196 "Parser.y"
+#line 200 "Parser.y"
     {
-		(yyval.Statement) = new CWhileStatement((yyvsp[(3) - (5)].Expression), (yyvsp[(5) - (5)].Statement));
+		(yyval.Statement) = new CWhileStatement((yyloc), (yyvsp[(3) - (5)].Expression), (yyvsp[(5) - (5)].Statement));
 	}
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 199 "Parser.y"
+#line 203 "Parser.y"
     {
-		(yyval.Statement) = new CPrintStatement((yyvsp[(7) - (9)].Expression));
+		(yyval.Statement) = new CPrintStatement((yyloc), (yyvsp[(7) - (9)].Expression));
 	}
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 202 "Parser.y"
+#line 206 "Parser.y"
     {
-		(yyval.Statement) = new CAssignmentStatement(new CIdentifier((yyvsp[(1) - (4)].string_val)), (yyvsp[(3) - (4)].Expression));
+		(yyval.Statement) = new CAssignmentStatement((yyloc), new CIdentifier((yyvsp[(1) - (4)].string_val)), (yyvsp[(3) - (4)].Expression));
 	}
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 205 "Parser.y"
+#line 209 "Parser.y"
     {
-		(yyval.Statement) = new CArrayElementAssignmentStatement(new CIdentifier((yyvsp[(1) - (7)].string_val)), (yyvsp[(3) - (7)].Expression), (yyvsp[(6) - (7)].Expression));
+		(yyval.Statement) = new CArrayElementAssignmentStatement((yyloc), new CIdentifier((yyvsp[(1) - (7)].string_val)), (yyvsp[(3) - (7)].Expression), (yyvsp[(6) - (7)].Expression));
 	}
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 210 "Parser.y"
+#line 214 "Parser.y"
     {
-		(yyval.Expression) = new CBinaryOperatorExpression((yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_LOGICAL_AND);
+		(yyval.Expression) = new CBinaryOperatorExpression((yyloc), (yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_LOGICAL_AND);
 	}
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 213 "Parser.y"
+#line 217 "Parser.y"
     {
-		(yyval.Expression) = new CBinaryOperatorExpression((yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_LESS);
+		(yyval.Expression) = new CBinaryOperatorExpression((yyloc), (yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_LESS);
 	}
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 216 "Parser.y"
+#line 220 "Parser.y"
     {
-		(yyval.Expression) = new CBinaryOperatorExpression((yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_PLUS);
+		(yyval.Expression) = new CBinaryOperatorExpression((yyloc), (yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_PLUS);
 	}
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 219 "Parser.y"
+#line 223 "Parser.y"
     {
-		(yyval.Expression) = new CBinaryOperatorExpression((yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_MINUS);
+		(yyval.Expression) = new CBinaryOperatorExpression((yyloc), (yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_MINUS);
 	}
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 222 "Parser.y"
+#line 226 "Parser.y"
     {
-		(yyval.Expression) = new CBinaryOperatorExpression((yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_MULTIPLY);
+		(yyval.Expression) = new CBinaryOperatorExpression((yyloc), (yyvsp[(1) - (3)].Expression), (yyvsp[(3) - (3)].Expression), TBinaryOperator::BO_MULTIPLY);
 	}
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 225 "Parser.y"
+#line 229 "Parser.y"
     {
-		(yyval.Expression) = new CLengthExpression((yyvsp[(1) - (3)].Expression));	
+		(yyval.Expression) = new CLengthExpression((yyloc), (yyvsp[(1) - (3)].Expression));	
 	}
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 228 "Parser.y"
+#line 232 "Parser.y"
     {
-		(yyval.Expression) = new CMethodCallExpression((yyvsp[(1) - (6)].Expression), new CIdentifier((yyvsp[(3) - (6)].string_val)), (yyvsp[(5) - (6)].Expression));
+		(yyval.Expression) = new CMethodCallExpression((yyloc), (yyvsp[(1) - (6)].Expression), new CIdentifier((yyvsp[(3) - (6)].string_val)), (yyvsp[(5) - (6)].Expression));
 	}
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 231 "Parser.y"
+#line 235 "Parser.y"
     {
-		(yyval.Expression) = new CIntegerOrBooleanExpression((yyvsp[(1) - (1)].int_val), VT_INTEGER);
+		(yyval.Expression) = new CIntegerOrBooleanExpression((yyloc), (yyvsp[(1) - (1)].int_val), VT_INTEGER);
 	}
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 234 "Parser.y"
+#line 238 "Parser.y"
     {
-		(yyval.Expression) = new CIntegerOrBooleanExpression((yyvsp[(1) - (1)].int_val), VT_BOOLEAN);
+		(yyval.Expression) = new CIntegerOrBooleanExpression((yyloc), (yyvsp[(1) - (1)].int_val), VT_BOOLEAN);
 	}
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 237 "Parser.y"
+#line 241 "Parser.y"
     {
-		(yyval.Expression) = new CIntegerOrBooleanExpression((yyvsp[(1) - (1)].int_val), VT_BOOLEAN);
+		(yyval.Expression) = new CIntegerOrBooleanExpression((yyloc), (yyvsp[(1) - (1)].int_val), VT_BOOLEAN);
 	}
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 240 "Parser.y"
+#line 244 "Parser.y"
     {
-		(yyval.Expression) = new CIdentifierExpression(new CIdentifier((yyvsp[(1) - (1)].string_val)));
+		(yyval.Expression) = new CIdentifierExpression((yyloc), new CIdentifier((yyvsp[(1) - (1)].string_val)));
 	}
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 243 "Parser.y"
+#line 247 "Parser.y"
     {
-		(yyval.Expression) = new CThisExpression();
+		(yyval.Expression) = new CThisExpression((yyloc));
 	}
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 246 "Parser.y"
+#line 250 "Parser.y"
     {
-		(yyval.Expression) = new CNewIntegerArrayExpression((yyvsp[(4) - (5)].Expression));	
+		(yyval.Expression) = new CNewIntegerArrayExpression((yyloc), (yyvsp[(4) - (5)].Expression));	
 	}
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 249 "Parser.y"
+#line 253 "Parser.y"
     {
-		(yyval.Expression) = new CNewObjectExpression(new CIdentifier((yyvsp[(2) - (4)].string_val)));	
+		(yyval.Expression) = new CNewObjectExpression((yyloc), new CIdentifier((yyvsp[(2) - (4)].string_val)));	
 	}
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 252 "Parser.y"
+#line 256 "Parser.y"
     {
-		(yyval.Expression) = new CNegationExpression((yyvsp[(2) - (2)].Expression));
+		(yyval.Expression) = new CNegationExpression((yyloc), (yyvsp[(2) - (2)].Expression));
 	}
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 255 "Parser.y"
+#line 259 "Parser.y"
     {
-		(yyval.Expression) = new CParenthesesExpression((yyvsp[(2) - (3)].Expression));
+		(yyval.Expression) = new CParenthesesExpression((yyloc), (yyvsp[(2) - (3)].Expression));
 	}
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 260 "Parser.y"
+#line 264 "Parser.y"
     {
 		(yyval.Expression) = NULL;
 	}
@@ -2029,15 +2038,15 @@ yyreduce:
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 263 "Parser.y"
+#line 267 "Parser.y"
     {
-		(yyval.Expression) = new CExpressionList((yyvsp[(1) - (2)].Expression), (yyvsp[(2) - (2)].Expression));
+		(yyval.Expression) = new CExpressionList((yyloc), (yyvsp[(1) - (2)].Expression), (yyvsp[(2) - (2)].Expression));
 	}
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 268 "Parser.y"
+#line 272 "Parser.y"
     {
 		(yyval.Expression) = NULL;
 	}
@@ -2045,15 +2054,15 @@ yyreduce:
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 271 "Parser.y"
+#line 275 "Parser.y"
     {
-		(yyval.Expression) = new CExpressionList((yyvsp[(1) - (2)].Expression), (yyvsp[(2) - (2)].Expression));
+		(yyval.Expression) = new CExpressionList((yyloc), (yyvsp[(1) - (2)].Expression), (yyvsp[(2) - (2)].Expression));
 	}
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 276 "Parser.y"
+#line 280 "Parser.y"
     {
 		(yyval.Expression) = (yyvsp[(2) - (2)].Expression);
 	}
@@ -2061,7 +2070,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 2065 "Parser.cpp"
+#line 2074 "Parser.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2300,7 +2309,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 281 "Parser.y"
+#line 285 "Parser.y"
 
 
 extern int yyerror( IProgram* mainProgram, char* msg )

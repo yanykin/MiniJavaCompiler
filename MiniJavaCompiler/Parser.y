@@ -4,18 +4,22 @@
     #include <iostream>
     #include <cmath>
 	#include "GrammaticRules.h"
+	#include "CoordinatesHolder.h"
 
 	extern int yyerror( IProgram* mainProgram, char* msg );
     extern int yylex();
 %}
 %locations
 
+%code top {
+	
+}
+
 %code requires {
-	#include "GrammaticRules.h"
 	#include "GrammaticSymbols.h"
 	#include "TerminalSymbols.h"
 
-	#include "PrettyPrinter.h"
+	class CCoordinatesHolder;
 }
 
 %parse-param {IProgram* &mainProgram}
@@ -92,12 +96,12 @@
 
 Program:
 	MainClassDeclaration ClassDeclarationList {
-		mainProgram = $$ = new CProgram($1, $2);
+		mainProgram = $$ = new CProgram(@$, $1, $2);
 	}
 
 MainClassDeclaration:
 	CLASS_KEYWORD IDENTIFIER '{' PUBLIC_KEYWORD STATIC_KEYWORD VOID_KEYWORD MAIN_KEYWORD '(' STRING_KEYWORD '[' ']' IDENTIFIER ')' '{' Statement '}' '}' {
-		$$ = new CMainClassDeclaration(new CIdentifier($2), new CIdentifier($12), $15);
+		$$ = new CMainClassDeclaration(@$, new CIdentifier($2), new CIdentifier($12), $15);
 	}
 
 ClassDeclarationList:
@@ -105,15 +109,15 @@ ClassDeclarationList:
 		$$ = NULL;
 	}
 	| ClassDeclaration ClassDeclarationList {
-		$$ = new CClassDeclarationList($1, $2);
+		$$ = new CClassDeclarationList(@$, $1, $2);
 	}
 
 ClassDeclaration:
 	CLASS_KEYWORD IDENTIFIER '{'  VariableDeclarationList MethodDeclarationList '}' {
-		$$ = new CClassDeclaration(new CIdentifier($2), $4, $5);
+		$$ = new CClassDeclaration(@$, new CIdentifier($2), $4, $5);
 	}
 	| CLASS_KEYWORD IDENTIFIER EXTENDS_KEYWORD IDENTIFIER '{'  VariableDeclarationList MethodDeclarationList '}' {
-		$$ = new CClassExtendsDeclaration(new CIdentifier($2), new CIdentifier($4), $6, $7);
+		$$ = new CClassExtendsDeclaration(@$, new CIdentifier($2), new CIdentifier($4), $6, $7);
 	}
 
 VariableDeclarationList:
@@ -121,12 +125,12 @@ VariableDeclarationList:
 		$$ = NULL;
 	}
 	| VariableDeclarationList VariableDeclaration {
-		$$ = new CVariableDeclarationList($2, $1);
+		$$ = new CVariableDeclarationList(@$, $2, $1);
 	}
 
 VariableDeclaration:
 	Type IDENTIFIER ';' {
-		$$ = new CVariableDeclaration($1, new CIdentifier($2));		
+		$$ = new CVariableDeclaration(@$, $1, new CIdentifier($2));		
 	}
 
 MethodDeclarationList:
@@ -134,12 +138,12 @@ MethodDeclarationList:
 		$$ = NULL;
 	}
 	| MethodDeclaration MethodDeclarationList {
-		$$ = new CMethodDeclarationList($1, $2);
+		$$ = new CMethodDeclarationList(@$, $1, $2);
 	}
 
 MethodDeclaration:
 	PUBLIC_KEYWORD Type IDENTIFIER '(' FormalList ')' '{' VariableDeclarationList StatementList RETURN_KEYWORD Expression ';' '}' {
-		$$ = new CMethodDeclaration($2, new CIdentifier($3), $5, $8, $9, $11);
+		$$ = new CMethodDeclaration(@$, $2, new CIdentifier($3), $5, $8, $9, $11);
 	}
 
 FormalList:
@@ -147,7 +151,7 @@ FormalList:
 		$$ = NULL;
 	}
 	| Type IDENTIFIER FormalRestList {
-		$$ = new CFormalRestList(new CFormalList($1, new CIdentifier($2)), $3);
+		$$ = new CFormalRestList(@$, new CFormalList(@$, $1, new CIdentifier($2)), $3);
 	}
 
 
@@ -156,26 +160,26 @@ FormalRestList:
 		$$ = NULL;
 	}
 	| FormalRest FormalRestList {
-		$$ = new CFormalRestList($1, $2);
+		$$ = new CFormalRestList(@$, $1, $2);
 	}
 
 FormalRest:
 	',' Type IDENTIFIER {
-		$$ = new CFormalList($2, new CIdentifier($3));
+		$$ = new CFormalList(@$, $2, new CIdentifier($3));
 	}
 
 Type:
 	INT_KEYWORD '[' ']' {
-		$$ = new CBuiltInType(TBuiltInType::BT_INTEGER_ARRAY);
+		$$ = new CBuiltInType(@$, TBuiltInType::BT_INTEGER_ARRAY);
 	}
 	| BOOLEAN_KEYWORD {
-		$$ = new CBuiltInType(TBuiltInType::BT_BOOLEAN);
+		$$ = new CBuiltInType(@$, TBuiltInType::BT_BOOLEAN);
 	}
 	| INT_KEYWORD {
-		$$ = new CBuiltInType(TBuiltInType::BT_INTEGER);
+		$$ = new CBuiltInType(@$, TBuiltInType::BT_INTEGER);
 	}
 	| IDENTIFIER {
-		$$ = new CUserType(new CIdentifier($1));
+		$$ = new CUserType(@$, new CIdentifier($1));
 	}
 
 StatementList:
@@ -183,77 +187,77 @@ StatementList:
 		$$ = NULL;
 	}
 	| Statement StatementList {
-		$$ = new CStatementList($1, $2);
+		$$ = new CStatementList(@$, $1, $2);
 	}
 
 Statement:
 	'{' StatementList '}' {
-		$$ = new CStatementBlock($2);
+		$$ = new CStatementBlock(@$, $2);
 	}
 	| IF_KEYWORD '(' Expression ')' Statement ELSE_KEYWORD Statement {
-		$$ = new CIfStatement($3, $5, $7);
+		$$ = new CIfStatement(@$, $3, $5, $7);
 	}
 	| WHILE_KEYWORD '(' Expression ')' Statement {
-		$$ = new CWhileStatement($3, $5);
+		$$ = new CWhileStatement(@$, $3, $5);
 	}
 	| SYSTEM_KEYWORD '.' OUT_KEYWORD '.' PRINTLN_KEYWORD '(' Expression ')' ';' {
-		$$ = new CPrintStatement($7);
+		$$ = new CPrintStatement(@$, $7);
 	}
 	| IDENTIFIER '=' Expression ';' {
-		$$ = new CAssignmentStatement(new CIdentifier($1), $3);
+		$$ = new CAssignmentStatement(@$, new CIdentifier($1), $3);
 	}
 	| IDENTIFIER '[' Expression ']' '=' Expression ';' {
-		$$ = new CArrayElementAssignmentStatement(new CIdentifier($1), $3, $6);
+		$$ = new CArrayElementAssignmentStatement(@$, new CIdentifier($1), $3, $6);
 	}
 
 Expression:
 	Expression BINARY_AND Expression {
-		$$ = new CBinaryOperatorExpression($1, $3, TBinaryOperator::BO_LOGICAL_AND);
+		$$ = new CBinaryOperatorExpression(@$, $1, $3, TBinaryOperator::BO_LOGICAL_AND);
 	}
 	| Expression '<' Expression {
-		$$ = new CBinaryOperatorExpression($1, $3, TBinaryOperator::BO_LESS);
+		$$ = new CBinaryOperatorExpression(@$, $1, $3, TBinaryOperator::BO_LESS);
 	}
 	| Expression '+' Expression {
-		$$ = new CBinaryOperatorExpression($1, $3, TBinaryOperator::BO_PLUS);
+		$$ = new CBinaryOperatorExpression(@$, $1, $3, TBinaryOperator::BO_PLUS);
 	} 
 	| Expression '-' Expression {
-		$$ = new CBinaryOperatorExpression($1, $3, TBinaryOperator::BO_MINUS);
+		$$ = new CBinaryOperatorExpression(@$, $1, $3, TBinaryOperator::BO_MINUS);
 	}
 	| Expression '*' Expression {
-		$$ = new CBinaryOperatorExpression($1, $3, TBinaryOperator::BO_MULTIPLY);
+		$$ = new CBinaryOperatorExpression(@$, $1, $3, TBinaryOperator::BO_MULTIPLY);
 	}
 	| Expression '.' LENGTH_KEYWORD {
-		$$ = new CLengthExpression($1);	
+		$$ = new CLengthExpression(@$, $1);	
 	}
 	| Expression '.' IDENTIFIER '(' ExpressionList ')' {
-		$$ = new CMethodCallExpression($1, new CIdentifier($3), $5);
+		$$ = new CMethodCallExpression(@$, $1, new CIdentifier($3), $5);
 	}
 	| INTEGER_NUMBER {
-		$$ = new CIntegerOrBooleanExpression($1, VT_INTEGER);
+		$$ = new CIntegerOrBooleanExpression(@$, $1, VT_INTEGER);
 	}
 	| TRUE_KEYWORD {
-		$$ = new CIntegerOrBooleanExpression($1, VT_BOOLEAN);
+		$$ = new CIntegerOrBooleanExpression(@$, $1, VT_BOOLEAN);
 	}
 	| FALSE_KEYWORD {
-		$$ = new CIntegerOrBooleanExpression($1, VT_BOOLEAN);
+		$$ = new CIntegerOrBooleanExpression(@$, $1, VT_BOOLEAN);
 	}
 	| IDENTIFIER {
-		$$ = new CIdentifierExpression(new CIdentifier($1));
+		$$ = new CIdentifierExpression(@$, new CIdentifier($1));
 	}
 	| THIS_KEYWORD {
-		$$ = new CThisExpression();
+		$$ = new CThisExpression(@$);
 	}
 	| NEW_KEYWORD INT_KEYWORD '[' Expression ']' {
-		$$ = new CNewIntegerArrayExpression($4);	
+		$$ = new CNewIntegerArrayExpression(@$, $4);	
 	}
 	| NEW_KEYWORD IDENTIFIER '(' ')' {
-		$$ = new CNewObjectExpression(new CIdentifier($2));	
+		$$ = new CNewObjectExpression(@$, new CIdentifier($2));	
 	}
 	| '!' Expression  {
-		$$ = new CNegationExpression($2);
+		$$ = new CNegationExpression(@$, $2);
 	}
 	| '(' Expression ')' {
-		$$ = new CParenthesesExpression($2);
+		$$ = new CParenthesesExpression(@$, $2);
 	}
 
 ExpressionList:
@@ -261,7 +265,7 @@ ExpressionList:
 		$$ = NULL;
 	}
 	| Expression ExpressionRestList {
-		$$ = new CExpressionList($1, $2);
+		$$ = new CExpressionList(@$, $1, $2);
 	}
 
 ExpressionRestList:
@@ -269,7 +273,7 @@ ExpressionRestList:
 		$$ = NULL;
 	}
 	| ExpressionRest ExpressionRestList {
-		$$ = new CExpressionList($1, $2);
+		$$ = new CExpressionList(@$, $1, $2);
 	}
 
 ExpressionRest:

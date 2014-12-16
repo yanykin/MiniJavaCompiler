@@ -22,7 +22,7 @@ class Fac extends Base {
 
 	public boolean Stub(int[] a, boolean b, int[] c, int d, Foo e) {
 		Integer my_integer;	
-		if (d < 6) {
+		if (!(d < 7)) {
 			System.out.println(a);
 			c[3] = 47;
 		} else {

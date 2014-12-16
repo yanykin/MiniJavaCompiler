@@ -5,14 +5,15 @@
 #include "GrammaticSymbols.h"
 #include "TerminalSymbols.h"
 #include "Visitor.h"
+#include "CoordinatesHolder.h"
 #include <vector>
 
 // Вся программа
-class CProgram : public IProgram
+class CProgram : public IProgram, public CCoordinatesHolder
 {
 public:
-	CProgram( IMainClassDeclaration *_mainClassDeclaration, IClassDeclaration *_classDeclarationList ) :
-	mainClassDeclaration(_mainClassDeclaration), classDeclarationsList(_classDeclarationList) {};
+	CProgram(const YYLTYPE& yylloc, IMainClassDeclaration *_mainClassDeclaration, IClassDeclaration *_classDeclarationList ) :
+		CCoordinatesHolder( yylloc ), mainClassDeclaration( _mainClassDeclaration ), classDeclarationsList( _classDeclarationList ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 	IMainClassDeclaration* GetMainClassDeclaration() const { return mainClassDeclaration; };
 	IClassDeclaration* GetClassDeclarationsList() const { return classDeclarationsList; };
@@ -22,11 +23,11 @@ private:
 };
 
 // Определение главного класса
-class CMainClassDeclaration : public IMainClassDeclaration
+class CMainClassDeclaration : public IMainClassDeclaration, public CCoordinatesHolder
 {
 public:
-	CMainClassDeclaration(CIdentifier *_className, CIdentifier *_argumentName, IStatement *_statement):
-		className(_className), argumentName(_argumentName), statement(_statement) { };
+	CMainClassDeclaration( const YYLTYPE& yylloc, CIdentifier *_className, CIdentifier *_argumentName, IStatement *_statement ) :
+		CCoordinatesHolder( yylloc ), className( _className ), argumentName( _argumentName ), statement( _statement ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetClassName() const { return className->getString(); };
@@ -40,11 +41,11 @@ private:
 };
 
 // Определение класса
-class CClassDeclaration : public IClassDeclaration
+class CClassDeclaration : public IClassDeclaration, public CCoordinatesHolder
 {
 public:
-	CClassDeclaration( CIdentifier *_className, IVariableDeclaration *_fieldsList, IMethodDeclaration *_methodsList ) :
-		className( _className ), fieldsList( _fieldsList ), methodsList( _methodsList ) { };
+	CClassDeclaration( const YYLTYPE& yylloc, CIdentifier *_className, IVariableDeclaration *_fieldsList, IMethodDeclaration *_methodsList ) :
+		CCoordinatesHolder( yylloc ), className( _className ), fieldsList( _fieldsList ), methodsList( _methodsList ) { };
 	std::string getClassName() const;
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
@@ -59,11 +60,11 @@ private:
 };
 
 // Список определений классов
-class CClassDeclarationList : public IClassDeclaration
+class CClassDeclarationList : public IClassDeclaration, public CCoordinatesHolder
 {
 public:
-	CClassDeclarationList( IClassDeclaration *_classDeclaration, IClassDeclaration *_nextClassDeclaration ) :
-		classDeclaration( _classDeclaration ), nextClassDeclaration( _nextClassDeclaration ) { };
+	CClassDeclarationList( const YYLTYPE& yylloc, IClassDeclaration *_classDeclaration, IClassDeclaration *_nextClassDeclaration ) :
+		CCoordinatesHolder( yylloc ), classDeclaration( _classDeclaration ), nextClassDeclaration( _nextClassDeclaration ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IClassDeclaration* GetClassDeclaration() const { return classDeclaration; };
@@ -75,11 +76,11 @@ private:
 };
 
 // Определение класса, который наследуется от существующего
-class CClassExtendsDeclaration : public IClassDeclaration
+class CClassExtendsDeclaration : public IClassDeclaration, public CCoordinatesHolder
 {
 public:
-	CClassExtendsDeclaration( CIdentifier *_className, CIdentifier *_superClassName, IVariableDeclaration *_fieldsList, IMethodDeclaration *_methodsList ) :
-		className( _className ), superClassName( _superClassName ), fieldsList( _fieldsList ), methodsList( _methodsList ) { };
+	CClassExtendsDeclaration( const YYLTYPE& yylloc, CIdentifier *_className, CIdentifier *_superClassName, IVariableDeclaration *_fieldsList, IMethodDeclaration *_methodsList ) :
+		CCoordinatesHolder( yylloc ), className( _className ), superClassName( _superClassName ), fieldsList( _fieldsList ), methodsList( _methodsList ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetClassName() const { return className->getString(); };
@@ -94,11 +95,11 @@ private:
 };
 
 // Определение переменной
-class CVariableDeclaration : public IVariableDeclaration
+class CVariableDeclaration : public IVariableDeclaration, public CCoordinatesHolder
 {
 public:
-	CVariableDeclaration( IType *_type, CIdentifier *_variableName) :
-		type( _type ), variableName( _variableName ) { };
+	CVariableDeclaration( const YYLTYPE& yylloc, IType *_type, CIdentifier *_variableName ) :
+		CCoordinatesHolder( yylloc ), type( _type ), variableName( _variableName ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetName() const { return variableName->getString(); };
@@ -109,11 +110,11 @@ private:
 };
 
 // Список определений переменных
-class CVariableDeclarationList : public IVariableDeclaration
+class CVariableDeclarationList : public IVariableDeclaration, public CCoordinatesHolder
 {
 public:
-	CVariableDeclarationList(IVariableDeclaration *_variableDeclaration, CVariableDeclarationList *_nextVariableDeclaration):
-	variableDeclaration(_variableDeclaration), nextVariableDeclaration(_nextVariableDeclaration) { };
+	CVariableDeclarationList( const YYLTYPE& yylloc, IVariableDeclaration *_variableDeclaration, CVariableDeclarationList *_nextVariableDeclaration ) :
+		CCoordinatesHolder( yylloc ), variableDeclaration( _variableDeclaration ), nextVariableDeclaration( _nextVariableDeclaration ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	CVariableDeclarationList* GetNextVariableDeclaration() const { return nextVariableDeclaration; };
@@ -125,11 +126,11 @@ private:
 };
 
 // Определение метода
-class CMethodDeclaration : public IMethodDeclaration
+class CMethodDeclaration : public IMethodDeclaration, public CCoordinatesHolder
 {
 public:
-	CMethodDeclaration( IType *_type, CIdentifier *_methodName, IFormalList *_formalList, IVariableDeclaration *_localVariablesList, IStatement *_statementList, IExpression *_returnExpression) :
-		type( _type ), methodName( _methodName ), formalList( _formalList ), localVariablesList( _localVariablesList ), statementList( _statementList ), returnExpression( _returnExpression ) { }
+	CMethodDeclaration( const YYLTYPE& yylloc, IType *_type, CIdentifier *_methodName, IFormalList *_formalList, IVariableDeclaration *_localVariablesList, IStatement *_statementList, IExpression *_returnExpression ) :
+		CCoordinatesHolder( yylloc ), type( _type ), methodName( _methodName ), formalList( _formalList ), localVariablesList( _localVariablesList ), statementList( _statementList ), returnExpression( _returnExpression ) { }
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetMethodName() const {return methodName->getString(); };
@@ -151,11 +152,11 @@ private:
 };
 
 // Список определений методов
-class CMethodDeclarationList : public IMethodDeclaration
+class CMethodDeclarationList : public IMethodDeclaration, public CCoordinatesHolder
 {
 public:
-	CMethodDeclarationList(IMethodDeclaration *_methodDeclaration, IMethodDeclaration *_nextMethodDeclaration):
-	methodDeclaration(_methodDeclaration), nextMethodDeclaration(_nextMethodDeclaration) {};
+	CMethodDeclarationList( const YYLTYPE& yylloc, IMethodDeclaration *_methodDeclaration, IMethodDeclaration *_nextMethodDeclaration ) :
+		CCoordinatesHolder( yylloc ), methodDeclaration( _methodDeclaration ), nextMethodDeclaration( _nextMethodDeclaration ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IMethodDeclaration* GetMethodDeclaration() const { return methodDeclaration; };
@@ -167,11 +168,11 @@ private:
 };
 
 // Список параметров метода
-class CFormalList : public IFormalList
+class CFormalList : public IFormalList, public CCoordinatesHolder
 {
 public:
-	CFormalList( IType *_type, CIdentifier *_parameterName ) :
-		type( _type ), parameterName( _parameterName ) {};
+	CFormalList( const YYLTYPE& yylloc, IType *_type, CIdentifier *_parameterName ) :
+		CCoordinatesHolder( yylloc ), type( _type ), parameterName( _parameterName ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetParameterName() const { return parameterName->getString(); };
@@ -184,11 +185,11 @@ private:
 	// IFormalList *nextInList; // следующий параметр в списке
 };
 
-class CFormalRestList : public IFormalList
+class CFormalRestList : public IFormalList, public CCoordinatesHolder
 {
 public:
-	CFormalRestList(IFormalList *_formalRest, IFormalList *_nextFormalRest):
-	formalRest(_formalRest), nextFormalRest(_nextFormalRest) {};
+	CFormalRestList( const YYLTYPE& yylloc, IFormalList *_formalRest, IFormalList *_nextFormalRest ) :
+		CCoordinatesHolder( yylloc ), formalRest( _formalRest ), nextFormalRest( _nextFormalRest ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IFormalList* GetFormalRest() const { return formalRest; };
@@ -201,7 +202,7 @@ private:
 
 /*
 // Пустой список параметров метода
-class CEmptyFormalList : public IFormalList
+class CEmptyFormalList : public IFormalList, public CCoordinatesHolder
 {
 public:
 	CEmptyFormalList() { };
@@ -210,7 +211,7 @@ public:
 
 /*
 // "Хвостовой" элемент перечисления параметров метода
-class CFormalRest : public IFormalRest
+class CFormalRest : public IFormalRest, public CCoordinatesHolder
 {
 public:
 	CFormalRest( IType *_type, CIdentifier *_parameterName ) :
@@ -229,9 +230,9 @@ enum TBuiltInType {
 };
 
 // Класс, задающий встроенный тип данных
-class CBuiltInType : public IType {
+class CBuiltInType : public IType, public CCoordinatesHolder {
 public:
-	CBuiltInType( TBuiltInType _type ) : type( _type ) {};
+	CBuiltInType( const YYLTYPE& yylloc, TBuiltInType _type ) : CCoordinatesHolder( yylloc ), type( _type ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	TBuiltInType GetType() const { return type; };
@@ -240,9 +241,9 @@ private:
 };
 
 // Класс, задающий пользовательский тип данных
-class CUserType : public IType {
+class CUserType : public IType, public CCoordinatesHolder {
 public:
-	CUserType( CIdentifier *_typeName ) : typeName( _typeName ) { };
+	CUserType( const YYLTYPE& yylloc, CIdentifier *_typeName ) : CCoordinatesHolder( yylloc ), typeName( _typeName ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetTypeName() const { return typeName->getString(); }
@@ -252,11 +253,11 @@ private:
 
 /* ОПЕРАТОРЫ */
 // Построение списка операторов
-class CStatementList : public IStatement
+class CStatementList : public IStatement, public CCoordinatesHolder
 {
 public:
-	CStatementList( IStatement *_statement, IStatement *_nextStatement ) :
-		statement( _statement ), nextStatement( _nextStatement ) { };
+	CStatementList( const YYLTYPE& yylloc, IStatement *_statement, IStatement *_nextStatement ) :
+		CCoordinatesHolder( yylloc ), statement( _statement ), nextStatement( _nextStatement ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IStatement* GetStatement() const { return statement; };
@@ -268,10 +269,10 @@ private:
 };
 
 // Перечисление операторов в блоке кода
-class CStatementBlock : public IStatement
+class CStatementBlock : public IStatement, public CCoordinatesHolder
 {
 public:
-	CStatementBlock( IStatement *_statementsList ) : statementsList( _statementsList ) { };
+	CStatementBlock( const YYLTYPE& yylloc, IStatement *_statementsList ) : CCoordinatesHolder( yylloc ), statementsList( _statementsList ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IStatement* GetStatementList() const { return statementsList; };
@@ -281,11 +282,11 @@ private:
 };
 
 // Условный оператор
-class CIfStatement : public IStatement
+class CIfStatement : public IStatement, public CCoordinatesHolder
 {
 public:
-	CIfStatement( IExpression *_condition, IStatement *_trueStatement, IStatement *_falseStatement ) :
-		condition( _condition ), trueStatement( _trueStatement ), falseStatement( _falseStatement ) {};
+	CIfStatement( const YYLTYPE& yylloc, IExpression *_condition, IStatement *_trueStatement, IStatement *_falseStatement ) :
+		CCoordinatesHolder( yylloc ), condition( _condition ), trueStatement( _trueStatement ), falseStatement( _falseStatement ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IStatement* GetTrueStatement() const { return trueStatement; };
@@ -300,11 +301,11 @@ private:
 };
 
 // Оператор while
-class CWhileStatement : public IStatement
+class CWhileStatement : public IStatement, public CCoordinatesHolder
 {
 public:
-	CWhileStatement( IExpression *_condition, IStatement *_trueStatement ) :
-		condition( _condition ), trueStatement( _trueStatement ) {};
+	CWhileStatement( const YYLTYPE& yylloc, IExpression *_condition, IStatement *_trueStatement ) :
+		CCoordinatesHolder( yylloc ), condition( _condition ), trueStatement( _trueStatement ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IStatement* GetStatement() const { return trueStatement; };
@@ -316,11 +317,11 @@ private:
 };
 
 // Оператор печати
-class CPrintStatement : public IStatement
+class CPrintStatement : public IStatement, public CCoordinatesHolder
 {
 public:
-	CPrintStatement( IExpression *_expressionToPrint ) :
-		expressionToPrint( _expressionToPrint ) {};
+	CPrintStatement( const YYLTYPE& yylloc, IExpression *_expressionToPrint ) :
+		CCoordinatesHolder( yylloc ), expressionToPrint( _expressionToPrint ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetExpression() const { return expressionToPrint; };
@@ -329,11 +330,11 @@ private:
 };
 
 // Операция присваивания
-class CAssignmentStatement : public IStatement
+class CAssignmentStatement : public IStatement, public CCoordinatesHolder
 {
 public:
-	CAssignmentStatement( CIdentifier *_variableName, IExpression *_rightValue ) :
-		variableName( _variableName ), rightValue( _rightValue ) {};
+	CAssignmentStatement( const YYLTYPE& yylloc, CIdentifier *_variableName, IExpression *_rightValue ) :
+		CCoordinatesHolder( yylloc ), variableName( _variableName ), rightValue( _rightValue ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetVariableName() const { return variableName->getString(); };
@@ -344,11 +345,11 @@ private:
 };
 
 // Операция присваивания элементу массива
-class CArrayElementAssignmentStatement : public IStatement
+class CArrayElementAssignmentStatement : public IStatement, public CCoordinatesHolder
 {
 public:
-	CArrayElementAssignmentStatement( CIdentifier *_arrayName, IExpression *_indexExpression, IExpression *_rightValue ):
-		arrayName(_arrayName), indexExpression(_indexExpression), rightValue(_rightValue) {};
+	CArrayElementAssignmentStatement( const YYLTYPE& yylloc, CIdentifier *_arrayName, IExpression *_indexExpression, IExpression *_rightValue ) :
+		CCoordinatesHolder( yylloc ), arrayName( _arrayName ), indexExpression( _indexExpression ), rightValue( _rightValue ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetArrayName() const { return arrayName->getString(); };
@@ -371,11 +372,11 @@ enum TBinaryOperator {
 	BO_LOGICAL_AND,	// логическое "И"
 };
 
-class CBinaryOperatorExpression : public IExpression
+class CBinaryOperatorExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CBinaryOperatorExpression( IExpression *_leftValue, IExpression *_rightValue, TBinaryOperator _binaryOperator ) : 
-		leftValue(_leftValue), rightValue(_rightValue), binaryOperator(_binaryOperator) { }
+	CBinaryOperatorExpression( const YYLTYPE& yylloc, IExpression *_leftValue, IExpression *_rightValue, TBinaryOperator _binaryOperator ) :
+		CCoordinatesHolder( yylloc ), leftValue( _leftValue ), rightValue( _rightValue ), binaryOperator( _binaryOperator ) { }
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetLeftValue() const { return leftValue; };
@@ -389,11 +390,11 @@ private:
 };
 
 // Операция доступа к элементу массива
-class CIndexAccessExpression : public IExpression
+class CIndexAccessExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CIndexAccessExpression(IExpression *_arrayExpression, IExpression *_index) :
-	arrayExpression(_arrayExpression), index(_index) { };
+	CIndexAccessExpression( const YYLTYPE& yylloc, IExpression *_arrayExpression, IExpression *_index ) :
+		CCoordinatesHolder( yylloc ), arrayExpression( _arrayExpression ), index( _index ) { };
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetArrayExpression() const { return arrayExpression; };
@@ -404,10 +405,10 @@ private:
 };
 
 // Получение длины массива
-class CLengthExpression : public IExpression
+class CLengthExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CLengthExpression( IExpression *_arrayExpression ) : arrayExpression( _arrayExpression ) {};
+	CLengthExpression( const YYLTYPE& yylloc, IExpression *_arrayExpression ) : CCoordinatesHolder( yylloc ), arrayExpression( _arrayExpression ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetArray() const { return arrayExpression; };
@@ -416,11 +417,11 @@ private:
 };
 
 // Вызов метода объекта
-class CMethodCallExpression : public IExpression
+class CMethodCallExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CMethodCallExpression(IExpression *_variableExpression, CIdentifier *_methodName, IExpression *_expressionList) :
-	variableExpression(_variableExpression), methodName(_methodName), expressionList(_expressionList) {};
+	CMethodCallExpression( const YYLTYPE& yylloc, IExpression *_variableExpression, CIdentifier *_methodName, IExpression *_expressionList ) :
+		CCoordinatesHolder( yylloc ), variableExpression( _variableExpression ), methodName( _methodName ), expressionList( _expressionList ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetObject() const { return variableExpression; };
@@ -438,11 +439,11 @@ enum TValueType {
 	VT_BOOLEAN
 };
 // Целочисленное и булево значение
-class CIntegerOrBooleanExpression : public IExpression
+class CIntegerOrBooleanExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CIntegerOrBooleanExpression( int _value, TValueType _valueType ) :
-		value( _value ), valueType( _valueType ) {};
+	CIntegerOrBooleanExpression( const YYLTYPE& yylloc, int _value, TValueType _valueType ) :
+		CCoordinatesHolder( yylloc ), value( _value ), valueType( _valueType ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	int GetValue() const { return value; };
@@ -454,10 +455,10 @@ private:
 };
 
 // Получение значения переменной
-class CIdentifierExpression : public IExpression
+class CIdentifierExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CIdentifierExpression( CIdentifier *_variableName ) : variableName( _variableName ) {};
+	CIdentifierExpression( const YYLTYPE& yylloc, CIdentifier *_variableName ) : CCoordinatesHolder( yylloc ), variableName( _variableName ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetVariableName() const { return variableName->getString(); };
@@ -466,18 +467,18 @@ private:
 };
 
 // Получение ссылки на объект по ключевому слову this
-class CThisExpression : public IExpression
+class CThisExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CThisExpression() {};
+	CThisExpression( const YYLTYPE& yylloc ) : CCoordinatesHolder( yylloc ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 };
 
 // Создание нового массива из int
-class CNewIntegerArrayExpression : public IExpression
+class CNewIntegerArrayExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CNewIntegerArrayExpression( IExpression *_arraySize ) : arraySize(_arraySize) {};
+	CNewIntegerArrayExpression( const YYLTYPE& yylloc, IExpression *_arraySize ) : CCoordinatesHolder( yylloc ), arraySize( _arraySize ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetArraySize() const { return arraySize; };
@@ -486,10 +487,10 @@ private:
 };
 
 // Создание нового объекта определённого класса
-class CNewObjectExpression : public IExpression
+class CNewObjectExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CNewObjectExpression( CIdentifier *_className ) : className(_className) {};
+	CNewObjectExpression( const YYLTYPE& yylloc, CIdentifier *_className ) : CCoordinatesHolder( yylloc ), className( _className ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	std::string GetClass() const { return className->getString(); };
@@ -498,10 +499,10 @@ private:
 };
 
 // Операция отрицания
-class CNegationExpression : public IExpression
+class CNegationExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CNegationExpression( IExpression *_argument ) : argument(_argument) {};
+	CNegationExpression( const YYLTYPE& yylloc, IExpression *_argument ) : CCoordinatesHolder( yylloc ), argument( _argument ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetArgument() const { return argument; };
@@ -510,10 +511,10 @@ private:
 };
 
 // Скобки
-class CParenthesesExpression : public IExpression
+class CParenthesesExpression : public IExpression, public CCoordinatesHolder
 {
 public:
-	CParenthesesExpression( IExpression *_expression ) : expression(_expression) {};
+	CParenthesesExpression( const YYLTYPE& yylloc, IExpression *_expression ) : CCoordinatesHolder( yylloc ), expression( _expression ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetExpression() const { return expression; };
@@ -522,11 +523,11 @@ private:
 };
 
 // Список выражений
-class CExpressionList : public IExpression
+class CExpressionList : public IExpression, public CCoordinatesHolder
 {
 public:
-	CExpressionList(IExpression *_expression, IExpression *_nextExpression):
-	expression(_expression), nextExpression(_nextExpression) {};
+	CExpressionList( const YYLTYPE& yylloc, IExpression *_expression, IExpression *_nextExpression ) :
+		CCoordinatesHolder( yylloc ), expression( _expression ), nextExpression( _nextExpression ) {};
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 
 	IExpression* GetExpression() const { return expression; };
