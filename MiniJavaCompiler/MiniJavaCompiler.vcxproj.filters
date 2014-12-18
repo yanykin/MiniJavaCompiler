@@ -48,10 +48,13 @@
     <ClCompile Include="Parser.cpp">
       <Filter>LexHCpp</Filter>
     </ClCompile>
-    <ClCompile Include="lRTree.cpp">
+    <ClCompile Include="Temp.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Temp.cpp">
+    <ClCompile Include="IRTree.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Translate.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -94,10 +97,13 @@
     <ClInclude Include="Parser.hpp">
       <Filter>LexHCpp</Filter>
     </ClInclude>
-    <ClInclude Include="lRTree.h">
+    <ClInclude Include="Temp.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Temp.h">
+    <ClInclude Include="Translate.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="IRTree.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

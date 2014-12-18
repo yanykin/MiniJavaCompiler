@@ -44,7 +44,7 @@ namespace Temp
 	class CLabelList
 	{
 	public:
-		CLabelList( CLabel head, CLabelList tail );
+		CLabelList( CLabel* head, CLabelList* tail );
 	};
 };
 

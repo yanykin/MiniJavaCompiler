@@ -56,4 +56,3 @@ private:
 	static std::string marginString; // строка, которая будет печататься как отступ
 	size_t marginInTabs; // задаёт уровень отступа, на котором нужно производить печать
 };
-
