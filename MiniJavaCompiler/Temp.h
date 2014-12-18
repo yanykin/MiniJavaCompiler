@@ -14,7 +14,6 @@ namespace Temp
 		CLabel();
 		// Создать метку с заданным именем
 		explicit CLabel( const std::string& symbol );
-
 		const std::string& Name() const { return name; }
 
 	private:
@@ -41,10 +40,19 @@ namespace Temp
 		std::string name;
 	};
 
+	// Лист меток
 	class CLabelList
 	{
 	public:
-		CLabelList( CLabel* head, CLabelList* tail );
+		CLabelList( const CLabel* _head, const CLabelList* _tail )
+			: head( _head ), tail( _tail )
+		{
+		};
+		const CLabel* GetHead() const { return head; }
+		const CLabelList* GetTail() const { return tail; }
+	private:
+		const CLabel* head;
+		const CLabelList* tail;
 	};
 };
 
