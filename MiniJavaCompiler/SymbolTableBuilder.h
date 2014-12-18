@@ -1,5 +1,5 @@
 /*
-* Реализация паттерна "Посетитель" для построения таблицы символов программы
+* Р РµР°Р»РёР·Р°С†РёСЏ РїР°С‚С‚РµСЂРЅР° "РџРѕСЃРµС‚РёС‚РµР»СЊ" РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ РїСЂРѕРіСЂР°РјРјС‹
 */
 #pragma once
 #include "Visitor.h"
@@ -48,12 +48,12 @@ public:
 
 
 private:
-	bool isCorrect; // Флаг, означающий, что таблица символов у нас построена верно
+	bool isCorrect; // Р¤Р»Р°Рі, РѕР·РЅР°С‡Р°СЋС‰РёР№, С‡С‚Рѕ С‚Р°Р±Р»РёС†Р° СЃРёРјРІРѕР»РѕРІ Сѓ РЅР°СЃ РїРѕСЃС‚СЂРѕРµРЅР° РІРµСЂРЅРѕ
 
-	CSymbolsTable::CClassInformation* currentClass; // Текущий класс, в котором находится посетитель
-	CSymbolsTable::CMethodInformation* currentMethod; // Текущий метод
-	CSymbolsTable::CType* lastTypeValue; // Переменная состояния
+	CSymbolsTable::CClassInformation* currentClass; // РўРµРєСѓС‰РёР№ РєР»Р°СЃСЃ, РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ РїРѕСЃРµС‚РёС‚РµР»СЊ
+	CSymbolsTable::CMethodInformation* currentMethod; // РўРµРєСѓС‰РёР№ РјРµС‚РѕРґ
+	CSymbolsTable::CType* lastTypeValue; // РџРµСЂРµРјРµРЅРЅР°СЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ
 
-	CSymbolsTable::CTable table; // таблица, которую мы строим
+	CSymbolsTable::CTable table; // С‚Р°Р±Р»РёС†Р°, РєРѕС‚РѕСЂСѓСЋ РјС‹ СЃС‚СЂРѕРёРј
 };
 

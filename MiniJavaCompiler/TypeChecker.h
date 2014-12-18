@@ -1,5 +1,5 @@
 /*
-* Ещё одна реализация шаблона посетителя, который проверяет типы данных переменных и методов
+* Р•С‰С‘ РѕРґРЅР° СЂРµР°Р»РёР·Р°С†РёСЏ С€Р°Р±Р»РѕРЅР° РїРѕСЃРµС‚РёС‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ РїСЂРѕРІРµСЂСЏРµС‚ С‚РёРїС‹ РґР°РЅРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С… Рё РјРµС‚РѕРґРѕРІ
 */
 
 #pragma once
@@ -49,12 +49,12 @@ public:
 	void Visit( const CExpressionList* node );
 
 private:
-	bool isCorrect; // флаг, гласящий о том, что всё ли верно в программе с типами данных
+	bool isCorrect; // С„Р»Р°Рі, РіР»Р°СЃСЏС‰РёР№ Рѕ С‚РѕРј, С‡С‚Рѕ РІСЃС‘ Р»Рё РІРµСЂРЅРѕ РІ РїСЂРѕРіСЂР°РјРјРµ СЃ С‚РёРїР°РјРё РґР°РЅРЅС‹С…
 
-	CSymbolsTable::CClassInformation* currentClass; // Текущий класс, в котором находится посетитель
-	CSymbolsTable::CMethodInformation* currentMethod; // Текущий метод
-	CSymbolsTable::CType lastTypeValue; // Переменная состояния
+	CSymbolsTable::CClassInformation* currentClass; // РўРµРєСѓС‰РёР№ РєР»Р°СЃСЃ, РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ РїРѕСЃРµС‚РёС‚РµР»СЊ
+	CSymbolsTable::CMethodInformation* currentMethod; // РўРµРєСѓС‰РёР№ РјРµС‚РѕРґ
+	CSymbolsTable::CType lastTypeValue; // РџРµСЂРµРјРµРЅРЅР°СЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ
 
-	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемся 
+	CSymbolsTable::CTable* table; // С‚Р°Р±Р»РёС†Р°, Рє РєРѕС‚РѕСЂРѕР№ РјС‹ РѕР±СЂР°С‰Р°РµРјСЃСЏ 
 };
 

@@ -1,47 +1,47 @@
 /*
-* Описание классов, необходимых для поддержки таблицы символов 
+* РћРїРёСЃР°РЅРёРµ РєР»Р°СЃСЃРѕРІ, РЅРµРѕР±С…РѕРґРёРјС‹С… РґР»СЏ РїРѕРґРґРµСЂР¶РєРё С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ 
 */
 #pragma once
 #include <string>
 #include <list>
 #include <map>
 
-// Таблица символов для языка MiniJava
+// РўР°Р±Р»РёС†Р° СЃРёРјРІРѕР»РѕРІ РґР»СЏ СЏР·С‹РєР° MiniJava
 namespace CSymbolsTable {
 
-	// Предопределение
+	// РџСЂРµРґРѕРїСЂРµРґРµР»РµРЅРёРµ
 	class CClassInformation;
 	class CMethodInformation;
 	class CVariableInformation;
 
 	enum TVariableType {
-		VAR_TYPE_INTEGER,			// целочисленная переменная
-		VAR_TYPE_INTEGER_ARRAY,	// массив из целых чисел
-		VAR_TYPE_BOOLEAN,			// булев тип
-		VAR_TYPE_CLASS			// класс
+		VAR_TYPE_INTEGER,			// С†РµР»РѕС‡РёСЃР»РµРЅРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+		VAR_TYPE_INTEGER_ARRAY,	// РјР°СЃСЃРёРІ РёР· С†РµР»С‹С… С‡РёСЃРµР»
+		VAR_TYPE_BOOLEAN,			// Р±СѓР»РµРІ С‚РёРї
+		VAR_TYPE_CLASS			// РєР»Р°СЃСЃ
 	};
 
 	struct CType {
-		TVariableType type; // тип переменной
-		std::string className; // класс, если это переменная типа класса
+		TVariableType type; // С‚РёРї РїРµСЂРµРјРµРЅРЅРѕР№
+		std::string className; // РєР»Р°СЃСЃ, РµСЃР»Рё СЌС‚Рѕ РїРµСЂРµРјРµРЅРЅР°СЏ С‚РёРїР° РєР»Р°СЃСЃР°
 	};
 
-	// Список известных классов
+	// РЎРїРёСЃРѕРє РёР·РІРµСЃС‚РЅС‹С… РєР»Р°СЃСЃРѕРІ
 	class CTable {
 	public:
 		CTable() : declaredClasses() {};
 
-		// Добавляет класс в таблицу символов и возвращает флаг успеха/неуспеха
+		// Р”РѕР±Р°РІР»СЏРµС‚ РєР»Р°СЃСЃ РІ С‚Р°Р±Р»РёС†Сѓ СЃРёРјРІРѕР»РѕРІ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ С„Р»Р°Рі СѓСЃРїРµС…Р°/РЅРµСѓСЃРїРµС…Р°
 		bool AddClass( CClassInformation *classInfo );
 
-		// Возвращает ссылку на структуру с информацией класса или null, если такой класс не нашли
+		// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃСЃС‹Р»РєСѓ РЅР° СЃС‚СЂСѓРєС‚СѓСЂСѓ СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ РєР»Р°СЃСЃР° РёР»Рё null, РµСЃР»Рё С‚Р°РєРѕР№ РєР»Р°СЃСЃ РЅРµ РЅР°С€Р»Рё
 		CClassInformation* GetClassByName(std::string& className);
 
 	private:
-		std::map < std::string, CClassInformation* > declaredClasses; // определённые в программе классы
+		std::map < std::string, CClassInformation* > declaredClasses; // РѕРїСЂРµРґРµР»С‘РЅРЅС‹Рµ РІ РїСЂРѕРіСЂР°РјРјРµ РєР»Р°СЃСЃС‹
 	};
 
-	// Информация о конкретном классе
+	// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРЅРєСЂРµС‚РЅРѕРј РєР»Р°СЃСЃРµ
 	class CClassInformation {
 	public:
 		CClassInformation( std::string _name ) : name( _name ), isDerived(false) {};
@@ -51,23 +51,23 @@ namespace CSymbolsTable {
 		bool AddMethod( CMethodInformation* methodInfo );
 		bool AddField( CVariableInformation* fieldInfo );
 
-		// Возвращает ссылку на структуру с информацией метода класса или null в противном случае
+		// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃСЃС‹Р»РєСѓ РЅР° СЃС‚СЂСѓРєС‚СѓСЂСѓ СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ РјРµС‚РѕРґР° РєР»Р°СЃСЃР° РёР»Рё null РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ
 		CMethodInformation* GetMethodByName( std::string& methodName );
-		// Возвращает тип данных для локальной переменной
+		// Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РёРї РґР°РЅРЅС‹С… РґР»СЏ Р»РѕРєР°Р»СЊРЅРѕР№ РїРµСЂРµРјРµРЅРЅРѕР№
 		CType* GetFieldType( std::string& fieldName );
 
 		
 
 	private:
-		std::string name; // имя класса
-		std::string baseClassName; // базовый класс, если используется
-		bool isDerived; // унаследован ли этот класс от какого-то другого класса
+		std::string name; // РёРјСЏ РєР»Р°СЃСЃР°
+		std::string baseClassName; // Р±Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ, РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ
+		bool isDerived; // СѓРЅР°СЃР»РµРґРѕРІР°РЅ Р»Рё СЌС‚РѕС‚ РєР»Р°СЃСЃ РѕС‚ РєР°РєРѕРіРѕ-С‚Рѕ РґСЂСѓРіРѕРіРѕ РєР»Р°СЃСЃР°
 
-		std::map < std::string, CVariableInformation* > fields; // поля класса
-		std::map < std::string, CMethodInformation* > methods; // методы класса
+		std::map < std::string, CVariableInformation* > fields; // РїРѕР»СЏ РєР»Р°СЃСЃР°
+		std::map < std::string, CMethodInformation* > methods; // РјРµС‚РѕРґС‹ РєР»Р°СЃСЃР°
 	};
 
-	// Информация о методе класса
+	// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РјРµС‚РѕРґРµ РєР»Р°СЃСЃР°
 	class CMethodInformation {
 	public:
 		CMethodInformation( std::string _name ) : name( _name ) {};
@@ -79,21 +79,21 @@ namespace CSymbolsTable {
 		bool AddParameter( CVariableInformation* param );
 		bool AddLocalVariable( CVariableInformation* variable );
 
-		// Возвращает информацию о типе аргумента, null, если такого аргумента нет
+		// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РёРїРµ Р°СЂРіСѓРјРµРЅС‚Р°, null, РµСЃР»Рё С‚Р°РєРѕРіРѕ Р°СЂРіСѓРјРµРЅС‚Р° РЅРµС‚
 		CType* GetArgumentType( std::string& argumentName );
-		// Аналогично и для локальных переменных метода
+		// РђРЅР°Р»РѕРіРёС‡РЅРѕ Рё РґР»СЏ Р»РѕРєР°Р»СЊРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С… РјРµС‚РѕРґР°
 		CType* GetLocalVariableType( std::string& variableName );
 
 	private:
-		std::string name; // имя метода
+		std::string name; // РёРјСЏ РјРµС‚РѕРґР°
 
-		std::map < std::string, CVariableInformation* > methodParameters; // параметры метода
-		std::map < std::string, CVariableInformation* > localVariables; // локальные переменные метода
+		std::map < std::string, CVariableInformation* > methodParameters; // РїР°СЂР°РјРµС‚СЂС‹ РјРµС‚РѕРґР°
+		std::map < std::string, CVariableInformation* > localVariables; // Р»РѕРєР°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ РјРµС‚РѕРґР°
 
-		CType* returnType; // тип данных, который возвращается
+		CType* returnType; // С‚РёРї РґР°РЅРЅС‹С…, РєРѕС‚РѕСЂС‹Р№ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ
 	};
 
-	// Информация о имени и типе данных (переменная метода или поле класса)
+	// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РёРјРµРЅРё Рё С‚РёРїРµ РґР°РЅРЅС‹С… (РїРµСЂРµРјРµРЅРЅР°СЏ РјРµС‚РѕРґР° РёР»Рё РїРѕР»Рµ РєР»Р°СЃСЃР°)
 	class CVariableInformation {
 	public:
 		CVariableInformation(CType* _type, std::string _name) : type(_type), name( _name ){};
@@ -101,7 +101,7 @@ namespace CSymbolsTable {
 
 		CType* GetType() { return type; };
 	private:
-		std::string name; // имя переменной
-		CType* type; // тип данных
+		std::string name; // РёРјСЏ РїРµСЂРµРјРµРЅРЅРѕР№
+		CType* type; // С‚РёРї РґР°РЅРЅС‹С…
 	};
 }

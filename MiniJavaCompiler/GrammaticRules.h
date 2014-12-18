@@ -1,5 +1,5 @@
 /*
-* Для каждого правила нетерминала создаём класс
+* Р”Р»СЏ РєР°Р¶РґРѕРіРѕ РїСЂР°РІРёР»Р° РЅРµС‚РµСЂРјРёРЅР°Р»Р° СЃРѕР·РґР°С‘Рј РєР»Р°СЃСЃ
 */
 #pragma once
 #include "GrammaticSymbols.h"
@@ -8,7 +8,7 @@
 #include "CoordinatesHolder.h"
 #include <vector>
 
-// Вся программа
+// Р’СЃСЏ РїСЂРѕРіСЂР°РјРјР°
 class CProgram : public IProgram, public CCoordinatesHolder
 {
 public:
@@ -18,11 +18,11 @@ public:
 	IMainClassDeclaration* GetMainClassDeclaration() const { return mainClassDeclaration; };
 	IClassDeclaration* GetClassDeclarationsList() const { return classDeclarationsList; };
 private:
-	IMainClassDeclaration *mainClassDeclaration; // объявление главного класса
-	IClassDeclaration *classDeclarationsList; // список объявлений классов
+	IMainClassDeclaration *mainClassDeclaration; // РѕР±СЉСЏРІР»РµРЅРёРµ РіР»Р°РІРЅРѕРіРѕ РєР»Р°СЃСЃР°
+	IClassDeclaration *classDeclarationsList; // СЃРїРёСЃРѕРє РѕР±СЉСЏРІР»РµРЅРёР№ РєР»Р°СЃСЃРѕРІ
 };
 
-// Определение главного класса
+// РћРїСЂРµРґРµР»РµРЅРёРµ РіР»Р°РІРЅРѕРіРѕ РєР»Р°СЃСЃР°
 class CMainClassDeclaration : public IMainClassDeclaration, public CCoordinatesHolder
 {
 public:
@@ -35,12 +35,12 @@ public:
 	IStatement* GetClassStatements() const { return statement; };
 
 private:
-	CIdentifier *className; // Название класса
-	CIdentifier *argumentName; // Имя аргумента
-	IStatement *statement; // Тело класса 
+	CIdentifier *className; // РќР°Р·РІР°РЅРёРµ РєР»Р°СЃСЃР°
+	CIdentifier *argumentName; // РРјСЏ Р°СЂРіСѓРјРµРЅС‚Р°
+	IStatement *statement; // РўРµР»Рѕ РєР»Р°СЃСЃР° 
 };
 
-// Определение класса
+// РћРїСЂРµРґРµР»РµРЅРёРµ РєР»Р°СЃСЃР°
 class CClassDeclaration : public IClassDeclaration, public CCoordinatesHolder
 {
 public:
@@ -54,12 +54,12 @@ public:
 	IMethodDeclaration* GetMethodsList() const { return methodsList; };
 
 private:
-	CIdentifier *className; // Название класса
-	IVariableDeclaration *fieldsList; // Список полей класса
-	IMethodDeclaration *methodsList; // Перечисление методов 
+	CIdentifier *className; // РќР°Р·РІР°РЅРёРµ РєР»Р°СЃСЃР°
+	IVariableDeclaration *fieldsList; // РЎРїРёСЃРѕРє РїРѕР»РµР№ РєР»Р°СЃСЃР°
+	IMethodDeclaration *methodsList; // РџРµСЂРµС‡РёСЃР»РµРЅРёРµ РјРµС‚РѕРґРѕРІ 
 };
 
-// Список определений классов
+// РЎРїРёСЃРѕРє РѕРїСЂРµРґРµР»РµРЅРёР№ РєР»Р°СЃСЃРѕРІ
 class CClassDeclarationList : public IClassDeclaration, public CCoordinatesHolder
 {
 public:
@@ -71,11 +71,11 @@ public:
 	IClassDeclaration *GetNextClassDeclaration() const { return nextClassDeclaration; };
 
 private:
-	IClassDeclaration *classDeclaration; // связанные данные элемента списка
-	IClassDeclaration *nextClassDeclaration; // ссылка на следующий элемент
+	IClassDeclaration *classDeclaration; // СЃРІСЏР·Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР°
+	IClassDeclaration *nextClassDeclaration; // СЃСЃС‹Р»РєР° РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚
 };
 
-// Определение класса, который наследуется от существующего
+// РћРїСЂРµРґРµР»РµРЅРёРµ РєР»Р°СЃСЃР°, РєРѕС‚РѕСЂС‹Р№ РЅР°СЃР»РµРґСѓРµС‚СЃСЏ РѕС‚ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ
 class CClassExtendsDeclaration : public IClassDeclaration, public CCoordinatesHolder
 {
 public:
@@ -88,13 +88,13 @@ public:
 	IVariableDeclaration* GetFieldsList() const { return fieldsList; };
 	IMethodDeclaration* GetMethodsList() const { return methodsList; };
 private:
-	CIdentifier *className; // Название класса
-	CIdentifier *superClassName; // Название класса, от которого происходит наследование
-	IVariableDeclaration *fieldsList; // Список полей класса
-	IMethodDeclaration *methodsList; // Перечисление методов 
+	CIdentifier *className; // РќР°Р·РІР°РЅРёРµ РєР»Р°СЃСЃР°
+	CIdentifier *superClassName; // РќР°Р·РІР°РЅРёРµ РєР»Р°СЃСЃР°, РѕС‚ РєРѕС‚РѕСЂРѕРіРѕ РїСЂРѕРёСЃС…РѕРґРёС‚ РЅР°СЃР»РµРґРѕРІР°РЅРёРµ
+	IVariableDeclaration *fieldsList; // РЎРїРёСЃРѕРє РїРѕР»РµР№ РєР»Р°СЃСЃР°
+	IMethodDeclaration *methodsList; // РџРµСЂРµС‡РёСЃР»РµРЅРёРµ РјРµС‚РѕРґРѕРІ 
 };
 
-// Определение переменной
+// РћРїСЂРµРґРµР»РµРЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№
 class CVariableDeclaration : public IVariableDeclaration, public CCoordinatesHolder
 {
 public:
@@ -105,11 +105,11 @@ public:
 	std::string GetName() const { return variableName->getString(); };
 	IType* GetType() const { return type;  };
 private:
-	IType *type; // тип данных
-	CIdentifier *variableName; // имя переменной	
+	IType *type; // С‚РёРї РґР°РЅРЅС‹С…
+	CIdentifier *variableName; // РёРјСЏ РїРµСЂРµРјРµРЅРЅРѕР№	
 };
 
-// Список определений переменных
+// РЎРїРёСЃРѕРє РѕРїСЂРµРґРµР»РµРЅРёР№ РїРµСЂРµРјРµРЅРЅС‹С…
 class CVariableDeclarationList : public IVariableDeclaration, public CCoordinatesHolder
 {
 public:
@@ -121,11 +121,11 @@ public:
 	IVariableDeclaration* GetVariableDeclaration() const { return variableDeclaration; };
 
 private:
-	IVariableDeclaration *variableDeclaration; // связанные данные
-	CVariableDeclarationList *nextVariableDeclaration; // ссылка на следующий элемент
+	IVariableDeclaration *variableDeclaration; // СЃРІСЏР·Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
+	CVariableDeclarationList *nextVariableDeclaration; // СЃСЃС‹Р»РєР° РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚
 };
 
-// Определение метода
+// РћРїСЂРµРґРµР»РµРЅРёРµ РјРµС‚РѕРґР°
 class CMethodDeclaration : public IMethodDeclaration, public CCoordinatesHolder
 {
 public:
@@ -143,15 +143,15 @@ public:
 	IExpression* GetReturnExpression() const { return returnExpression; };
 
 private:
-	IType *type; // тип данных, который возвращает этот тип
-	CIdentifier *methodName; // имя метода
-	IFormalList *formalList; // перечисление аргументов
-	IVariableDeclaration *localVariablesList; // локальные переменные метода
-	IStatement *statementList; // непосредственно код метода
-	IExpression *returnExpression; // значение, которое будет возвращаться методом
+	IType *type; // С‚РёРї РґР°РЅРЅС‹С…, РєРѕС‚РѕСЂС‹Р№ РІРѕР·РІСЂР°С‰Р°РµС‚ СЌС‚РѕС‚ С‚РёРї
+	CIdentifier *methodName; // РёРјСЏ РјРµС‚РѕРґР°
+	IFormalList *formalList; // РїРµСЂРµС‡РёСЃР»РµРЅРёРµ Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	IVariableDeclaration *localVariablesList; // Р»РѕРєР°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ РјРµС‚РѕРґР°
+	IStatement *statementList; // РЅРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РєРѕРґ РјРµС‚РѕРґР°
+	IExpression *returnExpression; // Р·РЅР°С‡РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ Р±СѓРґРµС‚ РІРѕР·РІСЂР°С‰Р°С‚СЊСЃСЏ РјРµС‚РѕРґРѕРј
 };
 
-// Список определений методов
+// РЎРїРёСЃРѕРє РѕРїСЂРµРґРµР»РµРЅРёР№ РјРµС‚РѕРґРѕРІ
 class CMethodDeclarationList : public IMethodDeclaration, public CCoordinatesHolder
 {
 public:
@@ -163,11 +163,11 @@ public:
 	IMethodDeclaration* GetNextMethodDeclaration() const { return nextMethodDeclaration; };
 
 private:
-	IMethodDeclaration *methodDeclaration; // определение метода (связанные данные)
-	IMethodDeclaration *nextMethodDeclaration; // ссылка на следующее определение метода
+	IMethodDeclaration *methodDeclaration; // РѕРїСЂРµРґРµР»РµРЅРёРµ РјРµС‚РѕРґР° (СЃРІСЏР·Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ)
+	IMethodDeclaration *nextMethodDeclaration; // СЃСЃС‹Р»РєР° РЅР° СЃР»РµРґСѓСЋС‰РµРµ РѕРїСЂРµРґРµР»РµРЅРёРµ РјРµС‚РѕРґР°
 };
 
-// Список параметров метода
+// РЎРїРёСЃРѕРє РїР°СЂР°РјРµС‚СЂРѕРІ РјРµС‚РѕРґР°
 class CFormalList : public IFormalList, public CCoordinatesHolder
 {
 public:
@@ -179,10 +179,10 @@ public:
 	IType* GetType() const { return type; };
 
 private:
-	IType *type; // тип переменной
-	CIdentifier *parameterName; // имя переменной
-	// std::vector<IFormalRest> *formalRest; // указатель на остаток списка
-	// IFormalList *nextInList; // следующий параметр в списке
+	IType *type; // С‚РёРї РїРµСЂРµРјРµРЅРЅРѕР№
+	CIdentifier *parameterName; // РёРјСЏ РїРµСЂРµРјРµРЅРЅРѕР№
+	// std::vector<IFormalRest> *formalRest; // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РѕСЃС‚Р°С‚РѕРє СЃРїРёСЃРєР°
+	// IFormalList *nextInList; // СЃР»РµРґСѓСЋС‰РёР№ РїР°СЂР°РјРµС‚СЂ РІ СЃРїРёСЃРєРµ
 };
 
 class CFormalRestList : public IFormalList, public CCoordinatesHolder
@@ -196,12 +196,12 @@ public:
 	IFormalList* GetNextFormalRest() const { return nextFormalRest; };
 
 private:
-	IFormalList *formalRest; // параметр
-	IFormalList *nextFormalRest; // следующий параметр
+	IFormalList *formalRest; // РїР°СЂР°РјРµС‚СЂ
+	IFormalList *nextFormalRest; // СЃР»РµРґСѓСЋС‰РёР№ РїР°СЂР°РјРµС‚СЂ
 };
 
 /*
-// Пустой список параметров метода
+// РџСѓСЃС‚РѕР№ СЃРїРёСЃРѕРє РїР°СЂР°РјРµС‚СЂРѕРІ РјРµС‚РѕРґР°
 class CEmptyFormalList : public IFormalList, public CCoordinatesHolder
 {
 public:
@@ -210,26 +210,26 @@ public:
 */
 
 /*
-// "Хвостовой" элемент перечисления параметров метода
+// "РҐРІРѕСЃС‚РѕРІРѕР№" СЌР»РµРјРµРЅС‚ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РјРµС‚РѕРґР°
 class CFormalRest : public IFormalRest, public CCoordinatesHolder
 {
 public:
 	CFormalRest( IType *_type, CIdentifier *_parameterName ) :
 		type( _type ), parameterName( _parameterName ) { };
 private:
-	IType *type; // тип переменной
-	CIdentifier *parameterName; // имя переменной
+	IType *type; // С‚РёРї РїРµСЂРµРјРµРЅРЅРѕР№
+	CIdentifier *parameterName; // РёРјСЏ РїРµСЂРµРјРµРЅРЅРѕР№
 };
 */
 
-// Перечисление встроенных типов данных
+// РџРµСЂРµС‡РёСЃР»РµРЅРёРµ РІСЃС‚СЂРѕРµРЅРЅС‹С… С‚РёРїРѕРІ РґР°РЅРЅС‹С…
 enum TBuiltInType {
 	BT_INTEGER,
 	BT_INTEGER_ARRAY,
 	BT_BOOLEAN
 };
 
-// Класс, задающий встроенный тип данных
+// РљР»Р°СЃСЃ, Р·Р°РґР°СЋС‰РёР№ РІСЃС‚СЂРѕРµРЅРЅС‹Р№ С‚РёРї РґР°РЅРЅС‹С…
 class CBuiltInType : public IType, public CCoordinatesHolder {
 public:
 	CBuiltInType( const YYLTYPE& yylloc, TBuiltInType _type ) : CCoordinatesHolder( yylloc ), type( _type ) {};
@@ -240,7 +240,7 @@ private:
 	TBuiltInType type;
 };
 
-// Класс, задающий пользовательский тип данных
+// РљР»Р°СЃСЃ, Р·Р°РґР°СЋС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ С‚РёРї РґР°РЅРЅС‹С…
 class CUserType : public IType, public CCoordinatesHolder {
 public:
 	CUserType( const YYLTYPE& yylloc, CIdentifier *_typeName ) : CCoordinatesHolder( yylloc ), typeName( _typeName ) { };
@@ -248,11 +248,11 @@ public:
 
 	std::string GetTypeName() const { return typeName->getString(); }
 private:
-	CIdentifier *typeName; // название класса
+	CIdentifier *typeName; // РЅР°Р·РІР°РЅРёРµ РєР»Р°СЃСЃР°
 };
 
-/* ОПЕРАТОРЫ */
-// Построение списка операторов
+/* РћРџР•Р РђРўРћР Р« */
+// РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃРїРёСЃРєР° РѕРїРµСЂР°С‚РѕСЂРѕРІ
 class CStatementList : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -264,11 +264,11 @@ public:
 	IStatement* GetNextStatement() const { return nextStatement; };
 
 private:
-	IStatement *statement; // целевые данные элемента
-	IStatement *nextStatement; // следующий элемент списка
+	IStatement *statement; // С†РµР»РµРІС‹Рµ РґР°РЅРЅС‹Рµ СЌР»РµРјРµРЅС‚Р°
+	IStatement *nextStatement; // СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР°
 };
 
-// Перечисление операторов в блоке кода
+// РџРµСЂРµС‡РёСЃР»РµРЅРёРµ РѕРїРµСЂР°С‚РѕСЂРѕРІ РІ Р±Р»РѕРєРµ РєРѕРґР°
 class CStatementBlock : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -278,10 +278,10 @@ public:
 	IStatement* GetStatementList() const { return statementsList; };
 
 private:
-	IStatement *statementsList; // операторы в данном блоке
+	IStatement *statementsList; // РѕРїРµСЂР°С‚РѕСЂС‹ РІ РґР°РЅРЅРѕРј Р±Р»РѕРєРµ
 };
 
-// Условный оператор
+// РЈСЃР»РѕРІРЅС‹Р№ РѕРїРµСЂР°С‚РѕСЂ
 class CIfStatement : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -295,12 +295,12 @@ public:
 	IExpression* GetCondition() const { return condition; };
 
 private:
-	IExpression *condition; // условие, которое должно выполняться
-	IStatement *trueStatement; // оператор, выполняемый при истинном условии
-	IStatement *falseStatement; // оператор, выполняемый при ложном условии
+	IExpression *condition; // СѓСЃР»РѕРІРёРµ, РєРѕС‚РѕСЂРѕРµ РґРѕР»Р¶РЅРѕ РІС‹РїРѕР»РЅСЏС‚СЊСЃСЏ
+	IStatement *trueStatement; // РѕРїРµСЂР°С‚РѕСЂ, РІС‹РїРѕР»РЅСЏРµРјС‹Р№ РїСЂРё РёСЃС‚РёРЅРЅРѕРј СѓСЃР»РѕРІРёРё
+	IStatement *falseStatement; // РѕРїРµСЂР°С‚РѕСЂ, РІС‹РїРѕР»РЅСЏРµРјС‹Р№ РїСЂРё Р»РѕР¶РЅРѕРј СѓСЃР»РѕРІРёРё
 };
 
-// Оператор while
+// РћРїРµСЂР°С‚РѕСЂ while
 class CWhileStatement : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -312,11 +312,11 @@ public:
 	IExpression* GetCondition() const { return condition; };
 
 private:
-	IExpression *condition; // условие, которое должно выполняться
-	IStatement *trueStatement; // оператор, выполняемый при истинном условии
+	IExpression *condition; // СѓСЃР»РѕРІРёРµ, РєРѕС‚РѕСЂРѕРµ РґРѕР»Р¶РЅРѕ РІС‹РїРѕР»РЅСЏС‚СЊСЃСЏ
+	IStatement *trueStatement; // РѕРїРµСЂР°С‚РѕСЂ, РІС‹РїРѕР»РЅСЏРµРјС‹Р№ РїСЂРё РёСЃС‚РёРЅРЅРѕРј СѓСЃР»РѕРІРёРё
 };
 
-// Оператор печати
+// РћРїРµСЂР°С‚РѕСЂ РїРµС‡Р°С‚Рё
 class CPrintStatement : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -326,10 +326,10 @@ public:
 
 	IExpression* GetExpression() const { return expressionToPrint; };
 private:
-	IExpression *expressionToPrint; // выражение, значение которого будет печататься
+	IExpression *expressionToPrint; // РІС‹СЂР°Р¶РµРЅРёРµ, Р·РЅР°С‡РµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ Р±СѓРґРµС‚ РїРµС‡Р°С‚Р°С‚СЊСЃСЏ
 };
 
-// Операция присваивания
+// РћРїРµСЂР°С†РёСЏ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
 class CAssignmentStatement : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -340,11 +340,11 @@ public:
 	std::string GetVariableName() const { return variableName->getString(); };
 	IExpression* GetRightValue() const { return rightValue; };
 private:
-	CIdentifier *variableName; // имя переменной, которой будет присваиваться значение
-	IExpression *rightValue; // присваиваемое значение
+	CIdentifier *variableName; // РёРјСЏ РїРµСЂРµРјРµРЅРЅРѕР№, РєРѕС‚РѕСЂРѕР№ Р±СѓРґРµС‚ РїСЂРёСЃРІР°РёРІР°С‚СЊСЃСЏ Р·РЅР°С‡РµРЅРёРµ
+	IExpression *rightValue; // РїСЂРёСЃРІР°РёРІР°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ
 };
 
-// Операция присваивания элементу массива
+// РћРїРµСЂР°С†РёСЏ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ СЌР»РµРјРµРЅС‚Сѓ РјР°СЃСЃРёРІР°
 class CArrayElementAssignmentStatement : public IStatement, public CCoordinatesHolder
 {
 public:
@@ -357,19 +357,19 @@ public:
 	IExpression* GetRightValue() const { return rightValue; };
 
 private:
-	CIdentifier *arrayName; // имя массива
-	IExpression *indexExpression; // индекс массива
-	IExpression *rightValue; // присваиваемое значение
+	CIdentifier *arrayName; // РёРјСЏ РјР°СЃСЃРёРІР°
+	IExpression *indexExpression; // РёРЅРґРµРєСЃ РјР°СЃСЃРёРІР°
+	IExpression *rightValue; // РїСЂРёСЃРІР°РёРІР°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ
 };
 
-/* ВЫРАЖЕНИЯ */
-// Бинарная операция
+/* Р’Р«Р РђР–Р•РќРРЇ */
+// Р‘РёРЅР°СЂРЅР°СЏ РѕРїРµСЂР°С†РёСЏ
 enum TBinaryOperator {
-	BO_PLUS,		// сумма
-	BO_MINUS,		// разность
-	BO_MULTIPLY,	// произведение
-	BO_LESS,		// меньше
-	BO_LOGICAL_AND,	// логическое "И"
+	BO_PLUS,		// СЃСѓРјРјР°
+	BO_MINUS,		// СЂР°Р·РЅРѕСЃС‚СЊ
+	BO_MULTIPLY,	// РїСЂРѕРёР·РІРµРґРµРЅРёРµ
+	BO_LESS,		// РјРµРЅСЊС€Рµ
+	BO_LOGICAL_AND,	// Р»РѕРіРёС‡РµСЃРєРѕРµ "Р"
 };
 
 class CBinaryOperatorExpression : public IExpression, public CCoordinatesHolder
@@ -384,12 +384,12 @@ public:
 	TBinaryOperator GetOperator() const { return binaryOperator;  };
 
 private:
-	IExpression *leftValue; // значение слева
-	IExpression *rightValue; // значение справа
+	IExpression *leftValue; // Р·РЅР°С‡РµРЅРёРµ СЃР»РµРІР°
+	IExpression *rightValue; // Р·РЅР°С‡РµРЅРёРµ СЃРїСЂР°РІР°
 	TBinaryOperator binaryOperator;
 };
 
-// Операция доступа к элементу массива
+// РћРїРµСЂР°С†РёСЏ РґРѕСЃС‚СѓРїР° Рє СЌР»РµРјРµРЅС‚Сѓ РјР°СЃСЃРёРІР°
 class CIndexAccessExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -400,11 +400,11 @@ public:
 	IExpression* GetArrayExpression() const { return arrayExpression; };
 	IExpression* GetIndex() const { return index; };
 private:
-	IExpression *arrayExpression; // массив, к которому хотим обратиться
-	IExpression *index; // индекс элемента
+	IExpression *arrayExpression; // РјР°СЃСЃРёРІ, Рє РєРѕС‚РѕСЂРѕРјСѓ С…РѕС‚РёРј РѕР±СЂР°С‚РёС‚СЊСЃСЏ
+	IExpression *index; // РёРЅРґРµРєСЃ СЌР»РµРјРµРЅС‚Р°
 };
 
-// Получение длины массива
+// РџРѕР»СѓС‡РµРЅРёРµ РґР»РёРЅС‹ РјР°СЃСЃРёРІР°
 class CLengthExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -413,10 +413,10 @@ public:
 
 	IExpression* GetArray() const { return arrayExpression; };
 private:
-	IExpression *arrayExpression; // массив, к которому хотим обратиться
+	IExpression *arrayExpression; // РјР°СЃСЃРёРІ, Рє РєРѕС‚РѕСЂРѕРјСѓ С…РѕС‚РёРј РѕР±СЂР°С‚РёС‚СЊСЃСЏ
 };
 
-// Вызов метода объекта
+// Р’С‹Р·РѕРІ РјРµС‚РѕРґР° РѕР±СЉРµРєС‚Р°
 class CMethodCallExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -429,16 +429,16 @@ public:
 	std::string GetMethodName() const { return methodName->getString(); }
 
 private:
-	IExpression *variableExpression; // переменная или объект, у которой вызываем метод
-	CIdentifier *methodName; // имя метода, который мы вызываем
-	IExpression *expressionList; // список аргументов, которые мы передаём методу
+	IExpression *variableExpression; // РїРµСЂРµРјРµРЅРЅР°СЏ РёР»Рё РѕР±СЉРµРєС‚, Сѓ РєРѕС‚РѕСЂРѕР№ РІС‹Р·С‹РІР°РµРј РјРµС‚РѕРґ
+	CIdentifier *methodName; // РёРјСЏ РјРµС‚РѕРґР°, РєРѕС‚РѕСЂС‹Р№ РјС‹ РІС‹Р·С‹РІР°РµРј
+	IExpression *expressionList; // СЃРїРёСЃРѕРє Р°СЂРіСѓРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ РјС‹ РїРµСЂРµРґР°С‘Рј РјРµС‚РѕРґСѓ
 };
 
 enum TValueType {
 	VT_INTEGER,
 	VT_BOOLEAN
 };
-// Целочисленное и булево значение
+// Р¦РµР»РѕС‡РёСЃР»РµРЅРЅРѕРµ Рё Р±СѓР»РµРІРѕ Р·РЅР°С‡РµРЅРёРµ
 class CIntegerOrBooleanExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -450,11 +450,11 @@ public:
 	TValueType GetValueType() const { return valueType; };
 
 private:
-	int value; // значение переменной
-	TValueType valueType; // тип переменной 
+	int value; // Р·РЅР°С‡РµРЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№
+	TValueType valueType; // С‚РёРї РїРµСЂРµРјРµРЅРЅРѕР№ 
 };
 
-// Получение значения переменной
+// РџРѕР»СѓС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ РїРµСЂРµРјРµРЅРЅРѕР№
 class CIdentifierExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -463,10 +463,10 @@ public:
 
 	std::string GetVariableName() const { return variableName->getString(); };
 private:
-	CIdentifier *variableName; // имя переменной, значение которой мы хотим получить
+	CIdentifier *variableName; // РёРјСЏ РїРµСЂРµРјРµРЅРЅРѕР№, Р·РЅР°С‡РµРЅРёРµ РєРѕС‚РѕСЂРѕР№ РјС‹ С…РѕС‚РёРј РїРѕР»СѓС‡РёС‚СЊ
 };
 
-// Получение ссылки на объект по ключевому слову this
+// РџРѕР»СѓС‡РµРЅРёРµ СЃСЃС‹Р»РєРё РЅР° РѕР±СЉРµРєС‚ РїРѕ РєР»СЋС‡РµРІРѕРјСѓ СЃР»РѕРІСѓ this
 class CThisExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -474,7 +474,7 @@ public:
 	void Accept( IVisitor *visitor ) const { visitor->Visit( this ); };
 };
 
-// Создание нового массива из int
+// РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕРіРѕ РјР°СЃСЃРёРІР° РёР· int
 class CNewIntegerArrayExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -483,10 +483,10 @@ public:
 
 	IExpression* GetArraySize() const { return arraySize; };
 private:
-	IExpression *arraySize; // размер массива
+	IExpression *arraySize; // СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°
 };
 
-// Создание нового объекта определённого класса
+// РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕРіРѕ РѕР±СЉРµРєС‚Р° РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°
 class CNewObjectExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -495,10 +495,10 @@ public:
 
 	std::string GetClass() const { return className->getString(); };
 private:
-	CIdentifier *className; // класс, объект которого мы хотим создать
+	CIdentifier *className; // РєР»Р°СЃСЃ, РѕР±СЉРµРєС‚ РєРѕС‚РѕСЂРѕРіРѕ РјС‹ С…РѕС‚РёРј СЃРѕР·РґР°С‚СЊ
 };
 
-// Операция отрицания
+// РћРїРµСЂР°С†РёСЏ РѕС‚СЂРёС†Р°РЅРёСЏ
 class CNegationExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -507,10 +507,10 @@ public:
 
 	IExpression* GetArgument() const { return argument; };
 private:
-	IExpression *argument; // значение, отрицание которого мы хотим получить
+	IExpression *argument; // Р·РЅР°С‡РµРЅРёРµ, РѕС‚СЂРёС†Р°РЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ РјС‹ С…РѕС‚РёРј РїРѕР»СѓС‡РёС‚СЊ
 };
 
-// Скобки
+// РЎРєРѕР±РєРё
 class CParenthesesExpression : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -519,10 +519,10 @@ public:
 
 	IExpression* GetExpression() const { return expression; };
 private:
-	IExpression *expression; // выражение в скобках
+	IExpression *expression; // РІС‹СЂР°Р¶РµРЅРёРµ РІ СЃРєРѕР±РєР°С…
 };
 
-// Список выражений
+// РЎРїРёСЃРѕРє РІС‹СЂР°Р¶РµРЅРёР№
 class CExpressionList : public IExpression, public CCoordinatesHolder
 {
 public:
@@ -534,6 +534,6 @@ public:
 	IExpression* GetNextExpression() const { return nextExpression; };
 
 private:
-	IExpression *expression; // целевое значение элемента списка - выражение
-	IExpression *nextExpression; // следующий элемент списка
+	IExpression *expression; // С†РµР»РµРІРѕРµ Р·РЅР°С‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР° - РІС‹СЂР°Р¶РµРЅРёРµ
+	IExpression *nextExpression; // СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР°
 };

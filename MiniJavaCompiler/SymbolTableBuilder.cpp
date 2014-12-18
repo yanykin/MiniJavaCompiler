@@ -32,7 +32,7 @@ void CSymbolTableBuilder::Visit( const CMainClassDeclaration* node )
 
 void CSymbolTableBuilder::Visit( const CClassDeclaration* node )
 {
-	// Перешли в новый класс, создаём класс
+	// РџРµСЂРµС€Р»Рё РІ РЅРѕРІС‹Р№ РєР»Р°СЃСЃ, СЃРѕР·РґР°С‘Рј РєР»Р°СЃСЃ
 	currentClass = new CSymbolsTable::CClassInformation( node->GetClassName() );
 
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
@@ -47,7 +47,7 @@ void CSymbolTableBuilder::Visit( const CClassDeclaration* node )
 		methodsList->Accept( this );
 	}
 
-	// После обхода полей и методов класса добавляем его в таблицу
+	// РџРѕСЃР»Рµ РѕР±С…РѕРґР° РїРѕР»РµР№ Рё РјРµС‚РѕРґРѕРІ РєР»Р°СЃСЃР° РґРѕР±Р°РІР»СЏРµРј РµРіРѕ РІ С‚Р°Р±Р»РёС†Сѓ
 	if ( !table.AddClass( currentClass ) ) {
 		cout << "ERROR: duplicate class " << currentClass->GetName() << endl;
 		isCorrect = false;
@@ -57,7 +57,7 @@ void CSymbolTableBuilder::Visit( const CClassDeclaration* node )
 
 void CSymbolTableBuilder::Visit( const CClassExtendsDeclaration* node )
 {
-	// Перешли в новый класс, создаём класс
+	// РџРµСЂРµС€Р»Рё РІ РЅРѕРІС‹Р№ РєР»Р°СЃСЃ, СЃРѕР·РґР°С‘Рј РєР»Р°СЃСЃ
 	currentClass = new CSymbolsTable::CClassInformation( node->GetClassName(), node->GetSuperClassName() );
 
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
@@ -72,7 +72,7 @@ void CSymbolTableBuilder::Visit( const CClassExtendsDeclaration* node )
 		methodsList->Accept( this );
 	}
 
-	// После обхода полей и методов класса добавляем его в таблицу
+	// РџРѕСЃР»Рµ РѕР±С…РѕРґР° РїРѕР»РµР№ Рё РјРµС‚РѕРґРѕРІ РєР»Р°СЃСЃР° РґРѕР±Р°РІР»СЏРµРј РµРіРѕ РІ С‚Р°Р±Р»РёС†Сѓ
 	if ( !table.AddClass( currentClass ) ) {
 		cout << "ERROR: duplicate class " << currentClass->GetName() << endl;
 		isCorrect = false;
@@ -98,7 +98,7 @@ void CSymbolTableBuilder::Visit( const CVariableDeclaration* node )
 
 	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
-	// Если находимся внутри какого-то текущего метода, то добавляем как локальную переменную, иначе - как поле класса
+	// Р•СЃР»Рё РЅР°С…РѕРґРёРјСЃСЏ РІРЅСѓС‚СЂРё РєР°РєРѕРіРѕ-С‚Рѕ С‚РµРєСѓС‰РµРіРѕ РјРµС‚РѕРґР°, С‚Рѕ РґРѕР±Р°РІР»СЏРµРј РєР°Рє Р»РѕРєР°Р»СЊРЅСѓСЋ РїРµСЂРµРјРµРЅРЅСѓСЋ, РёРЅР°С‡Рµ - РєР°Рє РїРѕР»Рµ РєР»Р°СЃСЃР°
 	CSymbolsTable::CVariableInformation* var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
 	if ( currentMethod ) {
 		if ( !currentMethod->AddLocalVariable( var ) ) {
@@ -131,23 +131,23 @@ void CSymbolTableBuilder::Visit( const CVariableDeclarationList* node )
 
 void CSymbolTableBuilder::Visit( const CMethodDeclaration* node )
 {
-	// Перешли в описание метода
+	// РџРµСЂРµС€Р»Рё РІ РѕРїРёСЃР°РЅРёРµ РјРµС‚РѕРґР°
 	currentMethod = new CSymbolsTable::CMethodInformation( node->GetMethodName() );
 
-	// Переходим к возвращаемому типу
+	// РџРµСЂРµС…РѕРґРёРј Рє РІРѕР·РІСЂР°С‰Р°РµРјРѕРјСѓ С‚РёРїСѓ
 	IType* type = node->GetType();
 	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
 	currentMethod->SetReturnType( lastTypeValue );
 	lastTypeValue = NULL;
 	
-	// Определение параметров
+	// РћРїСЂРµРґРµР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ
 	IFormalList* formalList = node->GetFormalList();
 	if ( formalList ) {
 		formalList->Accept( this );
 	}
 
-	// Определение локальных переменных
+	// РћРїСЂРµРґРµР»РµРЅРёРµ Р»РѕРєР°Р»СЊРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С…
 	IVariableDeclaration* localVariableList = node->GetLocalVariablesList();
 	if ( localVariableList ) {
 		localVariableList->Accept( this );
@@ -161,7 +161,7 @@ void CSymbolTableBuilder::Visit( const CMethodDeclaration* node )
 	IExpression* returnExpression = node->GetReturnExpression();
 	returnExpression->Accept( this );
 
-	// После добавления информации о методе добавляем его в класс
+	// РџРѕСЃР»Рµ РґРѕР±Р°РІР»РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РјРµС‚РѕРґРµ РґРѕР±Р°РІР»СЏРµРј РµРіРѕ РІ РєР»Р°СЃСЃ
 	if ( !currentClass->AddMethod( currentMethod ) ) {
 		cout << "ERROR: redeclared method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
 		isCorrect = false;
@@ -185,7 +185,7 @@ void CSymbolTableBuilder::Visit( const CFormalList* node )
 	string name = node->GetParameterName();
 	IType* type = node->GetType();
 
-	// Переходим к типу
+	// РџРµСЂРµС…РѕРґРёРј Рє С‚РёРїСѓ
 	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
 	CSymbolsTable::CVariableInformation *var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
@@ -212,7 +212,7 @@ void CSymbolTableBuilder::Visit( const CFormalRestList* node )
 
 void CSymbolTableBuilder::Visit( const CBuiltInType* node )
 {
-	// Для каждого типа мы создаём новую запись
+	// Р”Р»СЏ РєР°Р¶РґРѕРіРѕ С‚РёРїР° РјС‹ СЃРѕР·РґР°С‘Рј РЅРѕРІСѓСЋ Р·Р°РїРёСЃСЊ
 	
 	switch ( node->GetType() )
 	{

@@ -70,11 +70,13 @@
     <ClCompile Include="CoordinatesHolder.cpp" />
     <ClCompile Include="GrammaticRules.h" />
     <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="lRTree.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PrettyPrinter.cpp" />
     <ClCompile Include="SymbolTableBuilder.cpp" />
     <ClCompile Include="Table.cpp" />
+    <ClCompile Include="Temp.cpp" />
     <ClCompile Include="TypeChecker.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -100,10 +102,12 @@
   <ItemGroup>
     <ClInclude Include="CoordinatesHolder.h" />
     <ClInclude Include="GrammaticSymbols.h" />
+    <ClInclude Include="lRTree.h" />
     <ClInclude Include="NonTerminalSymbols.h" />
     <ClInclude Include="PrettyPrinter.h" />
     <ClInclude Include="SymbolTableBuilder.h" />
     <ClInclude Include="Table.h" />
+    <ClInclude Include="Temp.h" />
     <ClInclude Include="TerminalSymbols.h" />
     <ClInclude Include="TypeChecker.h" />
     <ClInclude Include="Parser.hpp" />

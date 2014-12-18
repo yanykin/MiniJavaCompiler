@@ -8,7 +8,7 @@ namespace CSymbolsTable {
 	bool CTable::AddClass( CClassInformation* classInfo ) {
 		assert( classInfo );
 		std::string className = classInfo->GetName();
-		// Проверяем наличие уже существующего класса
+		// РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РєР»Р°СЃСЃР°
 		if (declaredClasses.find(className) != declaredClasses.end()) {
 			return false;
 		}

@@ -1,11 +1,11 @@
 /*
-* Описывает нетерминальные символы грамматики, каждому соответствует интерфейс (абстрактный класс)
+* РћРїРёСЃС‹РІР°РµС‚ РЅРµС‚РµСЂРјРёРЅР°Р»СЊРЅС‹Рµ СЃРёРјРІРѕР»С‹ РіСЂР°РјРјР°С‚РёРєРё, РєР°Р¶РґРѕРјСѓ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РёРЅС‚РµСЂС„РµР№СЃ (Р°Р±СЃС‚СЂР°РєС‚РЅС‹Р№ РєР»Р°СЃСЃ)
 */
 #pragma once
 #include "Visitor.h"
 // class IVisitor;
 
-// Программа - начальный символ
+// РџСЂРѕРіСЂР°РјРјР° - РЅР°С‡Р°Р»СЊРЅС‹Р№ СЃРёРјРІРѕР»
 class IProgram
 {
 public:
@@ -13,14 +13,14 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Главный класс программы
+// Р“Р»Р°РІРЅС‹Р№ РєР»Р°СЃСЃ РїСЂРѕРіСЂР°РјРјС‹
 class IMainClassDeclaration {
 public:
 	virtual ~IMainClassDeclaration() { };
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Объявление класса
+// РћР±СЉСЏРІР»РµРЅРёРµ РєР»Р°СЃСЃР°
 class IClassDeclaration
 {
 public:
@@ -28,7 +28,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Объявление переменной или поля
+// РћР±СЉСЏРІР»РµРЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№ РёР»Рё РїРѕР»СЏ
 class IVariableDeclaration
 {
 public:
@@ -36,7 +36,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Объявление метода класса
+// РћР±СЉСЏРІР»РµРЅРёРµ РјРµС‚РѕРґР° РєР»Р°СЃСЃР°
 class IMethodDeclaration
 {
 public:
@@ -44,7 +44,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Список параметров метода
+// РЎРїРёСЃРѕРє РїР°СЂР°РјРµС‚СЂРѕРІ РјРµС‚РѕРґР°
 class IFormalList
 {
 public:
@@ -52,7 +52,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Последний элемент списка параметров метода
+// РџРѕСЃР»РµРґРЅРёР№ СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР° РїР°СЂР°РјРµС‚СЂРѕРІ РјРµС‚РѕРґР°
 class IFormalRest
 {
 public:
@@ -60,7 +60,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Тип данных
+// РўРёРї РґР°РЅРЅС‹С…
 class IType
 {
 public:
@@ -68,7 +68,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Операция
+// РћРїРµСЂР°С†РёСЏ
 class IStatement
 {
 public:
@@ -76,7 +76,7 @@ public:
 	virtual void Accept( IVisitor *visitor ) const = 0;
 };
 
-// Выражение
+// Р’С‹СЂР°Р¶РµРЅРёРµ
 class IExpression
 {
 public:
@@ -85,14 +85,14 @@ public:
 };
 
 /*
-// Список выражений
+// РЎРїРёСЃРѕРє РІС‹СЂР°Р¶РµРЅРёР№
 class IExpressionList
 {
 public:
 	virtual ~IExpressionList() { };
 };
 
-// Остаток списка выражений
+// РћСЃС‚Р°С‚РѕРє СЃРїРёСЃРєР° РІС‹СЂР°Р¶РµРЅРёР№
 class IExpressionRest
 {
 public:
