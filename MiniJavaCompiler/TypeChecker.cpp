@@ -23,7 +23,7 @@ void CTypeChecker::Visit( const CProgram* node )
 
 void CTypeChecker::Visit( const CMainClassDeclaration* node )
 {
-	// Заходим в класс
+	// ??????? ? ?????
 	currentClass = table->GetClassByName( node->GetClassName() );
 	IStatement* statements = node->GetClassStatements();
 
@@ -32,13 +32,13 @@ void CTypeChecker::Visit( const CMainClassDeclaration* node )
 		statements->Accept( this );
 	}
 
-	// Выходим из класса
+	// ??????? ?? ??????
 	currentClass = NULL;
 }
 
 void CTypeChecker::Visit( const CClassDeclaration* node )
 {
-	// Заходим в класс
+	// ??????? ? ?????
 	currentClass = table->GetClassByName( node->GetClassName() );
 
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
@@ -53,13 +53,13 @@ void CTypeChecker::Visit( const CClassDeclaration* node )
 		methodsList->Accept( this );
 	}
 
-	// Выходим из класса
+	// ??????? ?? ??????
 	currentClass = NULL;
 }
 
 void CTypeChecker::Visit( const CClassExtendsDeclaration* node )
 {
-	// Заходим в класс
+	// ??????? ? ?????
 	currentClass = table->GetClassByName( node->GetClassName() );
 
 	IVariableDeclaration* fieldsList = node->GetFieldsList();
@@ -74,7 +74,7 @@ void CTypeChecker::Visit( const CClassExtendsDeclaration* node )
 		methodsList->Accept( this );
 	}
 
-	// Выходим из класса
+	// ??????? ?? ??????
 	currentClass = NULL;
 }
 
@@ -94,7 +94,7 @@ void CTypeChecker::Visit( const CVariableDeclaration* node )
 	string name = node->GetName();
 	IType* type = node->GetType();
 
-	// Проверяем наличие определённого класса
+	// ????????? ??????? ????????????? ??????
 	CType *varType;
 	if ( currentMethod ) {
 		varType = currentMethod->GetLocalVariableType( node->GetName() );
@@ -133,27 +133,27 @@ void CTypeChecker::Visit( const CVariableDeclarationList* node )
 
 void CTypeChecker::Visit( const CMethodDeclaration* node )
 {
-	// Заходим внутрь метода
+	// ??????? ?????? ??????
 	currentMethod = currentClass->GetMethodByName( node->GetMethodName() );
 
-	// Переходим к возвращаемому типу
+	// ????????? ? ????????????? ????
 	IType* type = node->GetType();
 	type->Accept( this );
 
-	// Получаем возвращаемый тип метода и проверяем его существование
+	// ???????? ???????????? ??? ?????? ? ????????? ??? ?????????????
 	CType *returnDeclaredType = currentMethod->GetReturnType();
 	if ( returnDeclaredType->type == VAR_TYPE_CLASS && !( table->GetClassByName( returnDeclaredType->className ) ) ){
 		isCorrect = false;
 		cout << "ERROR: return type in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->className << " is not declared" << endl;
 	}
 
-	// Определение параметров
+	// ??????????? ??????????
 	IFormalList* formalList = node->GetFormalList();
 	if ( formalList ) {
 		formalList->Accept( this );
 	}
 
-	// Определение локальных переменных
+	// ??????????? ????????? ??????????
 	IVariableDeclaration* localVariableList = node->GetLocalVariablesList();
 	if ( localVariableList ) {
 		localVariableList->Accept( this );
@@ -167,7 +167,7 @@ void CTypeChecker::Visit( const CMethodDeclaration* node )
 	IExpression* returnExpression = node->GetReturnExpression();
 	returnExpression->Accept( this );
 
-	// Выходим из метода
+	// ??????? ?? ??????
 	currentMethod = NULL;
 }
 
@@ -187,10 +187,10 @@ void CTypeChecker::Visit( const CFormalList* node )
 	string name = node->GetParameterName();
 	IType* type = node->GetType();
 
-	// Переходим к типу
+	// ????????? ? ????
 	type->Accept( this );
 
-	// Проверяем тип аргумента
+	// ????????? ??? ?????????
 	CType* argumentType = currentMethod->GetArgumentType( name );
 	if ( argumentType->type == VAR_TYPE_CLASS && !(table->GetClassByName(argumentType->className)) ) {
 		isCorrect = false;
@@ -260,7 +260,7 @@ void CTypeChecker::Visit( const CIfStatement* node )
 	IExpression* condition = node->GetCondition();
 
 	condition->Accept( this );
-	// Проверяем, что условие имеет булев тип
+	// ?????????, ??? ??????? ????? ????? ???
 	if ( lastTypeValue.type != VAR_TYPE_BOOLEAN ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): condition in IF statement should have boolean type" << endl;
 		isCorrect = false;
@@ -297,13 +297,13 @@ void CTypeChecker::Visit( const CPrintStatement* node )
 
 void CTypeChecker::Visit( const CAssignmentStatement* node )
 {
-	// Проверяем тип локальной переменной
+	// ????????? ??? ????????? ??????????
 	CType* leftValueType = currentMethod->GetLocalVariableType( node->GetVariableName() );
-	// Если такую локальную переменную не нашли, то ищем аргумент
+	// ???? ????? ????????? ?????????? ?? ?????, ?? ???? ????????
 	if ( !leftValueType ) {
 		leftValueType = currentMethod->GetArgumentType( node->GetVariableName() );
 	} 
-	// Если и аргумент не нашли, то ищем поле класса
+	// ???? ? ???????? ?? ?????, ?? ???? ???? ??????
 	if ( !leftValueType ) {
 		leftValueType = currentClass->GetFieldType( node->GetVariableName() );
 	}
@@ -320,9 +320,9 @@ void CTypeChecker::Visit( const CAssignmentStatement* node )
 
 void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 {
-	// Проверяем тип локальной переменной (или переданного аргумента)
+	// ????????? ??? ????????? ?????????? (??? ??????????? ?????????)
 	CType* leftValueType = currentMethod->GetArgumentType( node->GetArrayName() );
-	// Если такой аргумент не нашли, то пытаемся обратиться к полю класса
+	// ???? ????? ???????? ?? ?????, ?? ???????? ?????????? ? ???? ??????
 	if ( !leftValueType ) {
 		leftValueType = currentMethod->GetLocalVariableType( node->GetArrayName() );
 	}
@@ -341,7 +341,7 @@ void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 
 	IExpression* index = node->GetIndexExpression();
 	index->Accept( this );
-	// Проверяем тип индекса массива
+	// ????????? ??? ??????? ???????
 	if ( lastTypeValue.type != VAR_TYPE_INTEGER ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): index expression should have integer type" << endl;
 		isCorrect = false;
@@ -447,7 +447,7 @@ void CTypeChecker::Visit( const CMethodCallExpression* node )
 		cout << "ERROR: class instance is expected" << endl;
 	}
 	else {
-		// Проверяем тип
+		// ????????? ???
 		CClassInformation *info = table->GetClassByName( lastTypeValue.className );
 		if ( !info ) {
 			cout << "ERROR: class " << lastTypeValue.className << " is not declared" << endl;
@@ -485,7 +485,7 @@ void CTypeChecker::Visit( const CIntegerOrBooleanExpression* node )
 
 void CTypeChecker::Visit( const CIdentifierExpression* node )
 {
-	// В порядке очерёдности: локальная переменная, аргумент функции, поле класса
+	// ? ??????? ???????????: ????????? ??????????, ???????? ???????, ???? ??????
 	CType *type = currentMethod->GetLocalVariableType( node->GetVariableName() );
 	if ( !type ) {
 		type = currentMethod->GetArgumentType( node->GetVariableName() );
