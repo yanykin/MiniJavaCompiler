@@ -4,7 +4,7 @@
 #pragma once
 #include "Temp.h"
 
-namespace lRTree
+namespace IRTree
 {
 	class IStm {};
 	class IExp {};
@@ -46,13 +46,13 @@ namespace lRTree
 	class CExpList
 	{
 	public:
-		CExpList( IExp head, CExpList tail );
+		CExpList( const IExp* head, const CExpList* tail );
 	};
 	
 	class CStmList
 	{
 	public:
-		CStmList( IStm head, CStmList tail );
+		CStmList( const IStm* head, const CStmList* tail );
 	};
 
 	// классы растущие из IExp
@@ -64,75 +64,74 @@ namespace lRTree
 	class NAME : public IExp
 	{
 	public:
-		NAME( Temp::CLabel label );
+		NAME( const Temp::CLabel* label );
 	};
 
 	class TEMP : public IExp
 	{
 	public:
-		TEMP( Temp::CTemp temp );
+		TEMP( const Temp::CTemp* temp );
 	};
 
 	class BINOP : public IExp
 	{
 	public:
-		BINOP( TBinop binop, IExp left, IExp right );
-		
+		BINOP( const TBinop binop, const IExp* left, const IExp* right );
 	};
 
 	class MEM : public IExp
 	{
 	public:
-		MEM( IExp exp );
+		MEM( const IExp* exp );
 	};
 
 	class CALL : public IExp
 	{
 	public:
-		CALL( IExp func, CExpList args );
+		CALL( const IExp* func, const CExpList* args );
 	};
 
 	class ESEQ : public IExp
 	{
 	public:
-		ESEQ( IStm stm, IExp exp );
+		ESEQ( const IStm* stm, const IExp* exp );
 	};
 
 	// классы растущие из IStm
 	class MOVE : public IStm
 	{
 	public:
-		MOVE( IExp dst, IExp src );
+		MOVE( const IExp* dst, const IExp* src );
 	};
 
 	class EXP : public IStm
 	{
 	public:
-		EXP( IExp exp );
+		EXP( const IExp* exp );
 	};
 	
 	class JUMP : public IStm
 	{
 	public:
-		JUMP( IExp exp, Temp::CLabelList targets );
+		JUMP( const IExp* exp, const Temp::CLabelList* targets );
 	};
 
 	class CJUMP : public IStm
 	{
 	public:
-		CJUMP( TCJump relop, IExp left, IExp right, Temp::CLabel iftrue, Temp::CLabel iffalse );
+		CJUMP( TCJump relop, const IExp* left, const IExp* right, const Temp::CLabel* iftrue, const Temp::CLabel* iffalse );
 	};
 
 	class SEQ : public IStm
 	{
 	public:
-		SEQ( IStm left, IStm right );
+		SEQ( const IStm* left, const IStm* right );
 	};
 
 	class LABEL : public IStm
 	{
 	public:
-		LABEL( Temp::CLabel label );
+		LABEL( const Temp::CLabel* label );
 	};
 };
 
