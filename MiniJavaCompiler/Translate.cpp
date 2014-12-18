@@ -5,7 +5,7 @@ using namespace Translate;
 
 const IRTree::IStm* CExpConverter::ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const
 {
-	/*пример для выражения:
+	/*РїСЂРёРјРµСЂ РґР»СЏ РІС‹СЂР°Р¶РµРЅРёСЏ:
 
 	if ( a < b && c < d ) {
 		// true block
@@ -14,7 +14,7 @@ const IRTree::IStm* CExpConverter::ToConditional( const Temp::CLabel* t, const T
 	}
 	
 	*/
-	// TODO: получить соотственно все Exp и знаки
+	// TODO: РїРѕР»СѓС‡РёС‚СЊ СЃРѕРѕС‚СЃС‚РІРµРЅРЅРѕ РІСЃРµ Exp Рё Р·РЅР°РєРё
 	Temp::CLabel* z = new Temp::CLabel();
 	IRTree::IExp *a, *b, *c, *d;
 	return new IRTree::SEQ( new IRTree::CJUMP( IRTree::CJ_LT, a, b, z, f ), new IRTree::SEQ( new IRTree::LABEL( z ), new IRTree::CJUMP( IRTree::CJ_LT, c, d, t, f ) ) );
