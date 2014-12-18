@@ -16,15 +16,12 @@
     <Filter Include="LexFiles">
       <UniqueIdentifier>{10e1975c-5b8c-4335-88af-3be44a8b04ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LexHCpp">
+      <UniqueIdentifier>{efb073cc-8b61-413b-b233-014fd9b29976}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Lexer.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Parser.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="GrammaticRules.h">
@@ -42,8 +39,16 @@
     <ClCompile Include="TypeChecker.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="CoordinatesHolder.cpp">
       <Filter>Файлы исходного кода</Filter>
+=======
+    <ClCompile Include="Lexer.cpp">
+      <Filter>LexHCpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>LexHCpp</Filter>
+>>>>>>> baccc92f92151f8e76f5193f729ad36bda6759ba
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,9 +60,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Parser.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="GrammaticSymbols.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -84,10 +86,11 @@
     </ClInclude>
     <ClInclude Include="CoordinatesHolder.h">
       <Filter>Заголовочные файлы</Filter>
+    <ClInclude Include="Parser.hpp">
+      <Filter>LexHCpp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parser.output" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
