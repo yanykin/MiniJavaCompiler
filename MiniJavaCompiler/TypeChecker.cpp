@@ -13,6 +13,9 @@ void CTypeChecker::Visit( const CProgram* node )
 		mainClass->Accept( this );
 	}
 
+
+
+
 	IClassDeclaration* classDeclarations = node->GetClassDeclarationsList();
 	if ( classDeclarations )
 	{
