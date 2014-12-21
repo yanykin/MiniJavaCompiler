@@ -52,7 +52,7 @@ private:
 
 	CSymbolsTable::CClassInformation* currentClass; // Текущий класс, в котором находится посетитель
 	CSymbolsTable::CMethodInformation* currentMethod; // Текущий метод
-	CSymbolsTable::CType* lastTypeValue; // Переменная состояния
+	std::string lastTypeValue; // Переменная состояния
 
 	CSymbolsTable::CTable table; // таблица, которую мы строим
 };

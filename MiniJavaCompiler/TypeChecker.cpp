@@ -95,7 +95,7 @@ void CTypeChecker::Visit( const CVariableDeclaration* node )
 	IType* type = node->GetType();
 
 	// Проверяем наличие определённого класса
-	CType *varType;
+	Symbol::CSymbol *varType;
 	if ( currentMethod ) {
 		varType = currentMethod->GetLocalVariableType( node->GetName() );
 	}
@@ -103,15 +103,15 @@ void CTypeChecker::Visit( const CVariableDeclaration* node )
 		varType = currentClass->GetFieldType( node->GetName() );
 	}
 	
-	CClassInformation* info = table->GetClassByName( varType->className );
+	CClassInformation* info = table->GetClassByName( varType->GetString() );
 
-	if ( varType->type == VAR_TYPE_CLASS && !info ) {
+	if ( !IsLastTypeBuiltIn(varType) && !info ) {
 		isCorrect = false;
 		if ( currentMethod ) {
-			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() <<  "): local variable " << name << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << varType->className << " is not declared" << endl;
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() <<  "): local variable " << name << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << varType->GetString() << " is not declared" << endl;
 		}
 		else {
-			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): field " << name << " in class " << currentClass->GetName() << ": class " << varType->className << " is not declared" << endl;
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): field " << name << " in class " << currentClass->GetName() << ": class " << varType->GetString() << " is not declared" << endl;
 		}
 		
 	}
@@ -141,10 +141,10 @@ void CTypeChecker::Visit( const CMethodDeclaration* node )
 	type->Accept( this );
 
 	// Получаем возвращаемый тип метода и проверяем его существование
-	CType *returnDeclaredType = currentMethod->GetReturnType();
-	if ( returnDeclaredType->type == VAR_TYPE_CLASS && !( table->GetClassByName( returnDeclaredType->className ) ) ){
+	Symbol::CSymbol *returnDeclaredType = currentMethod->GetReturnType();
+	if ( !IsLastTypeBuiltIn(returnDeclaredType) && !( table->GetClassByName( returnDeclaredType->GetString() ) ) ){
 		isCorrect = false;
-		cout << "ERROR: return type in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->className << " is not declared" << endl;
+		cout << "ERROR: return type in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->GetString() << " is not declared" << endl;
 	}
 
 	// Определение параметров
@@ -191,10 +191,10 @@ void CTypeChecker::Visit( const CFormalList* node )
 	type->Accept( this );
 
 	// Проверяем тип аргумента
-	CType* argumentType = currentMethod->GetArgumentType( name );
-	if ( argumentType->type == VAR_TYPE_CLASS && !(table->GetClassByName(argumentType->className)) ) {
+	Symbol::CSymbol* argumentType = currentMethod->GetArgumentType( name );
+	if ( !IsLastTypeBuiltIn(argumentType) && !(table->GetClassByName(argumentType->GetString())) ) {
 		isCorrect = false;
-		cout << "ERROR: agrument " << name << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << argumentType->className << " is not declared" << endl;
+		cout << "ERROR: agrument " << name << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << argumentType->GetString() << " is not declared" << endl;
 	}
 }
 
@@ -214,13 +214,13 @@ void CTypeChecker::Visit( const CBuiltInType* node )
 	switch ( node->GetType() )
 	{
 	case BT_BOOLEAN:
-		lastTypeValue.type = VAR_TYPE_BOOLEAN;
+		lastTypeValue = "bool";
 		break;
 	case BT_INTEGER:
-		lastTypeValue.type = VAR_TYPE_INTEGER;
+		lastTypeValue = "int";
 		break;
 	case BT_INTEGER_ARRAY:
-		lastTypeValue.type = VAR_TYPE_INTEGER_ARRAY;
+		lastTypeValue = "int[]";
 		break;
 	default:
 		break;
@@ -229,8 +229,7 @@ void CTypeChecker::Visit( const CBuiltInType* node )
 
 void CTypeChecker::Visit( const CUserType* node )
 {
-	lastTypeValue.type = VAR_TYPE_CLASS;
-	lastTypeValue.className = node->GetTypeName();
+	lastTypeValue = node->GetTypeName();
 }
 
 void CTypeChecker::Visit( const CStatementList* node )
@@ -261,7 +260,7 @@ void CTypeChecker::Visit( const CIfStatement* node )
 
 	condition->Accept( this );
 	// Проверяем, что условие имеет булев тип
-	if ( lastTypeValue.type != VAR_TYPE_BOOLEAN ) {
+	if ( lastTypeValue != "bool" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): condition in IF statement should have boolean type" << endl;
 		isCorrect = false;
 	}
@@ -277,7 +276,7 @@ void CTypeChecker::Visit( const CWhileStatement* node )
 	IStatement* statement = node->GetStatement();
 
 	condition->Accept( this );
-	if ( lastTypeValue.type != VAR_TYPE_BOOLEAN ) {
+	if ( lastTypeValue != "bool" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): condition in WHILE statement should have boolean type" << endl;
 		isCorrect = false;
 	}
@@ -288,7 +287,7 @@ void CTypeChecker::Visit( const CWhileStatement* node )
 void CTypeChecker::Visit( const CPrintStatement* node )
 {
 	IExpression *expression = node->GetExpression();
-	if ( lastTypeValue.type != VAR_TYPE_INTEGER ) {
+	if ( lastTypeValue != "int") {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): PRINT statement can print only integer expressions" << endl;
 		isCorrect = false;
 	}
@@ -298,7 +297,7 @@ void CTypeChecker::Visit( const CPrintStatement* node )
 void CTypeChecker::Visit( const CAssignmentStatement* node )
 {
 	// Проверяем тип локальной переменной
-	CType* leftValueType = currentMethod->GetLocalVariableType( node->GetVariableName() );
+	Symbol::CSymbol* leftValueType = currentMethod->GetLocalVariableType( node->GetVariableName() );
 	// Если такую локальную переменную не нашли, то ищем аргумент
 	if ( !leftValueType ) {
 		leftValueType = currentMethod->GetArgumentType( node->GetVariableName() );
@@ -311,7 +310,7 @@ void CTypeChecker::Visit( const CAssignmentStatement* node )
 	IExpression *expression = node->GetRightValue();
 	expression->Accept( this );
 
-	if ( ( leftValueType->type != lastTypeValue.type ) || ( leftValueType->type == lastTypeValue.type && leftValueType->className != lastTypeValue.className ) ) {
+	if ( leftValueType->GetString() != lastTypeValue ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): left and right values should have equal types" << endl;
 		isCorrect = false;
 	}
@@ -321,7 +320,7 @@ void CTypeChecker::Visit( const CAssignmentStatement* node )
 void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 {
 	// Проверяем тип локальной переменной (или переданного аргумента)
-	CType* leftValueType = currentMethod->GetArgumentType( node->GetArrayName() );
+	Symbol::CSymbol* leftValueType = currentMethod->GetArgumentType( node->GetArrayName() );
 	// Если такой аргумент не нашли, то пытаемся обратиться к полю класса
 	if ( !leftValueType ) {
 		leftValueType = currentMethod->GetLocalVariableType( node->GetArrayName() );
@@ -330,11 +329,11 @@ void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 	IExpression *expression = node->GetRightValue();
 	expression->Accept( this );
 
-	if ( leftValueType->type != VAR_TYPE_INTEGER_ARRAY ) {
+	if ( leftValueType->GetString() != "int[]" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): left value should have array of integers type" << endl;
 		isCorrect = false;
 	}
-	else if ( lastTypeValue.type != VAR_TYPE_INTEGER ) {
+	else if ( lastTypeValue != "int" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): right value should have integer type" << endl;
 		isCorrect = false;
 	}
@@ -342,7 +341,7 @@ void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 	IExpression* index = node->GetIndexExpression();
 	index->Accept( this );
 	// Проверяем тип индекса массива
-	if ( lastTypeValue.type != VAR_TYPE_INTEGER ) {
+	if ( lastTypeValue != "int" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): index expression should have integer type" << endl;
 		isCorrect = false;
 	}
@@ -355,10 +354,10 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 	IExpression* rightValue = node->GetRightValue();
 
 	leftValue->Accept( this );
-	TVariableType leftValueType = lastTypeValue.type;
+	std::string leftValueType = lastTypeValue;
 
 	rightValue->Accept( this );
-	TVariableType rightValueType = lastTypeValue.type;
+	std::string rightValueType = lastTypeValue;
 
 	TBinaryOperator oper = node->GetOperator();
 	switch ( oper )
@@ -369,12 +368,12 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 		case BO_MULTIPLY:
 		case BO_LOGICAL_AND:
 		{
-			if ( leftValueType != VAR_TYPE_INTEGER ) {
+			if ( leftValueType != "int" ) {
 				cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
 				cout << "Left agrument must be integer" << endl;
 				isCorrect = false;
 			}
-			else if ( rightValueType != VAR_TYPE_INTEGER ) {
+			else if ( rightValueType != "int" ) {
 				cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
 				cout << "Right agrument must be integer" << endl;
 				isCorrect = false;
@@ -389,11 +388,11 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 	case BO_PLUS:
 	case BO_MINUS:
 	case BO_MULTIPLY:
-		lastTypeValue.type = VAR_TYPE_INTEGER;
+		lastTypeValue = "int";
 		break;
 	case BO_LESS:
 	case BO_LOGICAL_AND:
-		lastTypeValue.type = VAR_TYPE_BOOLEAN;
+		lastTypeValue = "bool";
 		break;
 	default:
 		break;
@@ -406,20 +405,20 @@ void CTypeChecker::Visit( const CIndexAccessExpression* node )
 	IExpression *index = node->GetIndex();
 
 	arrayExpression->Accept( this );
-	if ( lastTypeValue.type != VAR_TYPE_INTEGER_ARRAY ) {
+	if ( lastTypeValue != "int[]" ) {
 		isCorrect = false;
 		cout << "ERROR: (" << node->GetRow() << ", " << node->GetColumn() << "): ";
 		cout << "array expression must be specified" << endl;
 	}
 
 	index->Accept( this );
-	if ( lastTypeValue.type != VAR_TYPE_INTEGER ) {
+	if ( lastTypeValue != "int" ) {
 		isCorrect = false;
 		cout << "ERROR: (" << node->GetRow() << ", " << node->GetColumn() << "): ";
 		cout << "index expression must be integer" << endl;
 	}
 
-	lastTypeValue.type = VAR_TYPE_INTEGER;
+	lastTypeValue = "int";
 }
 
 void CTypeChecker::Visit( const CLengthExpression* node )
@@ -427,12 +426,12 @@ void CTypeChecker::Visit( const CLengthExpression* node )
 	IExpression* arrayExpression = node->GetArray();
 	arrayExpression->Accept( this );
 
-	if ( lastTypeValue.type != VAR_TYPE_INTEGER_ARRAY ) {
+	if ( lastTypeValue != "int[]" ) {
 		isCorrect = false;
 		cout << "ERROR: lentgh attribute is available only for arrays" << endl;
 	}
 
-	lastTypeValue.type = VAR_TYPE_INTEGER;
+	lastTypeValue = "int";
 }
 
 void CTypeChecker::Visit( const CMethodCallExpression* node )
@@ -442,21 +441,21 @@ void CTypeChecker::Visit( const CMethodCallExpression* node )
 	std::string methodName = node->GetMethodName();
 
 	object->Accept( this );
-	if ( lastTypeValue.type != VAR_TYPE_CLASS ) {
+	if ( IsLastTypeBuiltIn(Symbol::CSymbol::GetSymbol(lastTypeValue)) ) {
 		isCorrect = false;
 		cout << "ERROR: class instance is expected" << endl;
 	}
 	else {
 		// Проверяем тип
-		CClassInformation *info = table->GetClassByName( lastTypeValue.className );
+		CClassInformation *info = table->GetClassByName( lastTypeValue );
 		if ( !info ) {
-			cout << "ERROR: class " << lastTypeValue.className << " is not declared" << endl;
+			cout << "ERROR: class " << lastTypeValue << " is not declared" << endl;
 			isCorrect = false;
 		}
 		
 		CMethodInformation *methodInfo = info->GetMethodByName( methodName );
 		if ( !methodInfo ) {
-			cout << "ERROR: method " << lastTypeValue.className << "::" << methodName << " is not defined" << endl;
+			cout << "ERROR: method " << lastTypeValue << "::" << methodName << " is not defined" << endl;
 			isCorrect = false;
 		}
 	}
@@ -473,10 +472,10 @@ void CTypeChecker::Visit( const CIntegerOrBooleanExpression* node )
 	switch ( type )
 	{
 	case VT_INTEGER:
-		lastTypeValue.type = VAR_TYPE_INTEGER;
+		lastTypeValue = "int";
 		break;
 	case VT_BOOLEAN:
-		lastTypeValue.type = VAR_TYPE_BOOLEAN;
+		lastTypeValue = "bool";
 		break;
 	default:
 		break;
@@ -486,20 +485,19 @@ void CTypeChecker::Visit( const CIntegerOrBooleanExpression* node )
 void CTypeChecker::Visit( const CIdentifierExpression* node )
 {
 	// В порядке очерёдности: локальная переменная, аргумент функции, поле класса
-	CType *type = currentMethod->GetLocalVariableType( node->GetVariableName() );
+	Symbol::CSymbol *type = currentMethod->GetLocalVariableType( node->GetVariableName() );
 	if ( !type ) {
 		type = currentMethod->GetArgumentType( node->GetVariableName() );
 	}
 	if ( !type ) {
 		type = currentClass->GetFieldType( node->GetVariableName() );
 	}
-	lastTypeValue = *type;
+	lastTypeValue = type->GetString();
 }
 
 void CTypeChecker::Visit( const CThisExpression* node )
 {
-	lastTypeValue.type = VAR_TYPE_CLASS;
-	lastTypeValue.className = currentClass->GetName();
+	lastTypeValue = currentClass->GetName();
 }
 
 void CTypeChecker::Visit( const CNewIntegerArrayExpression* node )
@@ -511,8 +509,7 @@ void CTypeChecker::Visit( const CNewIntegerArrayExpression* node )
 void CTypeChecker::Visit( const CNewObjectExpression* node )
 {
 	std::string className = node->GetClass();
-	lastTypeValue.type = VAR_TYPE_CLASS;
-	lastTypeValue.className = className;
+	lastTypeValue = className;
 }
 
 void CTypeChecker::Visit( const CNegationExpression* node )
@@ -520,12 +517,12 @@ void CTypeChecker::Visit( const CNegationExpression* node )
 	IExpression* argument = node->GetArgument();
 	argument->Accept( this );
 
-	if ( lastTypeValue.type != VAR_TYPE_BOOLEAN ) {
+	if ( lastTypeValue != "bool" ) {
 		cout << "ERROR: (" << node->GetRow() << ", " << node->GetColumn() << "): ";
 		cout << "agrument of negation operator must have boolean type";
 	}
 
-	lastTypeValue.type = VAR_TYPE_BOOLEAN;
+	lastTypeValue = "bool";
 }
 
 void CTypeChecker::Visit( const CParenthesesExpression* node )

@@ -96,7 +96,6 @@ void CSymbolTableBuilder::Visit( const CVariableDeclaration* node )
 	string name = node->GetName();
 	IType* type = node->GetType();
 
-	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
 	// ≈сли находимс€ внутри какого-то текущего метода, то добавл€ем как локальную переменную, иначе - как поле класса
 	CSymbolsTable::CVariableInformation* var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
@@ -104,17 +103,14 @@ void CSymbolTableBuilder::Visit( const CVariableDeclaration* node )
 		if ( !currentMethod->AddLocalVariable( var ) ) {
 			cout << "ERROR: duplicate local variable " << var->GetName() << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
 			isCorrect = false;
-			delete lastTypeValue;
 		}
 	}
 	else {
 		if ( !currentClass->AddField( var ) ) {
 			cout << "ERROR: duplicate field " << var->GetName() << " in class " << currentClass->GetName() <<endl;
 			isCorrect = false;
-			delete lastTypeValue;
 		}
 	}
-	lastTypeValue = NULL;
 }
 
 void CSymbolTableBuilder::Visit( const CVariableDeclarationList* node )
@@ -136,10 +132,9 @@ void CSymbolTableBuilder::Visit( const CMethodDeclaration* node )
 
 	// ѕереходим к возвращаемому типу
 	IType* type = node->GetType();
-	lastTypeValue = new CSymbolsTable::CType();
 	type->Accept( this );
-	currentMethod->SetReturnType( lastTypeValue );
-	lastTypeValue = NULL;
+	currentMethod->SetReturnType( Symbol::CSymbol::GetSymbol(lastTypeValue) );
+	
 	
 	// ќпределение параметров
 	IFormalList* formalList = node->GetFormalList();
@@ -186,17 +181,15 @@ void CSymbolTableBuilder::Visit( const CFormalList* node )
 	IType* type = node->GetType();
 
 	// ѕереходим к типу
-	lastTypeValue = new CSymbolsTable::CType();
+	
 	type->Accept( this );
 	CSymbolsTable::CVariableInformation *var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
 	if ( !currentMethod->AddParameter( var ))
 	{
 		cout << "ERROR: duplicate argument " << var->GetName() << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
 		isCorrect = false;
-		delete var;
-		delete lastTypeValue;
+		delete var;	
 	}
-	lastTypeValue = NULL;
 }
 
 void CSymbolTableBuilder::Visit( const CFormalRestList* node )
@@ -217,13 +210,13 @@ void CSymbolTableBuilder::Visit( const CBuiltInType* node )
 	switch ( node->GetType() )
 	{
 	case BT_BOOLEAN:
-		lastTypeValue->type = CSymbolsTable::VAR_TYPE_BOOLEAN;
+		lastTypeValue = "boolean";
 		break;
 	case BT_INTEGER:
-		lastTypeValue->type = CSymbolsTable::VAR_TYPE_INTEGER;
+		lastTypeValue = "int";
 		break;
 	case BT_INTEGER_ARRAY:
-		lastTypeValue->type = CSymbolsTable::VAR_TYPE_INTEGER_ARRAY;
+		lastTypeValue = "int[]";
 		break;
 	default:
 		break;
@@ -232,8 +225,7 @@ void CSymbolTableBuilder::Visit( const CBuiltInType* node )
 
 void CSymbolTableBuilder::Visit( const CUserType* node )
 {
-	lastTypeValue->type = CSymbolsTable::VAR_TYPE_CLASS;
-	lastTypeValue->className = node->GetTypeName();
+	lastTypeValue = node->GetTypeName();
 }
 
 void CSymbolTableBuilder::Visit( const CStatementList* node )

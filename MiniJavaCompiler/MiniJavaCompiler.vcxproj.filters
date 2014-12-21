@@ -48,6 +48,9 @@
     <ClCompile Include="Parser.cpp">
       <Filter>LexHCpp</Filter>
     </ClCompile>
+    <ClCompile Include="Symbol.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -84,9 +87,18 @@
     </ClInclude>
     <ClInclude Include="CoordinatesHolder.h">
       <Filter>Заголовочные файлы</Filter>
-     </ClInclude>
+    </ClInclude>
     <ClInclude Include="Parser.hpp">
       <Filter>LexHCpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Frame.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Temp.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol.h">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

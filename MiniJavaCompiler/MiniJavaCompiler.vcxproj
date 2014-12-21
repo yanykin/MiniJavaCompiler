@@ -73,6 +73,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PrettyPrinter.cpp" />
+    <ClCompile Include="Symbol.cpp" />
     <ClCompile Include="SymbolTableBuilder.cpp" />
     <ClCompile Include="Table.cpp" />
     <ClCompile Include="TypeChecker.cpp" />
@@ -99,11 +100,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoordinatesHolder.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="GrammaticSymbols.h" />
     <ClInclude Include="NonTerminalSymbols.h" />
     <ClInclude Include="PrettyPrinter.h" />
+    <ClInclude Include="Symbol.h" />
     <ClInclude Include="SymbolTableBuilder.h" />
     <ClInclude Include="Table.h" />
+    <ClInclude Include="Temp.h" />
     <ClInclude Include="TerminalSymbols.h" />
     <ClInclude Include="TypeChecker.h" />
     <ClInclude Include="Parser.hpp" />
