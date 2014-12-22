@@ -9,9 +9,10 @@ int CTemp::nextUniqueId = 0;
 // Конструктор без параметров
 CTemp::CTemp() {
 	name = suffix + "_" + std::to_string( nextUniqueId );
+	nextUniqueId;
 }
 
 // Конструктор, в котором мы передаём символ
 CTemp::CTemp( const Symbol::CSymbol* symbol ) {
-	name = symbol->GetString() + separator + suffix + separator + std::to_string( nextUniqueId );
+	name = symbol->GetString();
 }

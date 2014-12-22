@@ -9,11 +9,41 @@
 
 namespace Frame {
 
-	// Переменная фрейма
+	// Интерфейс для переменной фрейма
 	class IAccess {
 	public:
 		virtual ~IAccess() {}
-		virtual const IRTree::IExp* GetExp( const IRTree::IExp* framePointer ) const = 0;
+		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const = 0;
+	};
+
+	// Реализация интерфейса в случае расположения переменной во фрейме
+	class CVariableInFrame : public IAccess {
+	public:
+		CVariableInFrame( int _offsetInWords ) :
+			offsetInWords(_offsetInWords) {};
+		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
+			// TODO: реализовать
+			return
+				new IRTree::MEM(
+					new IRTree::BINOP(
+						IRTree::BO_PLUS,
+						new IRTree::TEMP( framePointer ),
+						new IRTree::CONST( offsetInWords * CFrame::GetWordSize() )
+					)
+				);
+		}
+	private:
+		int offsetInWords; // смещение от начала стека
+	};
+
+	//...и в случае расположения в стеке
+	class CVariableInRegister : public IAccess {
+		CVariableInRegister(const Temp::CTemp* _registerLabel): registerLabel(_registerLabel) {};
+		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
+			return new IRTree::TEMP( registerLabel );
+		}
+	private:
+		const Temp::CTemp* registerLabel; // временная переменная, характеризующая регистр
 	};
 
 	// CFrame ---------------------------------------------------------------------
@@ -21,26 +51,47 @@ namespace Frame {
 	class CFrame {
 	public:
 		// Создать новый фрейм функции и указать количество передаваемых ему параметров
-		CFrame( const Symbol::CSymbol* name );
+		CFrame( const Symbol::CSymbol* _name ) :
+			name( _name ),
+			formalCount( 0 ),
+			framePointer( Temp::CTemp() ),
+			thisPointer( Temp::CTemp() ),
+			returnPointer( Temp::CTemp() )
+		{};
 
-		// Доступ к формальным параметрам и локальным переменным
+		// Добавить аргумент функции
 		void AddFormal( const Symbol::CSymbol* name );
+
+		// Добавить локальную переменную
 		void AddLocal( const Symbol::CSymbol* name );
 
+		// Получить количество локальных переменных
+		int GetFormalCount() const { return formalCount; }
+
+		// Получить к переменной фрейма по имени (это может быть как аргумент функции, так и локальная переменная)
 		const IAccess* FindLocalOrFormal( const Symbol::CSymbol* name ) const;
-		int WordSize() const { return wordSize; }
-		const Temp::CTemp* FramePointer() const { return &fp; }
-		const Temp::CTemp* ThisPointer() const { return &thisPtr; }
+
+		// Возвращает размер машинного слова в байтах
+		static const int GetWordSize() { return wordSize; }
+
+		const Temp::CTemp* FramePointer() const { return &framePointer; }
+		const Temp::CTemp* ThisPointer() const { return &thisPointer; }
+		const Temp::CTemp* ReturnPointer() const { return &returnPointer;  }
 
 	private:
-		// Размер машинного слова для нашей платформы
-		static const int wordSize = 4;
-		const Symbol::CSymbol* name; // имя метода
-		std::map<const Symbol::CSymbol*, const IAccess*> locals;
+		static const int wordSize = 4; // Размер машинного слова для нашей платформы
+		const Symbol::CSymbol* name; // Имя метода
+
+		int formalCount; // количество переданных методу параметров
+	
+		std::map<const Symbol::CSymbol*, const IAccess*> localVariables; // Локальные переменные
+		std::map<const Symbol::CSymbol*, const IAccess*> objectFields; // Поля объекта, метод которого мы вызываем
+		std::map<const Symbol::CSymbol*, const IAccess*> methodFormals; // Аргументы метода, переданные при вызове
 
 		// Стандартные регистры
-		const Temp::CTemp fp;
-		const Temp::CTemp thisPtr;
+		const Temp::CTemp framePointer;
+		const Temp::CTemp thisPointer;
+		const Temp::CTemp returnPointer; // куда фрейм будет записывать возвращаемое значение функции
 
 	};
 

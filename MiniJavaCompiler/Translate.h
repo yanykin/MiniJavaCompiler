@@ -1,11 +1,14 @@
 #pragma once
 #include "Visitor.h"
 #include "Table.h"
+#include "Frame.h"
 #include <assert.h>
 
 class CTranslate : public IVisitor
 {
-	CTranslate(CSymbolsTable::CTable* _table): table(_table) {
+	CTranslate(CSymbolsTable::CTable* _table):
+		table(_table),
+		currentFrame(NULL), currentClass(NULL), currentMethod(NULL) {
 		assert( _table != NULL );
 	}
 
@@ -47,4 +50,5 @@ private:
 	CSymbolsTable::CMethodInformation* currentMethod; // Текущий метод
 
 	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемся 
+	Frame::CFrame* currentFrame; // текущий фрейм вызова метода
 };

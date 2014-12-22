@@ -280,16 +280,24 @@ void CTranslate::Visit( const CLengthExpression* node )
 	arrayExpression->Accept( this );
 }
 
+// При вызове метода должен строиться объект фрейма
 void CTranslate::Visit( const CMethodCallExpression* node )
 {
 	IExpression* object = node->GetObject();
 	IExpression* params = node->GetParams();
 	std::string methodName = node->GetMethodName();
 
+
+	// TODO: в какой-то момент должен строиться фрейм для вызова этой функции
+	currentFrame = new Frame::CFrame( Symbol::CSymbol::GetSymbol(currentClass->GetName() + ":" + methodName) );
+
 	object->Accept( this );
 
 	params->Accept( this );
 
+	// После работы со фреймом удаляем его
+	delete currentFrame;
+	currentFrame = NULL;
 }
 
 void CTranslate::Visit( const CIntegerOrBooleanExpression* node )
