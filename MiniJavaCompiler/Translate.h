@@ -1,8 +1,14 @@
 #pragma once
 #include "Visitor.h"
+#include "Table.h"
+#include <assert.h>
 
 class CTranslate : public IVisitor
 {
+	CTranslate(CSymbolsTable::CTable* _table): table(_table) {
+		assert( _table != NULL );
+	}
+
 	void Visit( const CProgram* node );
 	void Visit( const CMainClassDeclaration* node );
 	void Visit( const CClassDeclaration* node );
@@ -35,4 +41,10 @@ class CTranslate : public IVisitor
 	void Visit( const CNegationExpression* node );
 	void Visit( const CParenthesesExpression* node );
 	void Visit( const CExpressionList* node );
+
+private:
+	CSymbolsTable::CClassInformation* currentClass; // “екущий класс, в котором находитс€ посетитель
+	CSymbolsTable::CMethodInformation* currentMethod; // “екущий метод
+
+	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемс€ 
 };
