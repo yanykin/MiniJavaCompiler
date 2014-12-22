@@ -40,25 +40,3 @@ public:
 	virtual void Visit( const CParenthesesExpression* node ) = 0;
 	virtual void Visit( const CExpressionList* node ) = 0;
 };
-
-namespace Translate
-{
-	// IVisitor в контексте IRTree
-	class IVisitor
-	{
-	public:
-		virtual void Visit( const IRTree::CONST* node ) = 0;
-		virtual void Visit( const IRTree::BINOP* node ) = 0;
-		virtual void Visit( const IRTree::CALL* node ) = 0;
-		virtual void Visit( const IRTree::CJUMP* node ) = 0;
-		virtual void Visit( const IRTree::ESEQ* node ) = 0;
-		virtual void Visit( const IRTree::EXP* node ) = 0;
-		virtual void Visit( const IRTree::JUMP* node ) = 0;
-		virtual void Visit( const IRTree::LABEL* node ) = 0;
-		virtual void Visit( const IRTree::MEM* node ) = 0;
-		virtual void Visit( const IRTree::MOVE* node ) = 0;
-		virtual void Visit( const IRTree::NAME* node ) = 0;
-		virtual void Visit( const IRTree::SEQ* node ) = 0;
-		virtual void Visit( const IRTree::TEMP* node ) = 0;
-	};
-}

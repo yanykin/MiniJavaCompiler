@@ -11,13 +11,11 @@ namespace IRTree
 	{
 	public:
 		virtual ~IStm() {};
-		virtual void Accept( Translate::IVisitor *visitor ) const = 0;
 	};
 	class IExp
 	{
 	public:
 		virtual ~IExp() {};
-		virtual void Accept( Translate::IVisitor *visitor ) const = 0;
 	};
 
 	// ????????????
@@ -90,7 +88,6 @@ namespace IRTree
 		{
 		};
 		int GetValue() const { return value; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		int value;
 	};
@@ -103,7 +100,6 @@ namespace IRTree
 		{
 		};
 		const Temp::CLabel* GetLabel() const { return label; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const Temp::CLabel* label;
 	};
@@ -116,7 +112,6 @@ namespace IRTree
 		{
 		};
 		const Temp::CTemp* GetTemp() const { return temp; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const Temp::CTemp* temp;
 	};
@@ -131,7 +126,6 @@ namespace IRTree
 		TBinop GetBinop() const { return binop; }
 		const IExp* GetLeft() const { return left; }
 		const IExp* GetRight() const { return right; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const TBinop binop;
 		const IExp* left;
@@ -146,7 +140,6 @@ namespace IRTree
 		{
 		};
 		const IExp* GetExp() const { return exp; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IExp* exp;
 	};
@@ -160,7 +153,6 @@ namespace IRTree
 		};
 		const IExp* GetFunc() const { return func; }
 		const CExpList* GetArgs() const { return args; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IExp* func;
 		const CExpList* args;
@@ -175,7 +167,6 @@ namespace IRTree
 		};
 		const IStm* GetStm() const { return stm; }
 		const IExp* GetExp() const { return exp; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IStm* stm;
 		const IExp* exp;
@@ -191,7 +182,6 @@ namespace IRTree
 		};
 		const IExp* GetDst() const { return dst; }
 		const IExp* GetSrc() const { return src; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IExp* dst;
 		const IExp* src;
@@ -205,7 +195,6 @@ namespace IRTree
 		{
 		};
 		const IExp* GetExp() const { return exp; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IExp* exp;
 	};
@@ -219,7 +208,6 @@ namespace IRTree
 		};
 		const IExp* GetExp() const { return exp; }
 		const Temp::CLabelList* GetTargets() { return targets; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IExp* exp;
 		const Temp::CLabelList* targets;
@@ -237,7 +225,6 @@ namespace IRTree
 		const IExp* GetRight() const { return  right; }
 		const Temp::CLabel* GetIfTrue() const { return iftrue; }
 		const Temp::CLabel* GetIfFalse() const { return iffalse; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		TCJump relop;
 		const IExp* left;
@@ -255,7 +242,6 @@ namespace IRTree
 		};
 		const IStm* GetLeft() const { return left; }
 		const IStm* GetRight() const { return right; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IStm* left;
 		const IStm* right;
@@ -269,7 +255,6 @@ namespace IRTree
 		{
 		};
 		const Temp::CLabel* GetLabel() const { return label; }
-		void Accept( Translate::IVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const Temp::CLabel* label;
 	};

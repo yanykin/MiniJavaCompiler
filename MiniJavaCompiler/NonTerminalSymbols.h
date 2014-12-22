@@ -35,20 +35,3 @@ class CNewObjectExpression;
 class CNegationExpression;
 class CParenthesesExpression;
 class CExpressionList;
-
-namespace IRTree
-{
-	class CONST;
-	class BINOP;
-	class CALL;
-	class CJUMP;
-	class ESEQ;
-	class EXP;
-	class JUMP;
-	class LABEL;
-	class MEM;
-	class MOVE;
-	class NAME;
-	class SEQ;
-	class TEMP;
-}

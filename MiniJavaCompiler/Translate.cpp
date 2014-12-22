@@ -2,20 +2,22 @@
 #include "Temp.h"
 
 using namespace Translate;
-
+/*
 const IRTree::IStm* CExpConverter::ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const
 {
-	/*?????? ??? ?????????:
-
+	пример:
 	if ( a < b && c < d ) {
 		// true block
 	} else {
 		// false block
 	}
 	
-	*/
-	// TODO: ???????? ??????????? ??? Exp ? ?????
+
+	приблизительный код:
+	IRTree::IExp *first, *second, *nextExp;
+	IRTree::TCJump op;
+	CExpConverter* next = new CExpConverter( nextExp );
 	Temp::CLabel* z = new Temp::CLabel();
-	IRTree::IExp *a, *b, *c, *d;
-	return new IRTree::SEQ( new IRTree::CJUMP( IRTree::CJ_LT, a, b, z, f ), new IRTree::SEQ( new IRTree::LABEL( z ), new IRTree::CJUMP( IRTree::CJ_LT, c, d, t, f ) ) );
+	return new IRTree::SEQ( new IRTree::CJUMP( op, first, second, z, f ), new IRTree::SEQ( new IRTree::LABEL( z ), next->ToConditional( t, f ) ) );
 }
+*/
