@@ -3,6 +3,7 @@
 
 using namespace Translate;
 
+// return CONST(0) or CONST(1) 
 const IRTree::IExp* CConditionalWrapper::ToExp() const
 {
 	Temp::CTemp* temp = new Temp::CTemp();
@@ -19,6 +20,8 @@ const IRTree::IExp* CConditionalWrapper::ToExp() const
 	return new IRTree::ESEQ( cond, irTemp );
 }
 
+
+// return Stm
 const IRTree::IStm* CConditionalWrapper::ToStm() const
 {
 	Temp::CLabel* tempLabel = new Temp::CLabel();
@@ -26,6 +29,7 @@ const IRTree::IStm* CConditionalWrapper::ToStm() const
 	return new IRTree::SEQ( cond, new IRTree::LABEL( tempLabel ) );
 }
 
+// умный "И", если первый IExp == false сразу выходим
 const IRTree::IStm* CFromAndConverter::ToConditional( const Temp::CLabel* ifTrue, const Temp::CLabel* ifFalse ) const
 {
 	Temp::CLabel* firstTrueLabel = new Temp::CLabel();
