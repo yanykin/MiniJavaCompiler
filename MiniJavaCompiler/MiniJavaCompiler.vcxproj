@@ -80,6 +80,7 @@
     <ClCompile Include="Temp.cpp" />
     <ClCompile Include="Translate.cpp" />
     <ClCompile Include="TypeChecker.cpp" />
+    <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -114,6 +115,7 @@
     <ClInclude Include="Temp.h" />
     <ClInclude Include="TerminalSymbols.h" />
     <ClInclude Include="Translate.h" />
+    <ClInclude Include="Wrappers.h" />
     <ClInclude Include="TypeChecker.h" />
     <ClInclude Include="Parser.hpp" />
     <ClInclude Include="Visitor.h" />
