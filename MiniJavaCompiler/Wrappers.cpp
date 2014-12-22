@@ -2,22 +2,35 @@
 #include "Temp.h"
 
 using namespace Translate;
-/*
-const IRTree::IStm* CExpConverter::ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const
+
+const IRTree::IExp* CConditionalWrapper::ToExp() const
 {
-	пример:
-	if ( a < b && c < d ) {
-		// true block
-	} else {
-		// false block
-	}
-
-
-	приблизительный код:
-	IRTree::IExp *first, *second, *nextExp;
-	IRTree::TCJump op;
-	CExpConverter* next = new CExpConverter( nextExp );
-	Temp::CLabel* z = new Temp::CLabel();
-	return new IRTree::SEQ( new IRTree::CJUMP( op, first, second, z, f ), new IRTree::SEQ( new IRTree::LABEL( z ), next->ToConditional( t, f ) ) );
+	Temp::CTemp* temp = new Temp::CTemp();
+	IRTree::TEMP* irTemp = new IRTree::TEMP( temp );
+	IRTree::MOVE* moveTrue = new IRTree::MOVE( irTemp, new IRTree::CONST( 1 ) );
+	IRTree::MOVE* moveFalse = new IRTree::MOVE( irTemp, new IRTree::CONST( 0 ) );
+	Temp::CLabel* trueLabel = new Temp::CLabel();
+	Temp::CLabel* falseLabel = new Temp::CLabel();
+	IRTree::LABEL* trueIRLabel = new IRTree::LABEL( trueLabel );
+	IRTree::LABEL* falseIRLabel = new IRTree::LABEL( falseLabel );
+	IRTree::SEQ* seqTrue = new IRTree::SEQ( trueIRLabel, moveTrue );
+	IRTree::SEQ* seqFalse = new IRTree::SEQ( falseIRLabel, moveFalse );
+	const IRTree::IStm* cond = ToConditional( trueLabel, falseLabel );
+	return new IRTree::ESEQ( cond, irTemp );
 }
-*/
+
+const IRTree::IStm* CConditionalWrapper::ToStm() const
+{
+	Temp::CLabel* tempLabel = new Temp::CLabel();
+	const IRTree::IStm* cond = ToConditional( tempLabel, tempLabel );
+	return new IRTree::SEQ( cond, new IRTree::LABEL( tempLabel ) );
+}
+
+const IRTree::IStm* CFromAndConverter::ToConditional( const Temp::CLabel* ifTrue, const Temp::CLabel* ifFalse ) const
+{
+	Temp::CLabel* firstTrueLabel = new Temp::CLabel();
+	IRTree::CJUMP* firstTrueJump = new IRTree::CJUMP( IRTree::CJ_NE, _leftArg, new IRTree::CONST( 0 ), firstTrueLabel, ifFalse );
+	IRTree::CJUMP* secondTrueJump = new IRTree::CJUMP( IRTree::CJ_NE, _rightArg, new IRTree::CONST( 0 ), ifTrue, ifFalse );
+	return new IRTree::SEQ( firstTrueJump, new IRTree::SEQ( new IRTree::LABEL( firstTrueLabel ), secondTrueJump ) );
+}
+
