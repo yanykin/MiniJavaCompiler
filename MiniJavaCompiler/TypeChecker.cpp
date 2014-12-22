@@ -144,7 +144,7 @@ void CTypeChecker::Visit( const CMethodDeclaration* node )
 	Symbol::CSymbol *returnDeclaredType = currentMethod->GetReturnType();
 	if ( !IsLastTypeBuiltIn( returnDeclaredType ) && !( table->GetClassByName( returnDeclaredType->GetString() ) ) ){
 		isCorrect = false;
-		cout << "ERROR: return type in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->GetString() << " is not declared" << endl;
+		cout << "ERROR: return type " << returnDeclaredType->GetString() << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->GetString() << " is not declared" << endl;
 	}
 
 	// ќпределение параметров
@@ -194,7 +194,8 @@ void CTypeChecker::Visit( const CFormalList* node )
 	Symbol::CSymbol* argumentType = currentMethod->GetArgumentType( name );
 	if ( !IsLastTypeBuiltIn( argumentType ) && !( table->GetClassByName( argumentType->GetString() ) ) ) {
 		isCorrect = false;
-		cout << "ERROR: agrument " << name << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << argumentType->GetString() << " is not declared" << endl;
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
+		cout << "agrument " << name << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << argumentType->GetString() << " is not declared" << endl;
 	}
 }
 
@@ -214,7 +215,7 @@ void CTypeChecker::Visit( const CBuiltInType* node )
 	switch ( node->GetType() )
 	{
 	case BT_BOOLEAN:
-		lastTypeValue = "bool";
+		lastTypeValue = "boolean";
 		break;
 	case BT_INTEGER:
 		lastTypeValue = "int";
@@ -287,11 +288,12 @@ void CTypeChecker::Visit( const CWhileStatement* node )
 void CTypeChecker::Visit( const CPrintStatement* node )
 {
 	IExpression *expression = node->GetExpression();
+	expression->Accept( this );
+
 	if ( lastTypeValue != "int" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): PRINT statement can print only integer expressions" << endl;
 		isCorrect = false;
 	}
-	expression->Accept( this );
 }
 
 void CTypeChecker::Visit( const CAssignmentStatement* node )
@@ -457,6 +459,10 @@ void CTypeChecker::Visit( const CMethodCallExpression* node )
 		if ( !methodInfo ) {
 			cout << "ERROR: method " << lastTypeValue << "::" << methodName << " is not defined" << endl;
 			isCorrect = false;
+		}
+		else {
+			// ≈сли метод определЄн, то в качестве типа выражени€ указываем то, что возвращает метод
+			lastTypeValue = methodInfo->GetReturnType()->GetString();
 		}
 	}
 

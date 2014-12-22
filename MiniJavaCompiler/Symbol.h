@@ -30,7 +30,7 @@ namespace Symbol {
 		CSymbol( const std::string& s ) : string_key( s ) {};
 
 		// Строка, по которой находится символ
-		const std::string& string_key;
+		const std::string string_key;
 
 		// Таблица для строк
 		static std::unordered_map<std::string, CSymbol*> mapping;

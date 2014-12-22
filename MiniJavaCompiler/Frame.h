@@ -26,6 +26,7 @@ namespace Frame {
 		// Доступ к формальным параметрам и локальным переменным
 		void AddFormal( const Symbol::CSymbol* name );
 		void AddLocal( const Symbol::CSymbol* name );
+
 		const IAccess* FindLocalOrFormal( const Symbol::CSymbol* name ) const;
 		int WordSize() const { return wordSize; }
 		const Temp::CTemp* FramePointer() const { return &fp; }

@@ -125,4 +125,7 @@
   <ItemGroup>
     <None Include="Parser.output" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="ForDebug.txt" />
+  </ItemGroup>
 </Project>

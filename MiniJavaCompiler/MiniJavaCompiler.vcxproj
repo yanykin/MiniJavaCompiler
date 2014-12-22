@@ -121,6 +121,9 @@
   <ItemGroup>
     <None Include="Parser.output" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="ForDebug.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

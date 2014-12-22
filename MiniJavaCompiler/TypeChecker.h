@@ -22,7 +22,7 @@ public:
 		return (
 			type == Symbol::CSymbol::GetSymbol( "int" ) ||
 			type == Symbol::CSymbol::GetSymbol( "int[]" ) ||
-			type == Symbol::CSymbol::GetSymbol( "bool" )
+			type == Symbol::CSymbol::GetSymbol( "boolean" )
 			);
 	}
 

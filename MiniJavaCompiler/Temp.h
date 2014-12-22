@@ -40,6 +40,10 @@ namespace Temp
 		// Счётчик для создания уникальных имён
 		static int nextUniqueId;
 		std::string name;
+
+		// Суффикс, добавляемый для поддержки уникальности
+		static const std::string suffix;
+		static const std::string separator;
 	};
 
 	// Лист меток

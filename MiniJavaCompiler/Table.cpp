@@ -8,8 +8,8 @@ namespace CSymbolsTable {
 	bool CTable::AddClass( CClassInformation* classInfo ) {
 		assert( classInfo );
 		Symbol::CSymbol* className = Symbol::CSymbol::GetSymbol( classInfo->GetName() );
-		// ѕровер¤ем наличие уже существующего класса
-		if ( !declaredClasses.GetObject( className ) ) {
+		// Проверяем наличие уже существующего класса
+		if ( declaredClasses.GetObject( className ) ) {
 			return false;
 		}
 		declaredClasses.InsertObject( className, classInfo );
@@ -24,7 +24,7 @@ namespace CSymbolsTable {
 	bool CClassInformation::AddField( CVariableInformation* varInfo ) {
 		assert( varInfo );
 		Symbol::CSymbol* fieldName = Symbol::CSymbol::GetSymbol( varInfo->GetName() );
-		if ( !fields.GetObject( fieldName ) ) {
+		if ( fields.GetObject( fieldName ) ) {
 			return false;
 		}
 		fields.InsertObject( fieldName, varInfo );
@@ -34,7 +34,7 @@ namespace CSymbolsTable {
 	bool CClassInformation::AddMethod( CMethodInformation *methodInfo ){
 		assert( methodInfo );
 		Symbol::CSymbol* methodName = Symbol::CSymbol::GetSymbol( methodInfo->GetName() );
-		if ( !methods.GetObject( methodName ) ) {
+		if ( methods.GetObject( methodName ) ) {
 			return false;
 		}
 		methods.InsertObject( methodName, methodInfo );
@@ -54,7 +54,7 @@ namespace CSymbolsTable {
 	bool CMethodInformation::AddParameter( CVariableInformation* varInfo ){
 		assert( varInfo );
 		Symbol::CSymbol* parameterName = Symbol::CSymbol::GetSymbol( varInfo->GetName() );
-		if ( !methodParameters.GetObject( parameterName ) ) {
+		if ( methodParameters.GetObject( parameterName ) ) {
 			return false;
 		}
 		methodParameters.InsertObject( parameterName, varInfo );
@@ -65,7 +65,7 @@ namespace CSymbolsTable {
 	{
 		assert( varInfo );
 		Symbol::CSymbol* variableName = Symbol::CSymbol::GetSymbol( varInfo->GetName() );
-		if ( !localVariables.GetObject( variableName ) ) {
+		if ( localVariables.GetObject( variableName ) ) {
 			return false;
 		}
 		localVariables.InsertObject( variableName, varInfo );
