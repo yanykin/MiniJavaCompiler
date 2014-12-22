@@ -8,8 +8,8 @@
 class CSymbolTableBuilder : public IVisitor
 {
 public:
-	CSymbolTableBuilder(): isCorrect(true), currentClass( NULL ), currentMethod( NULL ) { };
-	
+	CSymbolTableBuilder() : isCorrect( true ), currentClass( NULL ), currentMethod( NULL ) { };
+
 	bool IsTableCorrect() const { return isCorrect; };
 	CSymbolsTable::CTable* GetConstructedTable() { return &table; };
 
@@ -56,4 +56,3 @@ private:
 
 	CSymbolsTable::CTable table; // таблица, которую мы строим
 };
-

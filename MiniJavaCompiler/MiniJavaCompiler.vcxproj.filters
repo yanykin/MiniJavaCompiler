@@ -48,7 +48,17 @@
     <ClCompile Include="Parser.cpp">
       <Filter>LexHCpp</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Symbol.cpp">
+=======
+    <ClCompile Include="Temp.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Translate.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Frame.cpp">
+>>>>>>> f8e4a93f0ea541238c344a6b9a214af0f035bcd6
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -91,6 +101,7 @@
     <ClInclude Include="Parser.hpp">
       <Filter>LexHCpp</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Frame.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -98,6 +109,18 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Symbol.h">
+=======
+    <ClInclude Include="Temp.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Translate.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="IRTree.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Frame.h">
+>>>>>>> f8e4a93f0ea541238c344a6b9a214af0f035bcd6
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

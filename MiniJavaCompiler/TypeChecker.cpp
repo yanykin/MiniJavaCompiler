@@ -102,18 +102,18 @@ void CTypeChecker::Visit( const CVariableDeclaration* node )
 	else {
 		varType = currentClass->GetFieldType( node->GetName() );
 	}
-	
+
 	CClassInformation* info = table->GetClassByName( varType->GetString() );
 
-	if ( !IsLastTypeBuiltIn(varType) && !info ) {
+	if ( !IsLastTypeBuiltIn( varType ) && !info ) {
 		isCorrect = false;
 		if ( currentMethod ) {
-			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() <<  "): local variable " << name << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << varType->GetString() << " is not declared" << endl;
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): local variable " << name << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << varType->GetString() << " is not declared" << endl;
 		}
 		else {
 			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): field " << name << " in class " << currentClass->GetName() << ": class " << varType->GetString() << " is not declared" << endl;
 		}
-		
+
 	}
 
 	type->Accept( this );
@@ -142,7 +142,7 @@ void CTypeChecker::Visit( const CMethodDeclaration* node )
 
 	// ѕолучаем возвращаемый тип метода и провер€ем его существование
 	Symbol::CSymbol *returnDeclaredType = currentMethod->GetReturnType();
-	if ( !IsLastTypeBuiltIn(returnDeclaredType) && !( table->GetClassByName( returnDeclaredType->GetString() ) ) ){
+	if ( !IsLastTypeBuiltIn( returnDeclaredType ) && !( table->GetClassByName( returnDeclaredType->GetString() ) ) ){
 		isCorrect = false;
 		cout << "ERROR: return type in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << returnDeclaredType->GetString() << " is not declared" << endl;
 	}
@@ -192,7 +192,7 @@ void CTypeChecker::Visit( const CFormalList* node )
 
 	// ѕровер€ем тип аргумента
 	Symbol::CSymbol* argumentType = currentMethod->GetArgumentType( name );
-	if ( !IsLastTypeBuiltIn(argumentType) && !(table->GetClassByName(argumentType->GetString())) ) {
+	if ( !IsLastTypeBuiltIn( argumentType ) && !( table->GetClassByName( argumentType->GetString() ) ) ) {
 		isCorrect = false;
 		cout << "ERROR: agrument " << name << " in method" << currentClass->GetName() << "::" << currentMethod->GetName() << ": class " << argumentType->GetString() << " is not declared" << endl;
 	}
@@ -287,7 +287,7 @@ void CTypeChecker::Visit( const CWhileStatement* node )
 void CTypeChecker::Visit( const CPrintStatement* node )
 {
 	IExpression *expression = node->GetExpression();
-	if ( lastTypeValue != "int") {
+	if ( lastTypeValue != "int" ) {
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): PRINT statement can print only integer expressions" << endl;
 		isCorrect = false;
 	}
@@ -301,7 +301,7 @@ void CTypeChecker::Visit( const CAssignmentStatement* node )
 	// ≈сли такую локальную переменную не нашли, то ищем аргумент
 	if ( !leftValueType ) {
 		leftValueType = currentMethod->GetArgumentType( node->GetVariableName() );
-	} 
+	}
 	// ≈сли и аргумент не нашли, то ищем поле класса
 	if ( !leftValueType ) {
 		leftValueType = currentClass->GetFieldType( node->GetVariableName() );
@@ -345,7 +345,7 @@ void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): index expression should have integer type" << endl;
 		isCorrect = false;
 	}
-	
+
 }
 
 void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
@@ -361,27 +361,27 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 
 	TBinaryOperator oper = node->GetOperator();
 	switch ( oper )
-		{
-		case BO_PLUS:
-		case BO_MINUS:
-		case BO_LESS:
-		case BO_MULTIPLY:
-		case BO_LOGICAL_AND:
-		{
-			if ( leftValueType != "int" ) {
-				cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
-				cout << "Left agrument must be integer" << endl;
-				isCorrect = false;
-			}
-			else if ( rightValueType != "int" ) {
-				cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
-				cout << "Right agrument must be integer" << endl;
-				isCorrect = false;
-			}
+	{
+	case BO_PLUS:
+	case BO_MINUS:
+	case BO_LESS:
+	case BO_MULTIPLY:
+	case BO_LOGICAL_AND:
+	{
+		if ( leftValueType != "int" ) {
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
+			cout << "Left agrument must be integer" << endl;
+			isCorrect = false;
 		}
-		default:
-			break;
+		else if ( rightValueType != "int" ) {
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
+			cout << "Right agrument must be integer" << endl;
+			isCorrect = false;
 		}
+	}
+	default:
+		break;
+	}
 
 	switch ( oper )
 	{
@@ -441,7 +441,7 @@ void CTypeChecker::Visit( const CMethodCallExpression* node )
 	std::string methodName = node->GetMethodName();
 
 	object->Accept( this );
-	if ( IsLastTypeBuiltIn(Symbol::CSymbol::GetSymbol(lastTypeValue)) ) {
+	if ( IsLastTypeBuiltIn( Symbol::CSymbol::GetSymbol( lastTypeValue ) ) ) {
 		isCorrect = false;
 		cout << "ERROR: class instance is expected" << endl;
 	}
@@ -452,7 +452,7 @@ void CTypeChecker::Visit( const CMethodCallExpression* node )
 			cout << "ERROR: class " << lastTypeValue << " is not declared" << endl;
 			isCorrect = false;
 		}
-		
+
 		CMethodInformation *methodInfo = info->GetMethodByName( methodName );
 		if ( !methodInfo ) {
 			cout << "ERROR: method " << lastTypeValue << "::" << methodName << " is not defined" << endl;

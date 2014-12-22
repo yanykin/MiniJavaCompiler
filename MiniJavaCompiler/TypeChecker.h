@@ -11,7 +11,9 @@ class CTypeChecker : public IVisitor
 {
 public:
 	CTypeChecker( CSymbolsTable::CTable *_table )
-		: table( _table ), currentClass(NULL), currentMethod(NULL), isCorrect(true) { assert( _table != NULL ); };
+		: table( _table ), currentClass( NULL ), currentMethod( NULL ), isCorrect( true ) {
+		assert( _table != NULL );
+	};
 
 	bool IsAllCorrect() const { return isCorrect; };
 
@@ -21,9 +23,9 @@ public:
 			type == Symbol::CSymbol::GetSymbol( "int" ) ||
 			type == Symbol::CSymbol::GetSymbol( "int[]" ) ||
 			type == Symbol::CSymbol::GetSymbol( "bool" )
-		);
+			);
 	}
-	
+
 	void Visit( const CProgram* node );
 	void Visit( const CMainClassDeclaration* node );
 	void Visit( const CClassDeclaration* node );
@@ -66,4 +68,3 @@ private:
 
 	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемся 
 };
-

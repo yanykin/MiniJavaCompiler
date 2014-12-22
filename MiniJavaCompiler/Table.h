@@ -1,5 +1,5 @@
 /*
-* Описание классов, необходимых для поддержки таблицы символов 
+* Описание классов, необходимых для поддержки таблицы символов
 */
 #pragma once
 #include <string>
@@ -25,7 +25,7 @@ namespace CSymbolsTable {
 		bool AddClass( CClassInformation *classInfo );
 
 		// Возвращает ссылку на структуру с информацией класса или null, если такой класс не нашли
-		CClassInformation* GetClassByName(const std::string& className);
+		CClassInformation* GetClassByName( const std::string& className );
 
 	private:
 		Symbol::CStorage < CClassInformation* > declaredClasses; // определённые в программе классы
@@ -34,10 +34,10 @@ namespace CSymbolsTable {
 	// Информация о конкретном классе
 	class CClassInformation {
 	public:
-		CClassInformation( std::string _name ) : name( Symbol::CSymbol::GetSymbol(_name) ), isDerived(false) {};
+		CClassInformation( std::string _name ) : name( Symbol::CSymbol::GetSymbol( _name ) ), isDerived( false ) {};
 		CClassInformation( std::string _name, std::string _baseClassName ) :
 			name( Symbol::CSymbol::GetSymbol( _name ) ),
-			baseClassName( Symbol::CSymbol::GetSymbol(_baseClassName) ),
+			baseClassName( Symbol::CSymbol::GetSymbol( _baseClassName ) ),
 			isDerived( true ) {};
 		std::string GetName() const { return name->GetString(); };
 
@@ -47,7 +47,7 @@ namespace CSymbolsTable {
 		// Возвращает ссылку на структуру с информацией метода класса или null в противном случае
 		CMethodInformation* GetMethodByName( std::string& methodName );
 		// Возвращает тип данных для локальной переменной
-		Symbol::CSymbol* GetFieldType( std::string& fieldName );		
+		Symbol::CSymbol* GetFieldType( std::string& fieldName );
 
 	private:
 		Symbol::CSymbol* name; // имя класса
@@ -62,7 +62,7 @@ namespace CSymbolsTable {
 	// Информация о методе класса
 	class CMethodInformation {
 	public:
-		CMethodInformation( std::string _name ) : name( Symbol::CSymbol::GetSymbol(_name) ) {};
+		CMethodInformation( std::string _name ) : name( Symbol::CSymbol::GetSymbol( _name ) ) {};
 		std::string GetName() const { return name->GetString(); };
 
 		void SetReturnType( Symbol::CSymbol* _returnType ) { returnType = _returnType; }
@@ -91,7 +91,7 @@ namespace CSymbolsTable {
 		CVariableInformation( std::string _type, std::string _name ) :
 			type( Symbol::CSymbol::GetSymbol( _type ) ),
 			name( Symbol::CSymbol::GetSymbol( _name ) ) {};
-		std::string GetName() const { return name->GetString();  };
+		std::string GetName() const { return name->GetString(); };
 
 		Symbol::CSymbol* GetType() { return type; };
 	private:

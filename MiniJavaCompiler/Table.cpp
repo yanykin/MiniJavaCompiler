@@ -3,20 +3,20 @@
 #include <assert.h>
 
 namespace CSymbolsTable {
-	
+
 	/* === CTable === */
 	bool CTable::AddClass( CClassInformation* classInfo ) {
 		assert( classInfo );
 		Symbol::CSymbol* className = Symbol::CSymbol::GetSymbol( classInfo->GetName() );
-		// Проверяем наличие уже существующего класса
-		if (!declaredClasses.GetObject(className)) {
+		// ѕровер¤ем наличие уже существующего класса
+		if ( !declaredClasses.GetObject( className ) ) {
 			return false;
 		}
 		declaredClasses.InsertObject( className, classInfo );
 		return true;
 	}
 
-	CClassInformation* CTable::GetClassByName(const std::string& className ) {
+	CClassInformation* CTable::GetClassByName( const std::string& className ) {
 		return declaredClasses.GetObject( Symbol::CSymbol::GetSymbol( className ) );
 	}
 
@@ -24,7 +24,7 @@ namespace CSymbolsTable {
 	bool CClassInformation::AddField( CVariableInformation* varInfo ) {
 		assert( varInfo );
 		Symbol::CSymbol* fieldName = Symbol::CSymbol::GetSymbol( varInfo->GetName() );
-		if ( !fields.GetObject( fieldName )) {
+		if ( !fields.GetObject( fieldName ) ) {
 			return false;
 		}
 		fields.InsertObject( fieldName, varInfo );
@@ -71,7 +71,7 @@ namespace CSymbolsTable {
 		localVariables.InsertObject( variableName, varInfo );
 		return true;
 	}
-	
+
 	Symbol::CSymbol* CMethodInformation::GetArgumentType( const std::string& argumentName ) {
 		CVariableInformation *method = methodParameters.GetObject( Symbol::CSymbol::GetSymbol( argumentName ) );
 		return method ? method->GetType() : NULL;

@@ -4,6 +4,8 @@
 
 #pragma once
 #include "Symbol.h"
+#include "IRTree.h"
+#include <map>
 
 namespace Frame {
 
@@ -33,7 +35,7 @@ namespace Frame {
 		// Размер машинного слова для нашей платформы
 		static const int wordSize = 4;
 		const Symbol::CSymbol* name; // имя метода
-		std::map<const Symbol::CSymbol*, const IAccess*> locals; 
+		std::map<const Symbol::CSymbol*, const IAccess*> locals;
 
 		// Стандартные регистры
 		const Temp::CTemp fp;

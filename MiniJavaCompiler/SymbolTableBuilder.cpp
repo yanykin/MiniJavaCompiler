@@ -23,7 +23,7 @@ void CSymbolTableBuilder::Visit( const CProgram* node )
 void CSymbolTableBuilder::Visit( const CMainClassDeclaration* node )
 {
 	IStatement* statements = node->GetClassStatements();
-	
+
 	if ( statements )
 	{
 		statements->Accept( this );
@@ -107,7 +107,7 @@ void CSymbolTableBuilder::Visit( const CVariableDeclaration* node )
 	}
 	else {
 		if ( !currentClass->AddField( var ) ) {
-			cout << "ERROR: duplicate field " << var->GetName() << " in class " << currentClass->GetName() <<endl;
+			cout << "ERROR: duplicate field " << var->GetName() << " in class " << currentClass->GetName() << endl;
 			isCorrect = false;
 		}
 	}
@@ -133,9 +133,9 @@ void CSymbolTableBuilder::Visit( const CMethodDeclaration* node )
 	// Переходим к возвращаемому типу
 	IType* type = node->GetType();
 	type->Accept( this );
-	currentMethod->SetReturnType( Symbol::CSymbol::GetSymbol(lastTypeValue) );
-	
-	
+	currentMethod->SetReturnType( Symbol::CSymbol::GetSymbol( lastTypeValue ) );
+
+
 	// Определение параметров
 	IFormalList* formalList = node->GetFormalList();
 	if ( formalList ) {
@@ -181,14 +181,14 @@ void CSymbolTableBuilder::Visit( const CFormalList* node )
 	IType* type = node->GetType();
 
 	// Переходим к типу
-	
+
 	type->Accept( this );
 	CSymbolsTable::CVariableInformation *var = new CSymbolsTable::CVariableInformation( lastTypeValue, name );
-	if ( !currentMethod->AddParameter( var ))
+	if ( !currentMethod->AddParameter( var ) )
 	{
 		cout << "ERROR: duplicate argument " << var->GetName() << " in method " << currentClass->GetName() << "::" << currentMethod->GetName() << endl;
 		isCorrect = false;
-		delete var;	
+		delete var;
 	}
 }
 
@@ -206,7 +206,7 @@ void CSymbolTableBuilder::Visit( const CFormalRestList* node )
 void CSymbolTableBuilder::Visit( const CBuiltInType* node )
 {
 	// Для каждого типа мы создаём новую запись
-	
+
 	switch ( node->GetType() )
 	{
 	case BT_BOOLEAN:
@@ -301,7 +301,7 @@ void CSymbolTableBuilder::Visit( const CBinaryOperatorExpression* node )
 	IExpression* rightValue = node->GetRightValue();
 
 	leftValue->Accept( this );
-	
+
 	rightValue->Accept( this );
 }
 
@@ -311,16 +311,16 @@ void CSymbolTableBuilder::Visit( const CIndexAccessExpression* node )
 	IExpression *index = node->GetIndex();
 
 	arrayExpression->Accept( this );
-	
+
 	index->Accept( this );
-	
+
 }
 
 void CSymbolTableBuilder::Visit( const CLengthExpression* node )
 {
 	IExpression* arrayExpression = node->GetArray();
 	arrayExpression->Accept( this );
-	
+
 }
 
 void CSymbolTableBuilder::Visit( const CMethodCallExpression* node )
@@ -330,9 +330,9 @@ void CSymbolTableBuilder::Visit( const CMethodCallExpression* node )
 	std::string methodName = node->GetMethodName();
 
 	object->Accept( this );
-	
+
 	params->Accept( this );
-	
+
 }
 
 void CSymbolTableBuilder::Visit( const CIntegerOrBooleanExpression* node )
