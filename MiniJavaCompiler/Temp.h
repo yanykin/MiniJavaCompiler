@@ -14,7 +14,7 @@ namespace Temp
 		// Создать метку с уникальным именем
 		CLabel();
 		// Создать метку с заданным именем
-		explicit CLabel( std::string name );
+		explicit CLabel( const Symbol::CSymbol* symbol );
 
 		const std::string& Name() const { return name; }
 
@@ -22,6 +22,11 @@ namespace Temp
 		// Счётчик для создания уникальных идентификаторов
 		static int nextUniqueId;
 		std::string name;
+
+		// Суффикс, добавляемый для поддержки уникальности
+		static const std::string suffix;
+		static const std::string separator;
+
 	};
 
 	// Временная переменная
@@ -32,7 +37,6 @@ namespace Temp
 		CTemp();
 		// Новая переменная с заданным именем
 		explicit CTemp( const Symbol::CSymbol* symbol );
-		~CTemp();
 
 		const std::string& Name() const { return name; }
 

@@ -15,7 +15,7 @@ class Fac extends Base {
 		else 
 			num_aux = num * (this.ComputeFac(num-1)) ;
 
-		spam = 51;
+		spam = 51 + foo;
 		System.out.println(my_field);
 		return num_aux ;
     }

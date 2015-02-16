@@ -16,3 +16,20 @@ CTemp::CTemp() {
 CTemp::CTemp( const Symbol::CSymbol* symbol ) {
 	name = symbol->GetString();
 }
+
+// CLabel
+
+const std::string CLabel::suffix = "CLABEL";
+const std::string CLabel::separator = "_";
+int CLabel::nextUniqueId = 0;
+
+// Конструктор без параметров
+CLabel::CLabel() {
+	name = suffix + "_" + std::to_string( nextUniqueId );
+	nextUniqueId;
+}
+
+// Конструктор, в котором мы передаём символ
+CLabel::CLabel( const Symbol::CSymbol* symbol ) {
+	name = symbol->GetString();
+}

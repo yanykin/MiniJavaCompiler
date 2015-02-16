@@ -74,6 +74,8 @@ namespace CSymbolsTable {
 		// Возвращает информацию о типе аргумента, null, если такого аргумента нет
 		Symbol::CSymbol* GetArgumentType( const std::string& argumentName );
 
+		// TODO: получить порядковый номер аргумента/переменной
+		
 		// Аналогично и для локальных переменных метода
 		Symbol::CSymbol* GetLocalVariableType( const std::string& variableName );
 

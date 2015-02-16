@@ -5,6 +5,7 @@
 
 #include "SymbolTableBuilder.h"
 #include "TypeChecker.h"
+#include "PrettyPrinter.h"
 
 int main()
 {
@@ -17,11 +18,8 @@ int main()
 		std::cout << "Reducing for starting token." << std::endl;
 		*/
 
-		/*
-		CPrettyPrinter *prettyPrinter = new CPrettyPrinter();
-		mainProgram->Accept( prettyPrinter );
-		delete prettyPrinter;
-		*/
+		CPrettyPrinter prettyPrinter;
+		mainProgram->Accept( &prettyPrinter );
 		
 
 		CSymbolTableBuilder *tableBuilder = new CSymbolTableBuilder();

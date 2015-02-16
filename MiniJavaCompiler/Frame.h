@@ -8,6 +8,11 @@
 #include <map>
 
 namespace Frame {
+	class CFrame;
+}
+
+
+namespace Frame {
 
 	// Интерфейс для переменной фрейма
 	class IAccess {
@@ -16,35 +21,6 @@ namespace Frame {
 		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const = 0;
 	};
 
-	// Реализация интерфейса в случае расположения переменной во фрейме
-	class CVariableInFrame : public IAccess {
-	public:
-		CVariableInFrame( int _offsetInWords ) :
-			offsetInWords(_offsetInWords) {};
-		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
-			// TODO: реализовать
-			return
-				new IRTree::MEM(
-					new IRTree::BINOP(
-						IRTree::BO_PLUS,
-						new IRTree::TEMP( framePointer ),
-						new IRTree::CONST( offsetInWords * CFrame::GetWordSize() )
-					)
-				);
-		}
-	private:
-		int offsetInWords; // смещение от начала стека
-	};
-
-	//...и в случае расположения в стеке
-	class CVariableInRegister : public IAccess {
-		CVariableInRegister(const Temp::CTemp* _registerLabel): registerLabel(_registerLabel) {};
-		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
-			return new IRTree::TEMP( registerLabel );
-		}
-	private:
-		const Temp::CTemp* registerLabel; // временная переменная, характеризующая регистр
-	};
 
 	// CFrame ---------------------------------------------------------------------
 	// Класс-контейнер с платформо-зависимой информацией о функции
@@ -54,9 +30,9 @@ namespace Frame {
 		CFrame( const Symbol::CSymbol* _name ) :
 			name( _name ),
 			formalCount( 0 ),
-			framePointer( Temp::CTemp() ),
-			thisPointer( Temp::CTemp() ),
-			returnPointer( Temp::CTemp() )
+			framePointer( Temp::CTemp( Symbol::CSymbol::GetSymbol("FP") ) ),
+			thisPointer( Temp::CTemp () ),
+			returnPointer( Temp::CTemp( Symbol::CSymbol::GetSymbol( "RP" ) ) )
 		{};
 
 		// Добавить аргумент функции
@@ -72,7 +48,7 @@ namespace Frame {
 		const IAccess* FindLocalOrFormal( const Symbol::CSymbol* name ) const;
 
 		// Возвращает размер машинного слова в байтах
-		static const int GetWordSize() { return wordSize; }
+		static int GetWordSize() { return wordSize; }
 
 		const Temp::CTemp* FramePointer() const { return &framePointer; }
 		const Temp::CTemp* ThisPointer() const { return &thisPointer; }
@@ -93,6 +69,36 @@ namespace Frame {
 		const Temp::CTemp thisPointer;
 		const Temp::CTemp returnPointer; // куда фрейм будет записывать возвращаемое значение функции
 
+	};
+
+	// Реализация интерфейса в случае расположения переменной во фрейме
+	class CVariableInFrame : public IAccess {
+	public:
+		CVariableInFrame( int _offsetInWords ) :
+			offsetInWords( _offsetInWords ) {};
+		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
+			// TODO: реализовать
+			return
+				new IRTree::MEM(
+				new IRTree::BINOP(
+				IRTree::BO_PLUS,
+				new IRTree::TEMP( framePointer ),
+				new IRTree::CONST( offsetInWords * CFrame::GetWordSize() )
+				)
+				);
+		}
+	private:
+		int offsetInWords; // смещение от начала стека
+	};
+
+	//...и в случае расположения в стеке
+	class CVariableInRegister : public IAccess {
+		CVariableInRegister( const Temp::CTemp* _registerLabel ) : registerLabel( _registerLabel ) {};
+		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
+			return new IRTree::TEMP( registerLabel );
+		}
+	private:
+		const Temp::CTemp* registerLabel; // временная переменная, характеризующая регистр
 	};
 
 } // namespace Frame
