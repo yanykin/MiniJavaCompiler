@@ -1,6 +1,7 @@
 #include "Translate.h"
 #include <iostream>
 #include "GrammaticRules.h"
+#include <cassert>
 
 using namespace std;
 using namespace CSymbolsTable;
@@ -25,6 +26,9 @@ void CTranslate::Visit( const CMainClassDeclaration* node )
 {
 	// Заходим в класс
 	currentClass = table->GetClassByName( node->GetClassName() );
+
+	currentFrame = new Frame::CFrame( Symbol::CSymbol::GetSymbol( currentClass->GetName() + "$main" ) );
+
 	IStatement* statements = node->GetClassStatements();
 
 	if ( statements )
@@ -32,8 +36,11 @@ void CTranslate::Visit( const CMainClassDeclaration* node )
 		statements->Accept( this );
 	}
 
+	Methods.push_back( std::make_pair( currentFrame, lastWrapper->ToStm() ) );
 	// Выходим из класса
-	currentClass = NULL;
+	currentClass = nullptr;
+	currentFrame = nullptr;
+	lastWrapper = nullptr;
 }
 
 void CTranslate::Visit( const CClassDeclaration* node )
@@ -54,7 +61,8 @@ void CTranslate::Visit( const CClassDeclaration* node )
 	}
 
 	// Выходим из класса
-	currentClass = NULL;
+	currentClass = nullptr;
+	lastWrapper = nullptr;
 }
 
 void CTranslate::Visit( const CClassExtendsDeclaration* node )
@@ -75,7 +83,8 @@ void CTranslate::Visit( const CClassExtendsDeclaration* node )
 	}
 
 	// Выходим из класса
-	currentClass = NULL;
+	currentClass = nullptr;
+	lastWrapper = nullptr;
 }
 
 void CTranslate::Visit( const CClassDeclarationList* node )
@@ -109,8 +118,12 @@ void CTranslate::Visit( const CVariableDeclarationList* node )
 	variableDeclaration->Accept( this );
 }
 
+// TODO
 void CTranslate::Visit( const CMethodDeclaration* node )
 {
+	// TODO: в какой-то момент должен строиться фрейм для вызова этой функции
+	currentFrame = new Frame::CFrame( Symbol::CSymbol::GetSymbol( currentClass->GetName() + "$" + node->GetMethodName() ) );
+
 	// Заходим внутрь метода
 	currentMethod = currentClass->GetMethodByName( node->GetMethodName() );
 
@@ -183,6 +196,7 @@ void CTranslate::Visit( const CUserType* node )
 	
 }
 
+// TODO
 void CTranslate::Visit( const CStatementList* node )
 {
 	IStatement* statement = node->GetStatement();
@@ -210,32 +224,76 @@ void CTranslate::Visit( const CIfStatement* node )
 	IExpression* condition = node->GetCondition();
 
 	condition->Accept( this );
+	const IRTree::IExp* ifExpr = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
+	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
+	Temp::CLabel* endLabelTemp = new Temp::CLabel();
+	IRTree::LABEL* trueLabel = new IRTree::LABEL( trueLabelTemp );
+	IRTree::LABEL* falseLabel = new IRTree::LABEL( falseLabelTemp );
+	IRTree::LABEL* endLabel = new IRTree::LABEL( endLabelTemp );
 
 	trueStatement->Accept( this );
+	IRTree::IStm* trueStmHead = new IRTree::SEQ( trueLabel, lastWrapper->ToStm() );
+	IRTree::IStm* trueStm = new IRTree::SEQ( trueStmHead, endLabel );
+	lastWrapper = nullptr;
 
 	falseStatement->Accept( this );
+	IRTree::IStm* falseStmHead = new IRTree::SEQ( falseLabel, lastWrapper->ToStm() );
+	IRTree::IStm* falseStm = new IRTree::SEQ( falseStmHead, endLabel );
+	lastWrapper = nullptr;
 }
 
 void CTranslate::Visit( const CWhileStatement* node )
 {
+	Temp::CLabel* beforeConditionLabelTemp = new Temp::CLabel();
+	Temp::CLabel* inLoopLabelTemp = new Temp::CLabel();
+	Temp::CLabel* endLabelTemp = new Temp::CLabel();
+	IRTree::LABEL* beforeConditionLabel = new IRTree::LABEL( beforeConditionLabelTemp );
+	IRTree::LABEL* inLoopLabel = new IRTree::LABEL( inLoopLabelTemp );
+	IRTree::LABEL* endLabel = new IRTree::LABEL( endLabelTemp );
+
 	IExpression* condition = node->GetCondition();
 	IStatement* statement = node->GetStatement();
 
 	condition->Accept( this );
+	const IRTree::IStm* whileStm = lastWrapper->ToConditional( inLoopLabelTemp, endLabelTemp );
+	lastWrapper = nullptr;
+	IRTree::IStm* conditionStmHead = new IRTree::SEQ( beforeConditionLabel, whileStm );
+	IRTree::IStm* conditionStm = new IRTree::SEQ( conditionStmHead, lastWrapper->ToStm() );
 
 	statement->Accept( this );
+	IRTree::IStm* statementStmFirst = new IRTree::SEQ( conditionStm, lastWrapper->ToStm() );
+	IRTree::IStm* statementStmSecond = new IRTree::SEQ( statementStmFirst, nullptr /* TODO: JUMP в метку beforeConditionLabel */ );
+	IRTree::IStm* statementStm = new IRTree::SEQ( statementStmSecond, endLabel );
+	lastWrapper = new Translate::CStmConverter( statementStm );
 }
 
 void CTranslate::Visit( const CPrintStatement* node )
 {
 	IExpression *expression = node->GetExpression();
 	expression->Accept( this );
+	const IRTree::IExp* exprForPrint = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+
+	Temp::CLabel* funcName = new Temp::CLabel( Symbol::CSymbol::GetSymbol( "System.out.println" ) );
+	const IRTree::NAME* funcNameTree = new IRTree::NAME( funcName );
+	const IRTree::CExpList* args = new IRTree::CExpList( exprForPrint, nullptr );
+	const IRTree::IExp* funcCall = new IRTree::CALL( funcNameTree, args );
+	lastWrapper = new Translate::CExpConverter( funcCall );
 }
 
 void CTranslate::Visit( const CAssignmentStatement* node )
 {
+	Symbol::CSymbol* varName = Symbol::CSymbol::GetSymbol( node->GetVariableName() );
+	const IRTree::IExp* leftExp = currentFrame->FindLocalOrFormal( varName )->GetExp( currentFrame->FramePointer() );
+
 	IExpression *expression = node->GetRightValue();
 	expression->Accept( this );
+	const IRTree::IExp* rightExp = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+
+	lastWrapper = new Translate::CStmConverter( new IRTree::MOVE( leftExp, rightExp ) );
 }
 
 void CTranslate::Visit( const CArrayElementAssignmentStatement* node )
@@ -246,12 +304,20 @@ void CTranslate::Visit( const CArrayElementAssignmentStatement* node )
 	if ( !leftValueType ) {
 		leftValueType = currentMethod->GetLocalVariableType( node->GetArrayName() );
 	}
-
-	IExpression *expression = node->GetRightValue();
-	expression->Accept( this );
+	Symbol::CSymbol* varName = Symbol::CSymbol::GetSymbol( node->GetArrayName() );
 
 	IExpression* index = node->GetIndexExpression();
 	index->Accept( this );
+	const IRTree::IExp* indexExp = new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, lastWrapper->ToExp(), new IRTree::CONST( 1 ) ) );
+	const IRTree::IExp* zeroIndexExp = currentFrame->FindLocalOrFormal( varName )->GetExp( currentFrame->FramePointer() );
+	const IRTree::IExp* leftExp = new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, zeroIndexExp, indexExp ) );
+
+	IExpression *expression = node->GetRightValue();
+	expression->Accept( this );
+	const IRTree::IExp* rightExp = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+
+	lastWrapper = new Translate::CStmConverter( new IRTree::MOVE( leftExp, rightExp ) );
 }
 
 void CTranslate::Visit( const CBinaryOperatorExpression* node )
@@ -260,8 +326,30 @@ void CTranslate::Visit( const CBinaryOperatorExpression* node )
 	IExpression* rightValue = node->GetRightValue();
 
 	leftValue->Accept( this );
+	const IRTree::IExp* left = lastWrapper->ToExp();
 	
 	rightValue->Accept( this );
+	const IRTree::IExp* right = lastWrapper->ToExp();
+
+	switch( node->GetOperator() ) {
+		case BO_PLUS:
+			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, left, right ) ) );
+			break;
+		case BO_MINUS:
+			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MINUS, left, right ) ) );
+			break;
+		case BO_MULTIPLY:
+			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MUL, left, right ) ) );
+			break;
+		case BO_LESS:
+			lastWrapper = new Translate::CRelativeCmpWrapper( IRTree::CJ_LT, left, right );
+			break;
+		case BO_LOGICAL_AND:
+			lastWrapper = new Translate::CFromAndConverter( left, right );
+			break;
+		default:
+			assert( false );;
+	}
 }
 
 void CTranslate::Visit( const CIndexAccessExpression* node )
@@ -270,14 +358,35 @@ void CTranslate::Visit( const CIndexAccessExpression* node )
 	IExpression *index = node->GetIndex();
 
 	arrayExpression->Accept( this );
+	const IRTree::IExp* varExp = lastWrapper->ToExp();
+	lastWrapper = nullptr;
 	
 	index->Accept( this );
+	const IRTree::IExp* indexExp = new IRTree::BINOP( IRTree::BO_PLUS, new IRTree::MEM( lastWrapper->ToExp() ), new IRTree::CONST( 1 ) );
+	lastWrapper = nullptr;
+	IRTree::IExp* offset = new IRTree::BINOP( IRTree::BO_MUL, new IRTree::CONST( Frame::CFrame::GetWordSize() ), indexExp );
+
+	// адрес переменной
+	lastWrapper = new Translate::CExpConverter( new IRTree::BINOP( IRTree::BO_PLUS, varExp, offset ) );
 }
 
 void CTranslate::Visit( const CLengthExpression* node )
 {
 	IExpression* arrayExpression = node->GetArray();
 	arrayExpression->Accept( this );
+	const IRTree::IExp* varExp = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+
+	const IRTree::IExp* lengthCommandRW = new IRTree::BINOP( IRTree::BO_PLUS, varExp, new IRTree::CONST( 0 ) );
+
+	// временная переменная
+	const Temp::CTemp* lengthTemp = new Temp::CTemp();
+	const IRTree::TEMP* tempVar = new IRTree::TEMP( lengthTemp );
+
+	const IRTree::MOVE* movingCommand = new IRTree::MOVE( tempVar, varExp );
+
+	// Возвращаем адрес переменной
+	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( movingCommand, tempVar ) );
 }
 
 // При вызове метода должен строиться объект фрейма
@@ -287,49 +396,105 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	IExpression* params = node->GetParams();
 	std::string methodName = node->GetMethodName();
 
-
-	// TODO: в какой-то момент должен строиться фрейм для вызова этой функции
-	currentFrame = new Frame::CFrame( Symbol::CSymbol::GetSymbol(currentClass->GetName() + ":" + methodName) );
-
 	object->Accept( this );
+	const IRTree::IExp* exprToBeCalled = lastWrapper->ToExp();
+	lastWrapper = nullptr;
 
-	params->Accept( this );
+	// вызываемый метод
+	Temp::CLabel* functionLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( methodName ) );
+	IRTree::NAME* functionName = new IRTree::NAME( functionLabel );
 
-	// После работы со фреймом удаляем его
-	delete currentFrame;
-	currentFrame = NULL;
+	// TODO: полуить параметры в виде IRTree::CExpList
+	IRTree::CExpList* args = nullptr;
+
+	Temp::CTemp* returned = new Temp::CTemp();
+	const IRTree::TEMP* returnedTemp = new IRTree::TEMP( returned );
+
+	// TODO: что делать, если ф-ия не возвращает значение
+	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( new IRTree::MOVE( returnedTemp, new IRTree::CALL( functionName, args ) ), returnedTemp ) );
+
+	currentFrame = nullptr;
 }
 
 void CTranslate::Visit( const CIntegerOrBooleanExpression* node )
 {
-
+	int value = node->GetValue();
+	TValueType type = node->GetValueType();
+	if( type == VT_BOOLEAN ) {
+		if( value == 0 ) {
+			lastWrapper = new Translate::CExpConverter( new IRTree::CONST( 0 ) );
+		} else {
+			lastWrapper = new Translate::CExpConverter( new IRTree::CONST( 1 ) );
+		}
+	} else {
+		lastWrapper = new Translate::CExpConverter( new IRTree::CONST( value ) );
+	}
 }
 
 void CTranslate::Visit( const CIdentifierExpression* node )
 {
-	
+	// Найдем нужную инфу во фрейме
+	Symbol::CSymbol* varName = Symbol::CSymbol::GetSymbol( node->GetVariableName() );
+	lastWrapper = new Translate::CExpConverter( currentFrame->FindLocalOrFormal( varName )->GetExp( currentFrame->FramePointer() ) );
 }
 
 void CTranslate::Visit( const CThisExpression* node )
 {
-	
+	lastWrapper = new Translate::CExpConverter( new IRTree::TEMP( currentFrame->ThisPointer() ) );
 }
 
 void CTranslate::Visit( const CNewIntegerArrayExpression* node )
 {
 	IExpression* size = node->GetArraySize();
 	size->Accept( this );
+
+	const IRTree::IExp* length = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+
+	const IRTree::IExp* lengthOfArray = new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, length, new IRTree::CONST( 1 ) ) );
+
+	// выделение памяти
+	Temp::CLabel* mallocLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( "malloc" ) );
+	const IRTree::NAME* mallocName = new IRTree::NAME( mallocLabel );
+	const IRTree::CALL* mallocCall = new IRTree::CALL( mallocName, new IRTree::CExpList( lengthOfArray, nullptr ) );
+	Temp::CTemp* resultTemp = new Temp::CTemp();
+	const IRTree::TEMP* tempTemp = new IRTree::TEMP( resultTemp );
+
+	// инициализация
+	const IRTree::CALL* memSetCall = nullptr;
+	const IRTree::SEQ* mallocMoveMemsetHead = new IRTree::SEQ( new IRTree::MOVE( tempTemp, mallocCall ), new IRTree::MOVE( tempTemp, length ) );
+	const IRTree::SEQ* mallocMoveMemset = new IRTree::SEQ( mallocMoveMemsetHead, new IRTree::EXP( memSetCall ) );
+	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( mallocMoveMemset, tempTemp ) );
 }
 
 void CTranslate::Visit( const CNewObjectExpression* node )
 {
-	
+	// выделение памяти
+	Temp::CLabel* mallocLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( "malloc" ) );
+
+	// TODO: посчитать кол-во полей у класса
+	int countOfFields = 255;
+
+	const IRTree::NAME* mallocName = new IRTree::NAME( mallocLabel );
+	const IRTree::CALL* mallocCall = new IRTree::CALL( mallocName, new IRTree::CExpList( new IRTree::CONST( countOfFields ), nullptr ) );
+	Temp::CTemp* resultTemp = new Temp::CTemp();
+	const IRTree::TEMP* tempTemp = new IRTree::TEMP( resultTemp );
+
+	// инициализация
+	const IRTree::CALL* memSetCall = nullptr;
+	const IRTree::SEQ* mallocMoveMemset = new IRTree::SEQ( new IRTree::MOVE( tempTemp, mallocCall ), new IRTree::EXP( memSetCall ) );
+	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( mallocMoveMemset, tempTemp ) );
 }
 
 void CTranslate::Visit( const CNegationExpression* node )
 {
 	IExpression* argument = node->GetArgument();
 	argument->Accept( this );
+
+	const IRTree::IExp* first = new IRTree::CONST( 0 );
+	const IRTree::IExp* second = lastWrapper->ToExp();
+
+	lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MINUS, first, second ) ) );
 }
 
 void CTranslate::Visit( const CParenthesesExpression* node )

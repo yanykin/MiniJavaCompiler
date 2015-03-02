@@ -39,16 +39,17 @@ namespace IRTree
 	enum TCJump
 	{
 		// логические
-		CJ_EQ,
-		CJ_NE,
-		CJ_LT,
-		CJ_GT,
-		CJ_LE,
-		CJ_GE,
-		CJ_ULT,
-		CJ_ULE,
-		CJ_UGT,
-		CJ_UGE
+		CJ_EQ, // equal
+		CJ_NE, // not equal
+		CJ_LT, // less than
+		CJ_GT, // great than
+		CJ_LE, // less or equal
+		CJ_GE, // great or equal
+		// TODO:
+		CJ_ULT, // ?? ЧТО
+		CJ_ULE, // ?? ЭТО
+		CJ_UGT, // ?? ЗНАЧИТ
+		CJ_UGE // ?? ????
 	};
 
 	// вспомогательный классы

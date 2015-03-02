@@ -1,7 +1,7 @@
 #pragma once
 #include "IRTree.h"
 #include "Temp.h"
-#include <assert.h>
+#include <cassert>
 
 namespace Translate
 {
@@ -32,9 +32,9 @@ namespace Translate
 	{
 	public:
 		CStmConverter( const IRTree::IStm* e ) : stm( e ) {}
-		const IRTree::IExp* ToExp() const { assert( false ); }
+		const IRTree::IExp* ToExp() const { assert( false ); return 0; }
 		const IRTree::IStm* ToStm() const { return stm; }
-		const IRTree::IStm* ToConditional( const Temp::CLabel* ifTrue, const Temp::CLabel* ifFalse ) const { assert( false ); }
+		const IRTree::IStm* ToConditional( const Temp::CLabel* ifTrue, const Temp::CLabel* ifFalse ) const { assert( false ); return 0; }
 	private:
 		const IRTree::IStm* stm;
 	};

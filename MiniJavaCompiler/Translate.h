@@ -2,7 +2,9 @@
 #include "Visitor.h"
 #include "Table.h"
 #include "Frame.h"
+#include "Wrappers.h"
 #include <assert.h>
+#include <vector>
 
 class CTranslate : public IVisitor
 {
@@ -45,10 +47,14 @@ class CTranslate : public IVisitor
 	void Visit( const CParenthesesExpression* node );
 	void Visit( const CExpressionList* node );
 
+	// метод представляет собой указатель на фрейм и вершину дерева
+	std::vector<std::pair< const Frame::CFrame*, const IRTree::IStm* > > Methods;
+
 private:
 	CSymbolsTable::CClassInformation* currentClass; // Текущий класс, в котором находится посетитель
 	CSymbolsTable::CMethodInformation* currentMethod; // Текущий метод
 
 	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемся 
 	Frame::CFrame* currentFrame; // текущий фрейм вызова метода
+	Translate::ISubtreeWrapper* lastWrapper; // узел, который "возвращаем"
 };

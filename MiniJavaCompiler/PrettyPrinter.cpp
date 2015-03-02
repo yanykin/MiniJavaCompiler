@@ -1,6 +1,7 @@
 #include "PrettyPrinter.h"
 #include <iostream>
 #include "GrammaticRules.h"
+#include <cassert>
 
 using namespace std;
 
@@ -345,7 +346,7 @@ void CPrettyPrinter::Visit( const CBinaryOperatorExpression* node )
 		cout << " && ";
 		break;
 	default:
-		break; 
+		assert( false );;
 	}
 	rightValue->Accept( this );
 }
