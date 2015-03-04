@@ -332,19 +332,19 @@ void CTranslate::Visit( const CBinaryOperatorExpression* node )
 	const IRTree::IExp* right = lastWrapper->ToExp();
 
 	switch( node->GetOperator() ) {
-		case BO_PLUS:
+		case TBinaryOperator::BO_PLUS:
 			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, left, right ) ) );
 			break;
-		case BO_MINUS:
+		case TBinaryOperator::BO_MINUS:
 			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MINUS, left, right ) ) );
 			break;
-		case BO_MULTIPLY:
+		case TBinaryOperator::BO_MULTIPLY:
 			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MUL, left, right ) ) );
 			break;
-		case BO_LESS:
+		case TBinaryOperator::BO_LESS:
 			lastWrapper = new Translate::CRelativeCmpWrapper( IRTree::CJ_LT, left, right );
 			break;
-		case BO_LOGICAL_AND:
+		case TBinaryOperator::BO_LOGICAL_AND:
 			lastWrapper = new Translate::CFromAndConverter( left, right );
 			break;
 		default:

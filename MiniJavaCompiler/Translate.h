@@ -8,6 +8,7 @@
 
 class CTranslate : public IVisitor
 {
+public:
 	CTranslate(CSymbolsTable::CTable* _table):
 		table(_table),
 		currentFrame(NULL), currentClass(NULL), currentMethod(NULL) {

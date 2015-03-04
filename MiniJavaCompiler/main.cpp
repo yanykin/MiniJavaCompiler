@@ -7,6 +7,9 @@
 #include "TypeChecker.h"
 #include "PrettyPrinter.h"
 
+#include "Translate.h"
+#include "IRTreePrinter.h"
+
 int main()
 {
 	IProgram* mainProgram = 0;
@@ -29,6 +32,16 @@ int main()
 			mainProgram->Accept( typeChecker );
 			if ( typeChecker->IsAllCorrect() ) {
 				std::cout << "Program is correct! :)" << std::endl;
+
+				// —троим дерево промежуточного представлени€
+				CTranslate *translator = new CTranslate( tableBuilder->GetConstructedTable() );
+				mainProgram->Accept( translator );
+				CIRTreePrinter *irTreePrinter = new CIRTreePrinter( "graphviz.txt" );
+				if ( !translator->Methods.empty() ) {
+					translator->Methods[ 0 ].second->Accept( irTreePrinter );
+				}
+				irTreePrinter->WriteGraphStructureToTheFile();
+				
 			}
 			delete typeChecker;
 		}
