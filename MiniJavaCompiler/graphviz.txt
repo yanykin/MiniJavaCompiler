@@ -1,3 +1,8 @@
 digraph {
 node [shape="plaintext"]
+fragment1_1 -> fragment1_2
+fragment1_2 -> fragment1_3
+fragment1_1[ label = "EXP" ]
+fragment1_2[ label = "CALL" ]
+fragment1_3[ label = "NAME System.out.println" ]
 }

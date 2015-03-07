@@ -37,11 +37,21 @@ int main()
 				CTranslate *translator = new CTranslate( tableBuilder->GetConstructedTable() );
 				mainProgram->Accept( translator );
 				CIRTreePrinter *irTreePrinter = new CIRTreePrinter( "graphviz.txt" );
-				if ( !translator->Methods.empty() ) {
-					translator->Methods[ 0 ].second->Accept( irTreePrinter );
+				irTreePrinter->OpenFile();
+
+				if ( translator ) {
+					size_t methodsCounter = 1;
+					for ( auto& method : translator->Methods ) {
+						irTreePrinter->ResetPrinter( "fragment" + std::to_string(methodsCounter) + "_" );
+						method.second->Accept( irTreePrinter );
+						methodsCounter += 1;
+
+						irTreePrinter->WriteGraphStructureToTheFile();
+					}
 				}
-				irTreePrinter->WriteGraphStructureToTheFile();
 				
+				irTreePrinter->CloseFile();
+				delete irTreePrinter;
 			}
 			delete typeChecker;
 		}

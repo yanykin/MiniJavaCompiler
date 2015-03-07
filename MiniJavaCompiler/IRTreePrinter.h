@@ -41,26 +41,46 @@ namespace IRTree {
 		void Visit( const CExpList* node );
 		void Visit( const CStmList* node );
 
-		void WriteGraphStructureToTheFile() {
+		void OpenFile() {
 			// Начало файла
 			graphvizOutputFile << "digraph {" << std::endl << "node [shape=\"plaintext\"]" << std::endl;
+		}
 
+		void CloseFile() {
+			// Конец файла
+			graphvizOutputFile << "}" << std::endl;
+			graphvizOutputFile.close();
+		}
+
+		void WriteGraphStructureToTheFile() {
+			
 			// Перечисление всех пар рёбер
 			for ( auto& edge : treeEdges ) {
-				graphvizOutputFile << edge.first << " -> " << edge.second << std::endl;
+				graphvizOutputFile << prefix << edge.first << " -> " << prefix << edge.second << std::endl;
 			}
 
 			// Перечисление всех вершин
 			for ( auto& node : nodeLabels ) {
-				graphvizOutputFile << node.first << "[ label = \"" << node.second << "\" ]" << std::endl;
+				graphvizOutputFile << prefix << node.first << "[ label = \"" << node.second << "\" ]" << std::endl;
 			}
 
-			// Конец файла
-			graphvizOutputFile << "}" << std::endl;
+		}
+
+		void ResetPrinter( const std::string& nodesPrefix ) {
+			totalVisitedNodes = 0;
+			currentNodeID = lastVisitedNodeID = 0;
+			
+			nodeLabels.clear();
+			treeEdges.clear();
+
+			prefix = nodesPrefix;
 		}
 
 	private:
 		std::ofstream graphvizOutputFile;
+
+		// Префикс, который ставится перед номерами узлов, чтобы различать фрагменты
+		std::string prefix;
 
 		// Порядковый номер текущего узла
 		size_t currentNodeID;
@@ -81,7 +101,10 @@ namespace IRTree {
 			currentNodeID = totalVisitedNodes;
 			nodeStack.push( currentNodeID );
 
-			this->addEdge( lastVisitedNodeID, currentNodeID );
+			if ( lastVisitedNodeID != 0 ) {
+				this->addEdge( lastVisitedNodeID, currentNodeID );
+			}
+			
 		};
 
 		// Вызывается, когда мы полностью обошли всё поддерево

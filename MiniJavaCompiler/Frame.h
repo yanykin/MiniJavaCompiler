@@ -93,6 +93,7 @@ namespace Frame {
 
 	//...и в случае расположения в стеке
 	class CVariableInRegister : public IAccess {
+	public:
 		CVariableInRegister( const Temp::CTemp* _registerLabel ) : registerLabel( _registerLabel ) {};
 		virtual const IRTree::IExp* GetExp( const Temp::CTemp* framePointer ) const {
 			return new IRTree::TEMP( registerLabel );

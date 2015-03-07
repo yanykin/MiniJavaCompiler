@@ -22,12 +22,22 @@ void CSymbolTableBuilder::Visit( const CProgram* node )
 
 void CSymbolTableBuilder::Visit( const CMainClassDeclaration* node )
 {
+	// Перешли в новый класс, создаём класс
+	currentClass = new CSymbolsTable::CClassInformation( node->GetClassName() );
+
 	IStatement* statements = node->GetClassStatements();
 
 	if ( statements )
 	{
 		statements->Accept( this );
 	}
+
+	// После обхода полей и методов класса добавляем его в таблицу
+	if ( !table.AddClass( currentClass ) ) {
+		cout << "ERROR: duplicate class " << currentClass->GetName() << endl;
+		isCorrect = false;
+	}
+	currentClass = NULL;
 }
 
 void CSymbolTableBuilder::Visit( const CClassDeclaration* node )

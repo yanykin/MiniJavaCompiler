@@ -103,6 +103,8 @@ void CTranslate::Visit( const CVariableDeclaration* node )
 	string name = node->GetName();
 	IType* type = node->GetType();
 
+	currentFrame->AddLocal( Symbol::CSymbol::GetSymbol( name ) );
+
 	type->Accept( this );
 }
 
@@ -170,6 +172,8 @@ void CTranslate::Visit( const CFormalList* node )
 {
 	string name = node->GetParameterName();
 	IType* type = node->GetType();
+
+	currentFrame->AddFormal( Symbol::CSymbol::GetSymbol( name ) );
 
 	// Переходим к типу
 	type->Accept( this );
@@ -413,7 +417,7 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	// TODO: что делать, если ф-ия не возвращает значение
 	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( new IRTree::MOVE( returnedTemp, new IRTree::CALL( functionName, args ) ), returnedTemp ) );
 
-	currentFrame = nullptr;
+	// currentFrame = nullptr;
 }
 
 void CTranslate::Visit( const CIntegerOrBooleanExpression* node )
