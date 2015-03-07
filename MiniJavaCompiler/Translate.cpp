@@ -153,8 +153,12 @@ void CTranslate::Visit( const CMethodDeclaration* node )
 	IExpression* returnExpression = node->GetReturnExpression();
 	returnExpression->Accept( this );
 
+	// Добавляем фрагмент кода с фреймом
+	Methods.push_back( std::make_pair( currentFrame, lastWrapper->ToStm() ) );
+
 	// Выходим из метода
 	currentMethod = NULL;
+	currentFrame = NULL;
 }
 
 void CTranslate::Visit( const CMethodDeclarationList* node )

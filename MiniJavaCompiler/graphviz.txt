@@ -5,4 +5,7 @@ fragment1_2 -> fragment1_3
 fragment1_1[ label = "EXP" ]
 fragment1_2[ label = "CALL" ]
 fragment1_3[ label = "NAME System.out.println" ]
+fragment2_1 -> fragment2_2
+fragment2_1[ label = "EXP" ]
+fragment2_2[ label = "TEMP CTEMP_0" ]
 }
