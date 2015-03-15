@@ -220,6 +220,10 @@ namespace IRTree
 			: exp( _exp ), targets( _targets )
 		{
 		};
+		JUMP( const Temp::CLabel* l )
+			: exp( new NAME( l ) ), targets( new Temp::CLabelList( l, nullptr ) )
+		{
+		};
 		const IExp* GetExp() const { return exp; }
 		const Temp::CLabelList* GetTargets() { return targets; }
 		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };

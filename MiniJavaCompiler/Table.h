@@ -48,6 +48,8 @@ namespace CSymbolsTable {
 		CMethodInformation* GetMethodByName( std::string& methodName );
 		// ¬озвращает тип данных дл€ локальной переменной
 		Symbol::CSymbol* GetFieldType( std::string& fieldName );
+		// ¬озвращает количество полей
+		int GetFieldsCount() const { return fields.GetSize(); }
 
 	private:
 		Symbol::CSymbol* name; // им€ класса

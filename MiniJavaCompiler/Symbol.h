@@ -52,6 +52,10 @@ namespace Symbol {
 			auto result = table.find( symbol );
 			return result != table.end() ? result->second : NULL;
 		};
+		// ¬озвращ€ет размер хранилища
+		int GetSize() const {
+			return table.size();
+		}
 
 	private:
 		std::unordered_map<CSymbol*, TObject> table;

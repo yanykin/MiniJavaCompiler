@@ -204,16 +204,21 @@ void CTranslate::Visit( const CUserType* node )
 	
 }
 
-// TODO
 void CTranslate::Visit( const CStatementList* node )
 {
+	// представляем лист в виде SEQ( fisrt, SEQ( second, .. ) )
 	IStatement* statement = node->GetStatement();
 	IStatement* nextStatement = node->GetNextStatement();
 
 	statement->Accept( this );
+	const IStm* head = lastWrapper->ToStm();
 
 	if ( nextStatement ) {
 		nextStatement->Accept( this );
+		const IStm* tail = lastWrapper->ToStm();
+		lastWrapper = new Translate::CStmConverter( new SEQ( head, tail ) );
+	} else {
+		lastWrapper = new Translate::CStmConverter( head );
 	}
 }
 
@@ -272,7 +277,7 @@ void CTranslate::Visit( const CWhileStatement* node )
 
 	statement->Accept( this );
 	IRTree::IStm* statementStmFirst = new IRTree::SEQ( conditionStm, lastWrapper->ToStm() );
-	IRTree::IStm* statementStmSecond = new IRTree::SEQ( statementStmFirst, nullptr /* TODO: JUMP в метку beforeConditionLabel */ );
+	IRTree::IStm* statementStmSecond = new IRTree::SEQ( statementStmFirst, new IRTree::JUMP( beforeConditionLabelTemp ) );
 	IRTree::IStm* statementStm = new IRTree::SEQ( statementStmSecond, endLabel );
 	lastWrapper = new Translate::CStmConverter( statementStm );
 }
@@ -397,7 +402,6 @@ void CTranslate::Visit( const CLengthExpression* node )
 	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( movingCommand, tempVar ) );
 }
 
-// При вызове метода должен строиться объект фрейма
 void CTranslate::Visit( const CMethodCallExpression* node )
 {
 	IExpression* object = node->GetObject();
@@ -412,7 +416,7 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	Temp::CLabel* functionLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( methodName ) );
 	IRTree::NAME* functionName = new IRTree::NAME( functionLabel );
 
-	// TODO: полуить параметры в виде IRTree::CExpList
+	// TODO: получить параметры в виде IRTree::CExpList
 	IRTree::CExpList* args = nullptr;
 
 	Temp::CTemp* returned = new Temp::CTemp();
@@ -420,8 +424,6 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 
 	// TODO: что делать, если ф-ия не возвращает значение
 	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( new IRTree::MOVE( returnedTemp, new IRTree::CALL( functionName, args ) ), returnedTemp ) );
-
-	// currentFrame = nullptr;
 }
 
 void CTranslate::Visit( const CIntegerOrBooleanExpression* node )
@@ -480,8 +482,9 @@ void CTranslate::Visit( const CNewObjectExpression* node )
 	// выделение памяти
 	Temp::CLabel* mallocLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( "malloc" ) );
 
-	// TODO: посчитать кол-во полей у класса
-	int countOfFields = 255;
+	// TODO: узнать у Кирилла, что со стандартными типами
+	CSymbolsTable::CClassInformation* classOfObject = table->GetClassByName( node->GetClass() );
+	int countOfFields = classOfObject->GetFieldsCount();
 
 	const IRTree::NAME* mallocName = new IRTree::NAME( mallocLabel );
 	const IRTree::CALL* mallocCall = new IRTree::CALL( mallocName, new IRTree::CExpList( new IRTree::CONST( countOfFields ), nullptr ) );
