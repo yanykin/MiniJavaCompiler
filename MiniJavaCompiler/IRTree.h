@@ -31,7 +31,7 @@ namespace IRTree
 
 		// булевы
 		BO_AND,
-		BO_OR,	// а разве у нас есть или
+		BO_OR,
 		BO_LSHIFT,
 		BO_RSHIFT,
 		BO_ARSHIFT,

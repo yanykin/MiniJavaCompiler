@@ -67,6 +67,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Canon.cpp" />
     <ClCompile Include="CoordinatesHolder.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GrammaticRules.h" />
@@ -104,6 +105,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Canon.h" />
     <ClInclude Include="CoordinatesHolder.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GrammaticSymbols.h" />

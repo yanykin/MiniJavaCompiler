@@ -66,6 +66,9 @@
     <ClCompile Include="IRTreePrinter.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Canon.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -137,6 +140,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="IRTreeVisitor.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Canon.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
