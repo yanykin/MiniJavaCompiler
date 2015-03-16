@@ -236,50 +236,63 @@ void CTranslate::Visit( const CIfStatement* node )
 	IStatement* falseStatement = node->GetFalseStatement();
 	IExpression* condition = node->GetCondition();
 
-	condition->Accept( this );
-	const IRTree::IExp* ifExpr = lastWrapper->ToExp();
-	lastWrapper = nullptr;
-	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
-	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
-	Temp::CLabel* endLabelTemp = new Temp::CLabel();
-	IRTree::LABEL* trueLabel = new IRTree::LABEL( trueLabelTemp );
-	IRTree::LABEL* falseLabel = new IRTree::LABEL( falseLabelTemp );
-	IRTree::LABEL* endLabel = new IRTree::LABEL( endLabelTemp );
-
 	trueStatement->Accept( this );
-	IRTree::IStm* trueStmHead = new IRTree::SEQ( trueLabel, lastWrapper->ToStm() );
-	IRTree::IStm* trueStm = new IRTree::SEQ( trueStmHead, endLabel );
+	const IRTree::IStm* trueStm = lastWrapper->ToStm();
 	lastWrapper = nullptr;
 
 	falseStatement->Accept( this );
-	IRTree::IStm* falseStmHead = new IRTree::SEQ( falseLabel, lastWrapper->ToStm() );
-	IRTree::IStm* falseStm = new IRTree::SEQ( falseStmHead, endLabel );
+	const IRTree::IStm* falseStm = lastWrapper->ToStm();
 	lastWrapper = nullptr;
+
+	condition->Accept( this );
+	const IRTree::IExp* exp = lastWrapper->ToExp();
+	lastWrapper = nullptr;
+
+	Temp::CLabel* T = new Temp::CLabel(); // метка для блока true
+	Temp::CLabel* F = new Temp::CLabel(); // метка для блока false
+	Temp::CLabel* D = new Temp::CLabel(); // метка после тела if
+	lastWrapper = new Translate::CStmConverter( new IRTree::SEQ
+		( new IRTree::SEQ
+			( new IRTree::SEQ
+				( new IRTree::SEQ
+					// сравниваем exp с 0
+					( new IRTree::CJUMP( IRTree::CJ_NE, exp, new IRTree::CONST( 0 ), T, F ),
+					// блок true
+					new IRTree::SEQ( new IRTree::LABEL( T ), trueStm ) ),
+					new IRTree::JUMP( D ) ),
+					// блок false
+					new IRTree::SEQ( new IRTree::LABEL( F ), falseStm ) ),
+					new IRTree::LABEL( D ) ) );
 }
 
 void CTranslate::Visit( const CWhileStatement* node )
 {
-	Temp::CLabel* beforeConditionLabelTemp = new Temp::CLabel();
-	Temp::CLabel* inLoopLabelTemp = new Temp::CLabel();
-	Temp::CLabel* endLabelTemp = new Temp::CLabel();
-	IRTree::LABEL* beforeConditionLabel = new IRTree::LABEL( beforeConditionLabelTemp );
-	IRTree::LABEL* inLoopLabel = new IRTree::LABEL( inLoopLabelTemp );
-	IRTree::LABEL* endLabel = new IRTree::LABEL( endLabelTemp );
-
 	IExpression* condition = node->GetCondition();
 	IStatement* statement = node->GetStatement();
 
 	condition->Accept( this );
-	const IRTree::IStm* whileStm = lastWrapper->ToConditional( inLoopLabelTemp, endLabelTemp );
+	const IRTree::IExp* exp = lastWrapper->ToExp();
 	lastWrapper = nullptr;
-	IRTree::IStm* conditionStmHead = new IRTree::SEQ( beforeConditionLabel, whileStm );
-	IRTree::IStm* conditionStm = new IRTree::SEQ( conditionStmHead, lastWrapper->ToStm() );
-
+	
 	statement->Accept( this );
-	IRTree::IStm* statementStmFirst = new IRTree::SEQ( conditionStm, lastWrapper->ToStm() );
-	IRTree::IStm* statementStmSecond = new IRTree::SEQ( statementStmFirst, new IRTree::JUMP( beforeConditionLabelTemp ) );
-	IRTree::IStm* statementStm = new IRTree::SEQ( statementStmSecond, endLabel );
-	lastWrapper = new Translate::CStmConverter( statementStm );
+	const IRTree::IStm* body = lastWrapper->ToStm();
+	lastWrapper = nullptr;
+
+	Temp::CLabel* test = new Temp::CLabel(); // метка для условия
+	Temp::CLabel* T = new Temp::CLabel(); // метка для тела
+	Temp::CLabel* F = new Temp::CLabel(); // метка после тела while
+
+	lastWrapper = new Translate::CStmConverter( new IRTree::SEQ
+		( new IRTree::SEQ
+			( new IRTree::SEQ
+				// создаем метку test для проверки условия
+				( new IRTree::LABEL( test ),
+				// сравниваем exp с 0
+				( new IRTree::CJUMP( IRTree::CJ_NE, exp, new IRTree::CONST( 0 ), T, F ) ) ),
+				// блок true: вополняется тело, JUMP на метку test
+				( new IRTree::SEQ( new IRTree::LABEL( T ), new IRTree::SEQ(body, new IRTree::JUMP(test) ) ) ) ),
+				// блок false: выход
+				new IRTree::LABEL( F ) ) );
 }
 
 void CTranslate::Visit( const CPrintStatement* node )
