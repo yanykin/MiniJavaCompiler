@@ -185,7 +185,7 @@ IDENTIFIER			[a-zA-Z][_0-9A-Za-z]*
 	/* eat up '*'s not followed by '/'s */
 }
 
-<comment>'\n' {  
+<comment>"\n" {  
 	++line_num;
 	column_num = 1;
 }

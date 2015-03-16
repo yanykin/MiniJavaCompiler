@@ -461,13 +461,16 @@ void CTypeChecker::Visit( const CMethodCallExpression* node )
 			isCorrect = false;
 		}
 		else {
+			if ( params ) {
+				params->Accept( this );
+			}
+
 			// ≈сли метод определЄн, то в качестве типа выражени€ указываем то, что возвращает метод
 			lastTypeValue = methodInfo->GetReturnType()->GetString();
 		}
 	}
 
-	params->Accept( this );
-
+	
 }
 
 void CTypeChecker::Visit( const CIntegerOrBooleanExpression* node )

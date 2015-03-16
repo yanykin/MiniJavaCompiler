@@ -90,7 +90,9 @@ void CIRTreePrinter::Visit( const CALL* node ) {
 	nodeLabels[ currentNodeID ] = "CALL";
 	node->GetFunc()->Accept( this );
 
-	node->GetArgs()->Accept( this );
+	if ( node->GetArgs() ) {
+		node->GetArgs()->Accept( this );
+	}
 
 	leaveNode();
 }
@@ -210,11 +212,31 @@ void CIRTreePrinter::Visit( const LABEL* node ) {
 }
 
 void CIRTreePrinter::Visit( const CExpList* node ) {
-	// TODO:
+	visitNewNode();
+
+	const IExp* nextExp = node->GetHead();
+	const CExpList* tail = node->GetTail();
+	
+	
+
+	if ( tail ) {
+		tail->Accept( this );
+	}	
+
+	leaveNode();
 }
 
 
 void CIRTreePrinter::Visit( const CStmList* node ) {
-	// TODO:
+	visitNewNode();
+
+	const IStm* nextExp = node->GetHead();
+	const CStmList* tail = node->GetTail();
+
+	leaveNode();
+
+	if ( tail ) {
+		tail->Accept( this );
+	}
 }
 

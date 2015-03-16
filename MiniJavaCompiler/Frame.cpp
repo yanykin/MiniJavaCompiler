@@ -3,14 +3,12 @@
 using namespace Frame;
 
 void CFrame::AddFormal( const Symbol::CSymbol* name ) {
-	// TODO: создать переменную IAccess и положить куда надо
 	methodFormals[ name ] = new CVariableInRegister( new Temp::CTemp() );
 	formalCount += 1;
 }
 
 void CFrame::AddLocal( const Symbol::CSymbol* name ) {
 	localVariables[ name ] = new CVariableInRegister( new Temp::CTemp() );
-	// TODO: создать переменную IAccess и положить куда надо
 }
 
 const IAccess* CFrame::FindLocalOrFormal( const Symbol::CSymbol* name ) const {

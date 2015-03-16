@@ -2,10 +2,39 @@ digraph {
 node [shape="plaintext"]
 fragment1_1 -> fragment1_2
 fragment1_2 -> fragment1_3
-fragment1_1[ label = "EXP" ]
-fragment1_2[ label = "CALL" ]
-fragment1_3[ label = "NAME System.out.println" ]
+fragment1_3 -> fragment1_4
+fragment1_3 -> fragment1_5
+fragment1_1 -> fragment1_6
+fragment1_6 -> fragment1_7
+fragment1_7 -> fragment1_8
+fragment1_7 -> fragment1_9
+fragment1_1[ label = "SEQ" ]
+fragment1_2[ label = "EXP" ]
+fragment1_3[ label = "CALL" ]
+fragment1_4[ label = "NAME System.out.println" ]
+fragment1_6[ label = "EXP" ]
+fragment1_7[ label = "CALL" ]
+fragment1_8[ label = "NAME System.out.println" ]
 fragment2_1 -> fragment2_2
 fragment2_1[ label = "EXP" ]
-fragment2_2[ label = "TEMP CTEMP_0" ]
+fragment2_2[ label = "CONST 42" ]
+fragment3_1 -> fragment3_2
+fragment3_2 -> fragment3_3
+fragment3_3 -> fragment3_4
+fragment3_3 -> fragment3_5
+fragment3_3 -> fragment3_6
+fragment3_6 -> fragment3_7
+fragment3_7 -> fragment3_8
+fragment3_7 -> fragment3_9
+fragment3_7 -> fragment3_10
+fragment3_1[ label = "EXP" ]
+fragment3_2[ label = "MEM" ]
+fragment3_3[ label = "BINOP" ]
+fragment3_4[ label = "*" ]
+fragment3_5[ label = "TEMP CTEMP_10" ]
+fragment3_6[ label = "MEM" ]
+fragment3_7[ label = "BINOP" ]
+fragment3_8[ label = "-" ]
+fragment3_9[ label = "TEMP CTEMP_8" ]
+fragment3_10[ label = "TEMP CTEMP_7" ]
 }

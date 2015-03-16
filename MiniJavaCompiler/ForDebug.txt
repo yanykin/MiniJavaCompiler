@@ -1,14 +1,21 @@
 class Factorial { 
-    public static void main(String[] a) { 
-        System.out.println(new Fac().ComputeFac(10)); 
+    public static void main(String[] a) {
+		{
+			System.out.println((new Fac()).SomeFunction(15, 11, true));
+			System.out.println((new Fac()).SomeFunction(3 + 4, 7 - 9 * 2, false)); 
+		}
     } 
-} 
+}
+
 class Fac { 
-    public int ComputeFac(int num) { 
-        int num_aux; 
-        if (num < 1) 
-            num_aux = 1; 
-        else 
-            num_aux = num * (this.ComputeFac(num-1)); 
-        return num_aux; 
-    } }
+	public int GetValue () {
+		return 42;
+	}
+
+	public int SomeFunction (int a, int b, boolean c) {
+		int tmp;
+		Fac tmp2;
+		tmp = a * b + this.GetValue();
+		return tmp * (b - a);
+	}
+}

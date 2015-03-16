@@ -377,7 +377,9 @@ void CPrettyPrinter::Visit( const CMethodCallExpression* node )
 
 	object->Accept( this );
 	cout << "." << methodName << "(";
-	params->Accept( this );
+	if ( params ) {
+		params->Accept( this );
+	}
 	cout << ")";
 }
 

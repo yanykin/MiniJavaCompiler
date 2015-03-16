@@ -341,8 +341,10 @@ void CSymbolTableBuilder::Visit( const CMethodCallExpression* node )
 
 	object->Accept( this );
 
-	params->Accept( this );
-
+	if ( params ) {
+		params->Accept( this );
+	}
+	
 }
 
 void CSymbolTableBuilder::Visit( const CIntegerOrBooleanExpression* node )

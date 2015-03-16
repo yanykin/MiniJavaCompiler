@@ -9,7 +9,7 @@ int CTemp::nextUniqueId = 0;
 // Конструктор без параметров
 CTemp::CTemp() {
 	name = suffix + "_" + std::to_string( nextUniqueId );
-	nextUniqueId;
+	nextUniqueId += 1;
 }
 
 // Конструктор, в котором мы передаём символ
@@ -26,7 +26,7 @@ int CLabel::nextUniqueId = 0;
 // Конструктор без параметров
 CLabel::CLabel() {
 	name = suffix + "_" + std::to_string( nextUniqueId );
-	nextUniqueId;
+	nextUniqueId += 1;
 }
 
 // Конструктор, в котором мы передаём символ
