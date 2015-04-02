@@ -11,7 +11,7 @@ class CTranslate : public IVisitor
 public:
 	CTranslate(CSymbolsTable::CTable* _table):
 		table(_table),
-		currentFrame(NULL), currentClass(NULL), currentMethod(NULL) {
+		currentFrame(NULL), currentClass(NULL), currentMethod(NULL), expList(NULL) {
 		assert( _table != NULL );
 	}
 
@@ -58,4 +58,6 @@ private:
 	CSymbolsTable::CTable* table; // таблица, к которой мы обращаемся 
 	Frame::CFrame* currentFrame; // текущий фрейм вызова метода
 	Translate::ISubtreeWrapper* lastWrapper; // узел, который "возвращаем"
+
+	IRTree::CExpList* expList; // вспомогательная переменная, при помощи которой собираем список из CExp
 };

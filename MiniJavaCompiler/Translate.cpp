@@ -150,11 +150,26 @@ void CTranslate::Visit( const CMethodDeclaration* node )
 		statementList->Accept( this );
 	}
 
+	const IRTree::IStm* methodStatements = nullptr;
+	if ( lastWrapper ) {
+		methodStatements = lastWrapper->ToStm();
+	} 
+
 	IExpression* returnExpression = node->GetReturnExpression();
 	returnExpression->Accept( this );
 
+	const IRTree::IStm* returnStatement = lastWrapper->ToStm();
+
+	const IRTree::IStm* fragremntStatement = nullptr;
+	if ( methodStatements ) {
+		fragremntStatement = new IRTree::SEQ( methodStatements, returnStatement );
+	}
+	else {
+		fragremntStatement = returnStatement;
+	}
+
 	// Добавляем фрагмент кода с фреймом
-	Methods.push_back( std::make_pair( currentFrame, lastWrapper->ToStm() ) );
+	Methods.push_back( std::make_pair( currentFrame, fragremntStatement ) );
 
 	// Выходим из метода
 	currentMethod = NULL;
@@ -429,8 +444,14 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	Temp::CLabel* functionLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( methodName ) );
 	IRTree::NAME* functionName = new IRTree::NAME( functionLabel );
 
+	expList = nullptr;
 	// TODO: получить параметры в виде IRTree::CExpList
-	IRTree::CExpList* args = nullptr;
+	if ( params ) {
+		params->Accept( this );
+	}
+	IRTree::CExpList* args = expList;
+	// TODO: возвращать построенный список через lastWrapper (?!)
+	
 
 	Temp::CTemp* returned = new Temp::CTemp();
 	const IRTree::TEMP* returnedTemp = new IRTree::TEMP( returned );
@@ -533,8 +554,14 @@ void CTranslate::Visit( const CExpressionList* node )
 	IExpression *nextExpression = node->GetNextExpression();
 
 	expression->Accept( this );
+	const IExp* expListHead = lastWrapper->ToExp();
+
+	// const IExp* expListTail = nullptr;
 
 	if ( nextExpression ) {
 		nextExpression->Accept( this );
+		// expListTail = lastWrapper->ToExp();
 	}
+	
+	expList = new CExpList( expListHead, expList );
 }

@@ -14,8 +14,11 @@ class Fac {
 
 	public int SomeFunction (int a, int b, boolean c) {
 		int tmp;
+		int gggg;
 		Fac tmp2;
 		tmp = a * b + this.GetValue();
+		gggg = 100 - tmp;
+		tmp = this.GetValue() * gggg;
 		return tmp * (b - a);
 	}
 }

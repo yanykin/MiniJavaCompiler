@@ -212,31 +212,38 @@ void CIRTreePrinter::Visit( const LABEL* node ) {
 }
 
 void CIRTreePrinter::Visit( const CExpList* node ) {
-	visitNewNode();
+	// visitNewNode();
 
 	const IExp* nextExp = node->GetHead();
 	const CExpList* tail = node->GetTail();
 	
+	if ( nextExp ) {
+		nextExp->Accept( this );
+	}
 	
-
 	if ( tail ) {
 		tail->Accept( this );
 	}	
 
-	leaveNode();
+	// leaveNode();
 }
 
 
 void CIRTreePrinter::Visit( const CStmList* node ) {
-	visitNewNode();
+
+	// visitNewNode();
 
 	const IStm* nextExp = node->GetHead();
 	const CStmList* tail = node->GetTail();
-
-	leaveNode();
+	
+	if ( nextExp ) {
+		nextExp->Accept( this );
+	}
 
 	if ( tail ) {
 		tail->Accept( this );
 	}
+
+	// leaveNode();
 }
 
