@@ -4,17 +4,75 @@ fragment1_1 -> fragment1_2
 fragment1_2 -> fragment1_3
 fragment1_3 -> fragment1_4
 fragment1_3 -> fragment1_5
-fragment1_1 -> fragment1_6
+fragment1_5 -> fragment1_6
 fragment1_6 -> fragment1_7
-fragment1_7 -> fragment1_8
-fragment1_7 -> fragment1_9
+fragment1_6 -> fragment1_8
+fragment1_8 -> fragment1_9
+fragment1_8 -> fragment1_10
+fragment1_8 -> fragment1_11
+fragment1_8 -> fragment1_12
+fragment1_5 -> fragment1_13
+fragment1_1 -> fragment1_14
+fragment1_14 -> fragment1_15
+fragment1_15 -> fragment1_16
+fragment1_15 -> fragment1_17
+fragment1_17 -> fragment1_18
+fragment1_18 -> fragment1_19
+fragment1_18 -> fragment1_20
+fragment1_20 -> fragment1_21
+fragment1_20 -> fragment1_22
+fragment1_22 -> fragment1_23
+fragment1_23 -> fragment1_24
+fragment1_23 -> fragment1_25
+fragment1_23 -> fragment1_26
+fragment1_20 -> fragment1_27
+fragment1_27 -> fragment1_28
+fragment1_28 -> fragment1_29
+fragment1_28 -> fragment1_30
+fragment1_28 -> fragment1_31
+fragment1_31 -> fragment1_32
+fragment1_32 -> fragment1_33
+fragment1_32 -> fragment1_34
+fragment1_32 -> fragment1_35
+fragment1_20 -> fragment1_36
+fragment1_17 -> fragment1_37
 fragment1_1[ label = "SEQ" ]
 fragment1_2[ label = "EXP" ]
 fragment1_3[ label = "CALL" ]
 fragment1_4[ label = "NAME System.out.println" ]
-fragment1_6[ label = "EXP" ]
-fragment1_7[ label = "CALL" ]
-fragment1_8[ label = "NAME System.out.println" ]
+fragment1_5[ label = "ESEQ" ]
+fragment1_6[ label = "MOVE" ]
+fragment1_7[ label = "TEMP CTEMP_2" ]
+fragment1_8[ label = "CALL" ]
+fragment1_9[ label = "NAME SomeFunction" ]
+fragment1_10[ label = "CONST 15" ]
+fragment1_11[ label = "CONST 11" ]
+fragment1_12[ label = "CONST 1" ]
+fragment1_13[ label = "TEMP CTEMP_2" ]
+fragment1_14[ label = "EXP" ]
+fragment1_15[ label = "CALL" ]
+fragment1_16[ label = "NAME System.out.println" ]
+fragment1_17[ label = "ESEQ" ]
+fragment1_18[ label = "MOVE" ]
+fragment1_19[ label = "TEMP CTEMP_4" ]
+fragment1_20[ label = "CALL" ]
+fragment1_21[ label = "NAME SomeFunction" ]
+fragment1_22[ label = "MEM" ]
+fragment1_23[ label = "BINOP" ]
+fragment1_24[ label = "+" ]
+fragment1_25[ label = "CONST 3" ]
+fragment1_26[ label = "CONST 4" ]
+fragment1_27[ label = "MEM" ]
+fragment1_28[ label = "BINOP" ]
+fragment1_29[ label = "-" ]
+fragment1_30[ label = "CONST 7" ]
+fragment1_31[ label = "MEM" ]
+fragment1_32[ label = "BINOP" ]
+fragment1_33[ label = "*" ]
+fragment1_34[ label = "CONST 9" ]
+fragment1_35[ label = "CONST 2" ]
+fragment1_36[ label = "CONST 1" ]
+fragment1_37[ label = "TEMP CTEMP_4" ]
 fragment2_1 -> fragment2_2
 fragment2_1[ label = "EXP" ]
 fragment2_2[ label = "CONST 42" ]
@@ -22,19 +80,95 @@ fragment3_1 -> fragment3_2
 fragment3_2 -> fragment3_3
 fragment3_3 -> fragment3_4
 fragment3_3 -> fragment3_5
-fragment3_3 -> fragment3_6
+fragment3_5 -> fragment3_6
 fragment3_6 -> fragment3_7
-fragment3_7 -> fragment3_8
-fragment3_7 -> fragment3_9
-fragment3_7 -> fragment3_10
-fragment3_1[ label = "EXP" ]
-fragment3_2[ label = "MEM" ]
-fragment3_3[ label = "BINOP" ]
-fragment3_4[ label = "*" ]
-fragment3_5[ label = "TEMP CTEMP_10" ]
-fragment3_6[ label = "MEM" ]
-fragment3_7[ label = "BINOP" ]
-fragment3_8[ label = "-" ]
-fragment3_9[ label = "TEMP CTEMP_8" ]
-fragment3_10[ label = "TEMP CTEMP_7" ]
+fragment3_6 -> fragment3_8
+fragment3_8 -> fragment3_9
+fragment3_9 -> fragment3_10
+fragment3_9 -> fragment3_11
+fragment3_9 -> fragment3_12
+fragment3_6 -> fragment3_13
+fragment3_13 -> fragment3_14
+fragment3_14 -> fragment3_15
+fragment3_14 -> fragment3_16
+fragment3_16 -> fragment3_17
+fragment3_13 -> fragment3_18
+fragment3_2 -> fragment3_19
+fragment3_19 -> fragment3_20
+fragment3_20 -> fragment3_21
+fragment3_20 -> fragment3_22
+fragment3_22 -> fragment3_23
+fragment3_23 -> fragment3_24
+fragment3_23 -> fragment3_25
+fragment3_23 -> fragment3_26
+fragment3_19 -> fragment3_27
+fragment3_27 -> fragment3_28
+fragment3_27 -> fragment3_29
+fragment3_29 -> fragment3_30
+fragment3_30 -> fragment3_31
+fragment3_30 -> fragment3_32
+fragment3_32 -> fragment3_33
+fragment3_33 -> fragment3_34
+fragment3_33 -> fragment3_35
+fragment3_35 -> fragment3_36
+fragment3_32 -> fragment3_37
+fragment3_30 -> fragment3_38
+fragment3_1 -> fragment3_39
+fragment3_39 -> fragment3_40
+fragment3_40 -> fragment3_41
+fragment3_41 -> fragment3_42
+fragment3_41 -> fragment3_43
+fragment3_41 -> fragment3_44
+fragment3_44 -> fragment3_45
+fragment3_45 -> fragment3_46
+fragment3_45 -> fragment3_47
+fragment3_45 -> fragment3_48
+fragment3_1[ label = "SEQ" ]
+fragment3_2[ label = "SEQ" ]
+fragment3_3[ label = "MOVE" ]
+fragment3_4[ label = "TEMP CTEMP_10" ]
+fragment3_5[ label = "MEM" ]
+fragment3_6[ label = "BINOP" ]
+fragment3_7[ label = "+" ]
+fragment3_8[ label = "MEM" ]
+fragment3_9[ label = "BINOP" ]
+fragment3_10[ label = "*" ]
+fragment3_11[ label = "TEMP CTEMP_7" ]
+fragment3_12[ label = "TEMP CTEMP_8" ]
+fragment3_13[ label = "ESEQ" ]
+fragment3_14[ label = "MOVE" ]
+fragment3_15[ label = "TEMP CTEMP_13" ]
+fragment3_16[ label = "CALL" ]
+fragment3_17[ label = "NAME GetValue" ]
+fragment3_18[ label = "TEMP CTEMP_13" ]
+fragment3_19[ label = "SEQ" ]
+fragment3_20[ label = "MOVE" ]
+fragment3_21[ label = "TEMP CTEMP_11" ]
+fragment3_22[ label = "MEM" ]
+fragment3_23[ label = "BINOP" ]
+fragment3_24[ label = "-" ]
+fragment3_25[ label = "CONST 100" ]
+fragment3_26[ label = "TEMP CTEMP_10" ]
+fragment3_27[ label = "MOVE" ]
+fragment3_28[ label = "TEMP CTEMP_10" ]
+fragment3_29[ label = "MEM" ]
+fragment3_30[ label = "BINOP" ]
+fragment3_31[ label = "*" ]
+fragment3_32[ label = "ESEQ" ]
+fragment3_33[ label = "MOVE" ]
+fragment3_34[ label = "TEMP CTEMP_14" ]
+fragment3_35[ label = "CALL" ]
+fragment3_36[ label = "NAME GetValue" ]
+fragment3_37[ label = "TEMP CTEMP_14" ]
+fragment3_38[ label = "TEMP CTEMP_11" ]
+fragment3_39[ label = "EXP" ]
+fragment3_40[ label = "MEM" ]
+fragment3_41[ label = "BINOP" ]
+fragment3_42[ label = "*" ]
+fragment3_43[ label = "TEMP CTEMP_10" ]
+fragment3_44[ label = "MEM" ]
+fragment3_45[ label = "BINOP" ]
+fragment3_46[ label = "-" ]
+fragment3_47[ label = "TEMP CTEMP_8" ]
+fragment3_48[ label = "TEMP CTEMP_7" ]
 }
