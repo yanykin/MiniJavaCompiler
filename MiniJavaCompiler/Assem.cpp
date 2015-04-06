@@ -10,7 +10,7 @@ void Codegen::emit(IInstr * inst) {
 	else last = ilist = new InstrList(inst, NULL);
 }
 
-InstrList * Codegen::codegen(IStm * s) {
+InstrList * Codegen::codegen(IRTree::IStm * s) {
 	InstrList * l;
 	munchStm(s);
 	l = ilist;
@@ -18,17 +18,43 @@ InstrList * Codegen::codegen(IStm * s) {
 	return l;
 }
 
-CTemp * Codegen::munchExp(CONST * exp)
+void Codegen::munchStm(IRTree::SEQ * stm)
+{
+	munchStm(stm->GetLeft);
+	munchStm(stm->GetRight);
+}
+
+void Codegen::munchStm(IRTree::MOVE * stm)
+{
+	MEM * memStmDst = reinterpret_cast<MEM *> (stm->GetDst);
+	MEM * memStmSrc = reinterpret_cast<MEM *> (stm->GetSrc);
+	
+	if (memStmDst)
+	{
+		if (memStmSrc)
+		{
+			emit(new OPER(std::string("MOVE M[Сs0] <- M[Сs1]\n"),
+				NULL, new CTempList(munchExp(memStmDst->GetExp), new CTempList(munchExp(memStmSrc->GetExp), NULL))));
+			return;
+		}
+		emit(new OPER(std::string("STORE M[Сs0] <- Сs1\n"),
+			NULL, new CTempList(munchExp(memStmDst->GetExp), new CTempList(munchExp(stm->GetSrc), NULL))));
+		return;
+	}
+}
+
+//не доделана!!
+CTemp * Codegen::munchExp(IRTree::CONST * exp)
 {
 	CTemp * r = new CTemp();
 	std::string intstrString = "ADDI Сd0 <- r0+";
 	intstrString += exp->GetValue;
 	intstrString += "\n";
-
+	
 	return r;
 }
 
-CTemp * Codegen::munchExp(MEM * exp)
+CTemp * Codegen::munchExp(IRTree::MEM * exp)
 {
 	IExp * curExp = exp->GetExp;
 	CTemp * r = new CTemp();
@@ -54,7 +80,7 @@ CTemp * Codegen::munchExp(MEM * exp)
 	return r;
 }
 
-CTemp * Codegen::munchExp(BINOP * exp)
+CTemp * Codegen::munchExp(IRTree::BINOP * exp)
 {
 	TBinop type = exp->GetBinop;
 	switch (type)
