@@ -7,19 +7,30 @@ using namespace Translate;
 const IRTree::IExp* CConditionalWrapper::ToExp() const
 {
 	Temp::CTemp* temp = new Temp::CTemp();
-	IRTree::TEMP* irTemp = new IRTree::TEMP( temp );
-	IRTree::MOVE* moveTrue = new IRTree::MOVE( irTemp, new IRTree::CONST( 1 ) );
-	IRTree::MOVE* moveFalse = new IRTree::MOVE( irTemp, new IRTree::CONST( 0 ) );
+	IRTree::TEMP* retValue = new IRTree::TEMP( temp );
+
+	IRTree::MOVE* moveTrue = new IRTree::MOVE( retValue, new IRTree::CONST( 1 ) );
+	IRTree::MOVE* moveFalse = new IRTree::MOVE( retValue, new IRTree::CONST( 0 ) );
+
 	Temp::CLabel* trueLabel = new Temp::CLabel();
 	Temp::CLabel* falseLabel = new Temp::CLabel();
-	IRTree::LABEL* trueIRLabel = new IRTree::LABEL( trueLabel );
-	IRTree::LABEL* falseIRLabel = new IRTree::LABEL( falseLabel );
-	IRTree::SEQ* seqTrue = new IRTree::SEQ( trueIRLabel, moveTrue );
-	IRTree::SEQ* seqFalse = new IRTree::SEQ( falseIRLabel, moveFalse );
-	const IRTree::IStm* cond = ToConditional( trueLabel, falseLabel );
-	return new IRTree::ESEQ( cond, irTemp );
-}
+	Temp::CLabel* endLabel = new Temp::CLabel();
 
+	return new IRTree::ESEQ( new IRTree::SEQ
+		( new IRTree::SEQ
+			( new IRTree::SEQ
+				( new IRTree::SEQ
+					// условие
+					( ToConditional( trueLabel, falseLabel ),
+					// блок true
+					new IRTree::SEQ( new IRTree::LABEL( trueLabel ), moveTrue ) ),
+					new IRTree::JUMP( endLabel ) ),
+					// блок false
+					new IRTree::SEQ( new IRTree::LABEL( falseLabel ), moveFalse ) ),
+					new IRTree::LABEL( endLabel ) ),
+					// возвращаем значение
+					retValue );
+}
 
 // return Stm
 const IRTree::IStm* CConditionalWrapper::ToStm() const
