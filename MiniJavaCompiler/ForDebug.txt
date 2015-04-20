@@ -21,4 +21,21 @@ class Fac {
 		tmp = this.GetValue() * gggg;
 		return tmp * (b - a);
 	}
+
+	public boolean CheckSomething( int x, int y ) {
+		int z;
+		boolean flag;
+		flag = true;
+		if ( x + y < 3 && x * y < 4) {
+			flag = true;
+		} else {
+			z = x * y + 7;
+			/* if (z < 9) {
+				flag = false;
+			} else {
+				
+			} */
+		}
+		return flag;
+	}
 }

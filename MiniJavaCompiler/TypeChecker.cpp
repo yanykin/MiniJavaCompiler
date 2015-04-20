@@ -261,8 +261,8 @@ void CTypeChecker::Visit( const CIfStatement* node )
 
 	condition->Accept( this );
 	// Проверяем, что условие имеет булев тип
-	if ( lastTypeValue != "bool" ) {
-		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): condition in IF statement should have boolean type" << endl;
+	if ( lastTypeValue != "boolean" ) {
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): Condition in IF statement should have boolean type" << endl;
 		isCorrect = false;
 	}
 
@@ -278,7 +278,7 @@ void CTypeChecker::Visit( const CWhileStatement* node )
 
 	condition->Accept( this );
 	if ( lastTypeValue != "bool" ) {
-		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): condition in WHILE statement should have boolean type" << endl;
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): Condition in WHILE statement should have boolean type" << endl;
 		isCorrect = false;
 	}
 
@@ -313,7 +313,7 @@ void CTypeChecker::Visit( const CAssignmentStatement* node )
 	expression->Accept( this );
 
 	if ( leftValueType->GetString() != lastTypeValue ) {
-		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): left and right values should have equal types" << endl;
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): Left and right values should have equal types" << endl;
 		isCorrect = false;
 	}
 
@@ -332,11 +332,11 @@ void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 	expression->Accept( this );
 
 	if ( leftValueType->GetString() != "int[]" ) {
-		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): left value should have array of integers type" << endl;
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): Left value should have array of integers type" << endl;
 		isCorrect = false;
 	}
 	else if ( lastTypeValue != "int" ) {
-		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): right value should have integer type" << endl;
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): Right value should have integer type" << endl;
 		isCorrect = false;
 	}
 
@@ -344,7 +344,7 @@ void CTypeChecker::Visit( const CArrayElementAssignmentStatement* node )
 	index->Accept( this );
 	// Проверяем тип индекса массива
 	if ( lastTypeValue != "int" ) {
-		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): index expression should have integer type" << endl;
+		cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): Index expression should have integer type" << endl;
 		isCorrect = false;
 	}
 
@@ -368,7 +368,6 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 	case BO_MINUS:
 	case BO_LESS:
 	case BO_MULTIPLY:
-	case BO_LOGICAL_AND:
 	{
 		if ( leftValueType != "int" ) {
 			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
@@ -380,6 +379,21 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 			cout << "Right agrument must be integer" << endl;
 			isCorrect = false;
 		}
+		break;
+	}
+	case BO_LOGICAL_AND:
+	{
+		if ( leftValueType != "boolean" ) {
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
+			cout << "Left agrument must be boolean" << endl;
+			isCorrect = false;
+		}
+		else if ( rightValueType != "boolean" ) {
+			cout << "ERROR (" << node->GetRow() << ", " << node->GetColumn() << "): ";
+			cout << "Right agrument must be boolean" << endl;
+			isCorrect = false;
+		}
+		break;
 	}
 	default:
 		break;
@@ -394,7 +408,7 @@ void CTypeChecker::Visit( const CBinaryOperatorExpression* node )
 		break;
 	case BO_LESS:
 	case BO_LOGICAL_AND:
-		lastTypeValue = "bool";
+		lastTypeValue = "boolean";
 		break;
 	default:
 		break;
@@ -430,7 +444,7 @@ void CTypeChecker::Visit( const CLengthExpression* node )
 
 	if ( lastTypeValue != "int[]" ) {
 		isCorrect = false;
-		cout << "ERROR: lentgh attribute is available only for arrays" << endl;
+		cout << "ERROR: length attribute is available only for arrays" << endl;
 	}
 
 	lastTypeValue = "int";
@@ -484,7 +498,7 @@ void CTypeChecker::Visit( const CIntegerOrBooleanExpression* node )
 		lastTypeValue = "int";
 		break;
 	case VT_BOOLEAN:
-		lastTypeValue = "bool";
+		lastTypeValue = "boolean";
 		break;
 	default:
 		break;

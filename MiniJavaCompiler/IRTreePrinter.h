@@ -43,7 +43,7 @@ namespace IRTree {
 
 		void OpenFile() {
 			// Начало файла
-			graphvizOutputFile << "digraph {" << std::endl << "node [shape=\"plaintext\"]" << std::endl;
+			graphvizOutputFile << "digraph {" << std::endl << "node [shape=\"box\"]" << std::endl;
 		}
 
 		void CloseFile() {
@@ -66,7 +66,7 @@ namespace IRTree {
 
 		}
 
-		void ResetPrinter( const std::string& nodesPrefix ) {
+		void ResetPrinter( const std::string& nodesPrefix, const std::string& fragmentName ) {
 			totalVisitedNodes = 0;
 			currentNodeID = lastVisitedNodeID = 0;
 			
@@ -74,6 +74,10 @@ namespace IRTree {
 			treeEdges.clear();
 
 			prefix = nodesPrefix;
+
+			// Добавляем название фрагмента
+			nodeLabels[ 0 ] = fragmentName;
+			this->addEdge( 0, 1 );
 		}
 
 	private:

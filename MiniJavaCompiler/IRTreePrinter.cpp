@@ -43,29 +43,30 @@ void CIRTreePrinter::Visit( const TEMP* node ) {
 void CIRTreePrinter::Visit( const BINOP* node ) {
 	visitNewNode();
 
-	nodeLabels[ currentNodeID ] = "BINOP";
+	
 
 	// Создаём дополнительный узел
-	size_t tmpNode = createNewNode();
+	// size_t tmpNode = createNewNode();
 	std::string tmpNodeLabel;
 	switch ( node->GetBinop() ) {
 	case BO_PLUS:
-		tmpNodeLabel = "+";
+		tmpNodeLabel = "PLUS (+)";
 		break;
 	case BO_MINUS:
-		tmpNodeLabel = "-";
+		tmpNodeLabel = "MINUS (-)";
 		break;
 	case BO_MUL:
-		tmpNodeLabel = "*";
+		tmpNodeLabel = "MUL (*)";
 		break;
 	case BO_DIV:
-		tmpNodeLabel = "/";
+		tmpNodeLabel = "DIV (/)";
 		break;
 	default:
 		tmpNodeLabel = "unknown binary operation";
 	}
-	nodeLabels[ tmpNode ] = tmpNodeLabel;
-	this->addEdge( currentNodeID, tmpNode );
+	nodeLabels[ currentNodeID ] = tmpNodeLabel;
+	//nodeLabels[ tmpNode ] = tmpNodeLabel;
+	// this->addEdge( currentNodeID, tmpNode );
 
 	node->GetLeft()->Accept( this );
 	node->GetRight()->Accept( this );
@@ -196,8 +197,13 @@ void CIRTreePrinter::Visit( const SEQ* node ) {
 
 	nodeLabels[ currentNodeID ] = "SEQ";
 
-	node->GetLeft()->Accept( this );
-	node->GetRight()->Accept( this );
+	if ( node->GetLeft() ) {
+		node->GetLeft()->Accept( this );
+	}
+	
+	if ( node->GetRight() ) {
+		node->GetRight()->Accept( this );
+	}
 
 	leaveNode();
 }

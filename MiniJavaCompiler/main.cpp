@@ -34,7 +34,7 @@ int main()
 				std::cout << "Program is correct! :)" << std::endl;
 
 				// —троим дерево промежуточного представлени€
-				CTranslate *translator = new CTranslate( tableBuilder->GetConstructedTable() );
+				Translate::CTranslate *translator = new Translate::CTranslate( tableBuilder->GetConstructedTable() );
 				mainProgram->Accept( translator );
 				CIRTreePrinter *irTreePrinter = new CIRTreePrinter( "graphviz.txt" );
 				irTreePrinter->OpenFile();
@@ -42,8 +42,8 @@ int main()
 				if ( translator ) {
 					size_t methodsCounter = 1;
 					for ( auto& method : translator->Methods ) {
-						irTreePrinter->ResetPrinter( "fragment" + std::to_string(methodsCounter) + "_" );
-						method.second->Accept( irTreePrinter );
+						irTreePrinter->ResetPrinter( "fragment" + std::to_string( methodsCounter ) + "_", method.fullMethodName);
+						method.rootStatement->Accept( irTreePrinter );
 						methodsCounter += 1;
 
 						irTreePrinter->WriteGraphStructureToTheFile();

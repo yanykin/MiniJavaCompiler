@@ -54,6 +54,9 @@ namespace Frame {
 		const Temp::CTemp* ThisPointer() const { return &thisPointer; }
 		const Temp::CTemp* ReturnPointer() const { return &returnPointer;  }
 
+		// Получить имя метода
+		const Symbol::CSymbol* GetMethodName() const { return name; }
+
 	private:
 		static const int wordSize = 4; // Размер машинного слова для нашей платформы
 		const Symbol::CSymbol* name; // Имя метода

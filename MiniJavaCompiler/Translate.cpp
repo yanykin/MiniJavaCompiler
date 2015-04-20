@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace CSymbolsTable;
+using namespace Translate;
 
 void CTranslate::Visit( const CProgram* node )
 {
@@ -36,7 +37,7 @@ void CTranslate::Visit( const CMainClassDeclaration* node )
 		statements->Accept( this );
 	}
 
-	Methods.push_back( std::make_pair( currentFrame, lastWrapper->ToStm() ) );
+	Methods.push_back( CFragment( currentFrame, lastWrapper->ToStm(), node->GetClassName() + "$main" ) );
 	// Выходим из класса
 	currentClass = nullptr;
 	currentFrame = nullptr;
@@ -169,7 +170,7 @@ void CTranslate::Visit( const CMethodDeclaration* node )
 	}
 
 	// Добавляем фрагмент кода с фреймом
-	Methods.push_back( std::make_pair( currentFrame, fragremntStatement ) );
+	Methods.push_back( CFragment( currentFrame, fragremntStatement, currentClass->GetName() + "$" + currentMethod->GetName() ) );
 
 	// Выходим из метода
 	currentMethod = NULL;
@@ -252,11 +253,17 @@ void CTranslate::Visit( const CIfStatement* node )
 	IExpression* condition = node->GetCondition();
 
 	trueStatement->Accept( this );
-	const IRTree::IStm* trueStm = lastWrapper->ToStm();
+	const IRTree::IStm* trueStm = nullptr;
+	if ( lastWrapper != nullptr ) {
+		trueStm = lastWrapper->ToStm();
+	}
 	lastWrapper = nullptr;
 
 	falseStatement->Accept( this );
-	const IRTree::IStm* falseStm = lastWrapper->ToStm();
+	const IRTree::IStm* falseStm = nullptr;
+	if ( lastWrapper != nullptr ) {
+		falseStm = lastWrapper->ToStm();
+	}
 	lastWrapper = nullptr;
 
 	condition->Accept( this );
@@ -441,7 +448,7 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	lastWrapper = nullptr;
 
 	// вызываемый метод
-	Temp::CLabel* functionLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( methodName ) );
+	Temp::CLabel* functionLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( currentClass->GetName() + "$" + methodName ) );
 	IRTree::NAME* functionName = new IRTree::NAME( functionLabel );
 
 	expList = nullptr;
