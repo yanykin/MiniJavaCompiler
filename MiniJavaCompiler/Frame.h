@@ -32,7 +32,11 @@ namespace Frame {
 			formalCount( 0 ),
 			framePointer( Temp::CTemp( Symbol::CSymbol::GetSymbol("FP") ) ),
 			thisPointer( Temp::CTemp () ),
-			returnPointer( Temp::CTemp( Symbol::CSymbol::GetSymbol( "RP" ) ) )
+			returnPointer( Temp::CTemp( Symbol::CSymbol::GetSymbol( "RP" ) ) ),
+
+			prologueLabel( Temp::CLabel() ),
+			startLabel( Temp::CLabel() ),
+			epilogueLabel( Temp::CLabel() )
 		{};
 
 		// Добавить аргумент функции
@@ -57,6 +61,10 @@ namespace Frame {
 		// Получить имя метода
 		const Symbol::CSymbol* GetMethodName() const { return name; }
 
+		const Temp::CLabel* GetPrologueLanel() const { return &prologueLabel; }
+		const Temp::CLabel* GetStartLabel() const { return &startLabel; }
+		const Temp::CLabel* GetEpilogueLabel() const { return &epilogueLabel; }
+
 	private:
 		static const int wordSize = 4; // Размер машинного слова для нашей платформы
 		const Symbol::CSymbol* name; // Имя метода
@@ -72,6 +80,10 @@ namespace Frame {
 		const Temp::CTemp thisPointer;
 		const Temp::CTemp returnPointer; // куда фрейм будет записывать возвращаемое значение функции
 
+		// Метки пролог, тело и эпилог функции
+		Temp::CLabel prologueLabel;
+		Temp::CLabel startLabel;
+		Temp::CLabel epilogueLabel;
 	};
 
 	// Реализация интерфейса в случае расположения переменной во фрейме

@@ -1,6 +1,7 @@
 #pragma once
 #include "IRTree.h"
 #include "Temp.h"
+#include "Frame.h"
 
 
 using namespace IRTree;
@@ -69,4 +70,79 @@ namespace Canon
 	const CStmList* linear( const SEQ* s, const CStmList* l );
 	const CStmList* linear( const IStm* s, const CStmList* l );
 	const CStmList* linearize( const IStm* s );
+
+	// ѕриведение кода к линейному виду
+	class CCanon {
+	public:
+		static const CStmList* Linearize( const IStm* statement );
+	};
+	
+	// ¬спомогательна€ структура базового блока
+	struct CBasicBlock {
+		CBasicBlock(): Label(nullptr), Jump(nullptr) {};
+		const LABEL* Label; // метка 
+		std::vector < const IStm* > FlowStatements; // выражени€ потока выполнени€ данного блока
+		const IStm* Jump; // (без-)условный прыжок на следующий блок
+
+		// —троит новый список выражений
+		const CStmList* ConvertToStmList() {
+			return nullptr;
+		}
+
+		void Clear() {
+			Label = nullptr;
+			Jump = nullptr;
+			FlowStatements.clear();
+		}
+
+		void AddStatement( const IStm* statement ) {
+			FlowStatements.push_back( statement );
+		}
+
+		const IRTree::JUMP* GetJUMP() const { return dynamic_cast< const IRTree::JUMP* >( Jump ); }
+		const IRTree::CJUMP* GetCJUMP() const { return dynamic_cast< const IRTree::CJUMP* >( Jump ); }
+	};
+
+	// –азбиение на базовые блоки
+	class CBasicBlocks {
+	public:
+		CBasicBlocks( const CStmList* statements );
+		std::vector<CStmList*> Blocks; // —ами базовые блоки
+
+	private:
+		void split( const CStmList* statements ); // –азбиение на блоки
+		CBasicBlock buffer; // аккумул€тор выражений дл€ блока
+		std::vector<CBasicBlock> foundBlocks; // найденные блоки
+
+		// ѕровер€ет тип выражени€
+		static bool isLABEL( const IStm* statement ) {
+			return dynamic_cast< const IRTree::LABEL* >( statement ) != nullptr;
+		}
+		static bool isJUMP( const IStm* statement ) {
+			return dynamic_cast< const IRTree::JUMP* >( statement ) != nullptr;
+		};
+		static bool isCJUMP( const IStm* statement ) {
+			return dynamic_cast< const IRTree::CJUMP* >( statement ) != nullptr;
+		};
+
+		// —оедин€ем блоки между собой, добавл€€ отсутствующие инструкии LABEL и JUMP
+		void connectBlocks(const Frame::CFrame* methodFrame);
+
+	};
+
+	// ¬ыстраивание блоков в односторонний пор€док
+	class CTraceSchedule {
+	public:
+		CTraceSchedule( std::vector<CBasicBlock>& basicBlocks );
+		const CStmList* Statements;
+
+	private:
+		std::map<const Temp::CLabel*, CBasicBlock*> labelToBlock; // отображение меток в блоки
+		std::vector<CBasicBlock*> reorderedBlocks; // тот же список блоков, но уже переупор€доченных
+
+		// ќбходит блоки по меткам
+		void generateTraces(std::vector<CBasicBlock>& basicBlocks);
+	};
+
+
 }

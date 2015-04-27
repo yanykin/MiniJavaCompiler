@@ -157,4 +157,140 @@ namespace Canon
 	{
 		return linear( do_stm( s ), nullptr );
 	}
+
+	// === CCanon ===
+	const CStmList* CCanon::Linearize( const IStm* statement ) {
+		return linearize( statement );
+	}
+
+	// === CBasicBlocks ===
+	CBasicBlocks::CBasicBlocks( const CStmList* blocks ) {
+
+	}
+
+	void CBasicBlocks::split( const CStmList* statements ) {
+		// Сбрасываем буфер
+		buffer.Clear();
+
+		// Начинаем перебор выражений
+		const IStm* currentExp = statements->GetHead();
+		while ( currentExp ) {
+
+			// Проверяем тип
+			if ( isLABEL( currentExp ) ) {
+				// Если встретили метку, то она указывает на начало нового блока
+
+				// Завершаем предыдущий блок
+				foundBlocks.push_back( buffer );
+				buffer.Clear();
+				buffer.Label = dynamic_cast<const IRTree::LABEL*>( currentExp );
+
+			} else if ( isCJUMP( currentExp ) || isJUMP( currentExp ) ) {
+				// Если встретили прыжок, то он завершает блок
+				buffer.Jump = currentExp;
+				foundBlocks.push_back( buffer );
+				buffer.Clear();
+			}
+			else {
+				// Иначе просто переносим инструкцию в блок
+				buffer.AddStatement( currentExp );
+			}
+
+			// Переходим к новому выражению
+			const CStmList* tail = statements->GetTail();
+			if ( tail ) {
+				currentExp = tail->GetHead();
+			}
+		}
+		
+	}
+
+	void CBasicBlocks::connectBlocks( const Frame::CFrame* methodFrame ) {
+		const IStm* labelOfCurrentBlock = nullptr;
+		const IStm* jumpOfCurrentBlock = nullptr;
+
+		// Будем двигаться по парам блоков, изучая стыки
+		auto& previousBlock = foundBlocks.begin();
+		auto& nextBlock = (foundBlocks.begin())++;
+
+		// Если у первого блока отсутствует метка
+		if ( !previousBlock->Label ) {
+			// То берём её от фрейма
+			previousBlock->Label = new LABEL( methodFrame->GetStartLabel() );
+		}
+
+		// Пока не упёрлись в конец
+		while ( nextBlock != foundBlocks.end() ) {
+
+			// Может быть три случая
+
+			// Если предыдущий блок не имеет перехода, но есть метка в начале следующего
+			if ( !previousBlock->Jump && nextBlock->Label ) {
+				// То добавляем переход
+				previousBlock->Jump = new JUMP( nextBlock->Label->GetLabel() );
+			}
+			// Если отсутствуем метка без перехода, то это ошибка в построении дерева
+			else if ( previousBlock->Jump && !nextBlock->Label ) {
+				throw( "Error by connecting basic blocks" );
+			}
+			// Третий случай, когда есть и метка, и переход нас не интересует, поскольку там всё в порядке.
+			// Случай, когда нет ни метки, ни перехода не может быть априори (мы разбиваем на блоки именно по меткам и переходам)
+
+			// Переходим к новой паре
+			previousBlock++;
+			nextBlock++;
+		}
+
+		// Если у последнего блока отсутствует переход, то мы должны создаём новый переход на эпилог функции (специальная метка)
+		if ( !nextBlock->Jump ) {
+			nextBlock->Jump = new JUMP( methodFrame->GetEpilogueLabel() );
+		}
+	}
+
+	// === CTraceSchedule ===
+	CTraceSchedule::CTraceSchedule( std::vector<CBasicBlock>& basicBlocks ) {
+		for ( auto& basicBlock : basicBlocks ) {
+			labelToBlock[ basicBlock.Label ] = &basicBlock;
+		}
+	}
+
+	void CTraceSchedule::generateTraces( std::vector<CBasicBlock>& basicBlocks ) {
+		// Хранит флаги посещения блоков
+		std::map<const Temp::CLabel*, bool> isBlockVisited;
+		for ( auto& basicBlock : basicBlocks ) {
+			isBlockVisited[ basicBlock.Label ] = false;
+		}
+
+		// Обходим все блоки
+		for ( auto& basicBlock : basicBlocks ) {
+			// Создаём новый "след" (trace)
+			std::vector<CBasicBlock*> currentTrace;
+
+			// Метка обходимого блока
+			CBasicBlock* currentBlock = &basicBlock;
+			const Temp::CLabel* labelOfCurrentBlock = basicBlock.Label->GetLabel();
+
+			// Пока остались непосещённые блоки
+			while ( !isBlockVisited[ labelOfCurrentBlock ] ) {
+				// Помечает блок посещённым и добавляет его в конец следа
+				isBlockVisited[ labelOfCurrentBlock ] = true;
+				currentTrace.push_back( currentBlock );
+
+				// Проверяем блоки, куда можно перейти с текущего
+				if ( currentBlock->GetJUMP() ) {
+					const Temp::CLabel* jumpLabel = currentBlock->GetJUMP()->GetTargets()->GetHead();
+				}
+				else if ( currentBlock->GetCJUMP() ) {
+					const Temp::CLabel* ifTrueLabel = currentBlock->GetCJUMP()->GetIfTrue();
+					const Temp::CLabel* ifTrueLabel = currentBlock->GetCJUMP()->GetIfFalse();
+				}
+					
+			}
+
+
+			// Закрывает след, перенеся все элементы в конечный список
+			reorderedBlocks.insert( reorderedBlocks.end(), currentTrace.begin(), currentTrace.end() );
+			currentTrace.clear();
+		}
+	}
 }

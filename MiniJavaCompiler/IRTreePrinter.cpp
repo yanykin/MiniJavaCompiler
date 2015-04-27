@@ -139,6 +139,25 @@ void CIRTreePrinter::Visit( const JUMP* node ) {
 
 	nodeLabels[ currentNodeID ] = "JUMP";
 
+	node->GetExp()->Accept( this );
+
+	const Temp::CLabel* currentNode = node->GetTargets()->GetHead();
+	const Temp::CLabelList* labelsTail = node->GetTargets()->GetTail();
+	while ( currentNode ) {
+		size_t tmpNode = createNewNode();
+		nodeLabels[ tmpNode ] = "LABEL " + currentNode->Name();
+		this->addEdge( currentNodeID, tmpNode );
+
+		if ( labelsTail ) {
+			currentNode = labelsTail->GetHead();
+			labelsTail = labelsTail->GetTail();
+		}
+		else {
+			currentNode = nullptr;
+		}
+		
+	}
+
 	leaveNode();
 }
 

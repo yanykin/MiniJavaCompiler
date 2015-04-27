@@ -225,7 +225,7 @@ namespace IRTree
 		{
 		};
 		const IExp* GetExp() const { return exp; }
-		const Temp::CLabelList* GetTargets() { return targets; }
+		const Temp::CLabelList* GetTargets() const { return targets; }
 		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
 	private:
 		const IExp* exp;
