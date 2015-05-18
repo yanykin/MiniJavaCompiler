@@ -163,12 +163,13 @@ namespace Canon
 		return linearize( statement );
 	}
 
-	// === CBasicBlocks ===
-	CBasicBlocks::CBasicBlocks( const CStmList* blocks ) {
-
+	// === CStatementsSplitter ===
+	CStatementsSplitter::CStatementsSplitter( const Frame::CFrame* method, const CStmList* blocks ) {
+		this->split( blocks );
+		this->connectBlocks( method );
 	}
 
-	void CBasicBlocks::split( const CStmList* statements ) {
+	void CStatementsSplitter::split( const CStmList* statements ) {
 		// Сбрасываем буфер
 		buffer.Clear();
 
@@ -205,7 +206,7 @@ namespace Canon
 		
 	}
 
-	void CBasicBlocks::connectBlocks( const Frame::CFrame* methodFrame ) {
+	void CStatementsSplitter::connectBlocks( const Frame::CFrame* methodFrame ) {
 		const IStm* labelOfCurrentBlock = nullptr;
 		const IStm* jumpOfCurrentBlock = nullptr;
 
@@ -250,7 +251,7 @@ namespace Canon
 	// === CTraceSchedule ===
 	CTraceSchedule::CTraceSchedule( std::vector<CBasicBlock>& basicBlocks ) {
 		for ( auto& basicBlock : basicBlocks ) {
-			labelToBlock[ basicBlock.Label ] = &basicBlock;
+			labelToBlock[ basicBlock.Label->GetLabel() ] = &basicBlock;
 		}
 	}
 
@@ -258,7 +259,7 @@ namespace Canon
 		// Хранит флаги посещения блоков
 		std::map<const Temp::CLabel*, bool> isBlockVisited;
 		for ( auto& basicBlock : basicBlocks ) {
-			isBlockVisited[ basicBlock.Label ] = false;
+			isBlockVisited[ basicBlock.Label->GetLabel() ] = false;
 		}
 
 		// Обходим все блоки
@@ -287,10 +288,129 @@ namespace Canon
 					
 			}
 
-
 			// Закрывает след, перенеся все элементы в конечный список
 			reorderedBlocks.insert( reorderedBlocks.end(), currentTrace.begin(), currentTrace.end() );
 			currentTrace.clear();
 		}
+	}
+
+	void CTraceSchedule::optimizeCJUMPBlocks() {
+		// Перебираем все блоки 
+		for ( std::vector<CBasicBlock*>::iterator basicBlock = reorderedBlocks.begin(), nextBasicBlock = reorderedBlocks.begin() + 1;
+			nextBasicBlock != reorderedBlocks.end();
+			basicBlock++, nextBasicBlock++
+		) {
+			// Если блок заканчивается CJUMP'ом
+			const IRTree::CJUMP* jumpStatement = ( *basicBlock )->GetCJUMP();
+			if ( jumpStatement != nullptr ) {
+				// Получаем true и false метки
+				const Temp::CLabel* falseLabel = jumpStatement->GetIfFalse();
+				const Temp::CLabel* trueLabel = jumpStatement->GetIfFalse();
+				
+				// Проверяем метку следующего блока
+				const Temp::CLabel* nextBlockLabel = ( *nextBasicBlock )->Label->GetLabel();
+				
+				// Если falsе-блок уже идёт за CJUMP-ом - просто продолжаем цикл
+				if ( nextBlockLabel == falseLabel ) {
+					continue;
+				}
+				// Если идёт true-метка - мы меняем местами метки true и false и делаем отрицание условия
+				else if ( nextBlockLabel == trueLabel ) {
+					const IRTree::IExp *leftExpression = jumpStatement->GetLeft();
+					const IRTree::IExp *rightExpression = jumpStatement->GetRight();
+					IRTree::TCJump operation;
+					switch ( jumpStatement->GetRelop() ) {
+						case CJ_EQ:
+							operation = CJ_NE;
+							break;
+						case CJ_NE:
+							operation = CJ_EQ;
+							break;
+						case CJ_GE:
+							operation = CJ_LT;
+							break;
+						case CJ_LT:
+							operation = CJ_GE;
+							break;
+						case CJ_LE:
+							operation = CJ_GT;
+							break;
+						case CJ_GT:
+							operation = CJ_LE;
+							break;
+						default:
+							break;
+					}
+					( *basicBlock )->Jump = new CJUMP(operation, leftExpression, rightExpression, falseLabel, trueLabel);
+				}
+				else {
+					// В противном случае за CJUMP идёт что-то вообще другое - для этого мы
+					// создаём вспомогательный блок с пустым телом
+					CBasicBlock* newBlock = new CBasicBlock();
+					// Создаём новую метку
+					const Temp::CLabel* newLabel = new Temp::CLabel();
+					newBlock->Label = new IRTree::LABEL(newLabel);
+					newBlock->Jump = new JUMP( jumpStatement->GetIfFalse() );
+
+					// Перевешиваем false-метку
+					(*basicBlock)->Jump = new CJUMP(
+						jumpStatement->GetRelop(),
+						jumpStatement->GetLeft(),
+						jumpStatement->GetRight(),
+						jumpStatement->GetIfTrue(),
+						newLabel
+					);
+
+					// Вставляем новый блок в последовательность
+					auto insertedBlockIterator = reorderedBlocks.insert( nextBasicBlock, newBlock );
+					// Переопределяем счётчики
+					basicBlock = insertedBlockIterator;
+					nextBasicBlock = insertedBlockIterator + 1;
+				}
+			}
+		}
+	}
+
+	void CTraceSchedule::translateToStatements() {
+		// Перебираем пары блоков
+		auto basicBlock = reorderedBlocks.begin();
+		auto nextBasicBlock = basicBlock + 1;
+
+		// Список операций
+		std::list<const IRTree::IStm*> statements;
+		// Сразу добавляем в начало метку первого блока и его инструкции
+
+		while ( nextBasicBlock != reorderedBlocks.end() ) {
+			// Добавляем инструкции первого блока
+			for ( auto block : ( *basicBlock )->FlowStatements ) {
+				statements.push_back( block );
+			}
+
+			// Смотрим, что находится на стыке блоков. Если первый блок завершается JUMP'ом на метку,
+			// которая идёт на следующий блок - удаляем таковые как ненужные
+			const IRTree::JUMP* jumpStatement = ( *basicBlock )->GetJUMP();
+			const IRTree::LABEL* nextBlockLabel = ( *nextBasicBlock )->Label;
+			bool isOmmited = false;
+
+			if ( jumpStatement != nullptr ) {
+				if ( jumpStatement->GetTargets()->GetHead() == nextBlockLabel->GetLabel() ) {
+					isOmmited = true;
+				}
+			}
+
+			if ( !isOmmited ) {
+				statements.push_back( jumpStatement );
+				statements.push_back( nextBlockLabel );
+			}
+
+			// Проверяем, что 
+			basicBlock++;
+			nextBasicBlock++;
+		}
+		// Добавляем в конец инструкции и переход последнего блока
+		for ( auto block : ( *basicBlock )->FlowStatements ) {
+			statements.push_back( block );
+		}
+		statements.push_back( ( *basicBlock )->Jump );
 	}
 }

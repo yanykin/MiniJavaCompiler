@@ -104,9 +104,9 @@ namespace Canon
 	};
 
 	// Разбиение на базовые блоки
-	class CBasicBlocks {
+	class CStatementsSplitter {
 	public:
-		CBasicBlocks( const CStmList* statements );
+		CStatementsSplitter( const Frame::CFrame* method, const CStmList* statements );
 		std::vector<CStmList*> Blocks; // Сами базовые блоки
 
 	private:
@@ -136,12 +136,22 @@ namespace Canon
 		CTraceSchedule( std::vector<CBasicBlock>& basicBlocks );
 		const CStmList* Statements;
 
+		const CStmList* GetReorderedStatements() {
+			return Statements;
+		}
+
 	private:
 		std::map<const Temp::CLabel*, CBasicBlock*> labelToBlock; // отображение меток в блоки
 		std::vector<CBasicBlock*> reorderedBlocks; // тот же список блоков, но уже переупорядоченных
 
 		// Обходит блоки по меткам
 		void generateTraces(std::vector<CBasicBlock>& basicBlocks);
+
+		// Оптимизирует блоки по CJUMP'ам, чтобы блок за false-меткой шёл сразу
+		void optimizeCJUMPBlocks();
+
+		// Переводит базовые блоки в набор инструкций
+		void translateToStatements();
 	};
 
 
