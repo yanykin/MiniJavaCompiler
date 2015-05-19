@@ -74,6 +74,7 @@
     <ClCompile Include="IRTreePrinter.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MiniJavaCompiler.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PrettyPrinter.cpp" />
     <ClCompile Include="Symbol.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="IRTreeElements.h" />
     <ClInclude Include="IRTreePrinter.h" />
     <ClInclude Include="IRTreeVisitor.h" />
+    <ClInclude Include="MiniJavaCompiler.h" />
     <ClInclude Include="NonTerminalSymbols.h" />
     <ClInclude Include="PrettyPrinter.h" />
     <ClInclude Include="Symbol.h" />

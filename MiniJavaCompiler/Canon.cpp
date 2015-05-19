@@ -159,22 +159,32 @@ namespace Canon
 	}
 
 	// === CCanon ===
-	const CStmList* CCanon::Linearize( const IStm* statement ) {
-		return linearize( statement );
+	CCanon::CCanon( const IStm* statement, const Frame::CFrame* frame ):
+		_statement(statement), _methodFrame(frame) {
 	}
 
-	// === CStatementsSplitter ===
-	CStatementsSplitter::CStatementsSplitter( const Frame::CFrame* method, const CStmList* blocks ) {
-		this->split( blocks );
-		this->connectBlocks( method );
+	void CCanon::Canonize() {
+		this->linearizeStatetment();
+		this->split();
+		this->connect();
+		this->generateTraces();
+		this->optimizeCJUMPBlocks();
+		this->translateToStatements();
 	}
 
-	void CStatementsSplitter::split( const CStmList* statements ) {
-		// Сбрасываем буфер
-		buffer.Clear();
+	void CCanon::linearizeStatetment() {
+		_linearizedStatements = linearize( _statement );
+	}
+
+	void CCanon::split() {
+		_basicBlocks.clear();
+
+		// Базовый блок
+		CBasicBlock currentBasicBlock;
+		currentBasicBlock.Clear();
 
 		// Начинаем перебор выражений
-		const IStm* currentExp = statements->GetHead();
+		const IStm* currentExp = _linearizedStatements->GetHead();
 		while ( currentExp ) {
 
 			// Проверяем тип
@@ -182,46 +192,46 @@ namespace Canon
 				// Если встретили метку, то она указывает на начало нового блока
 
 				// Завершаем предыдущий блок
-				foundBlocks.push_back( buffer );
-				buffer.Clear();
-				buffer.Label = dynamic_cast<const IRTree::LABEL*>( currentExp );
+				_basicBlocks.push_back( currentBasicBlock );
+				currentBasicBlock.Clear();
+				currentBasicBlock.Label = dynamic_cast<const IRTree::LABEL*>( currentExp );
 
-			} else if ( isCJUMP( currentExp ) || isJUMP( currentExp ) ) {
+			}
+			else if ( isCJUMP( currentExp ) || isJUMP( currentExp ) ) {
 				// Если встретили прыжок, то он завершает блок
-				buffer.Jump = currentExp;
-				foundBlocks.push_back( buffer );
-				buffer.Clear();
+				currentBasicBlock.Jump = currentExp;
+				_basicBlocks.push_back( currentBasicBlock );
+				currentBasicBlock.Clear();
 			}
 			else {
 				// Иначе просто переносим инструкцию в блок
-				buffer.AddStatement( currentExp );
+				currentBasicBlock.AddStatement( currentExp );
 			}
 
 			// Переходим к новому выражению
-			const CStmList* tail = statements->GetTail();
+			const CStmList* tail = _linearizedStatements->GetTail();
 			if ( tail ) {
 				currentExp = tail->GetHead();
 			}
 		}
-		
 	}
 
-	void CStatementsSplitter::connectBlocks( const Frame::CFrame* methodFrame ) {
+	void CCanon::connect() {
 		const IStm* labelOfCurrentBlock = nullptr;
 		const IStm* jumpOfCurrentBlock = nullptr;
 
 		// Будем двигаться по парам блоков, изучая стыки
-		auto& previousBlock = foundBlocks.begin();
-		auto& nextBlock = (foundBlocks.begin())++;
+		auto& previousBlock = _basicBlocks.begin();
+		auto& nextBlock = ( _basicBlocks.begin() )++;
 
 		// Если у первого блока отсутствует метка
 		if ( !previousBlock->Label ) {
 			// То берём её от фрейма
-			previousBlock->Label = new LABEL( methodFrame->GetStartLabel() );
+			previousBlock->Label = new LABEL( _methodFrame->GetStartLabel() );
 		}
 
 		// Пока не упёрлись в конец
-		while ( nextBlock != foundBlocks.end() ) {
+		while ( nextBlock != _basicBlocks.end() ) {
 
 			// Может быть три случая
 
@@ -244,26 +254,22 @@ namespace Canon
 
 		// Если у последнего блока отсутствует переход, то мы должны создаём новый переход на эпилог функции (специальная метка)
 		if ( !nextBlock->Jump ) {
-			nextBlock->Jump = new JUMP( methodFrame->GetEpilogueLabel() );
+			nextBlock->Jump = new JUMP( _methodFrame->GetEpilogueLabel() );
 		}
 	}
 
-	// === CTraceSchedule ===
-	CTraceSchedule::CTraceSchedule( std::vector<CBasicBlock>& basicBlocks ) {
-		for ( auto& basicBlock : basicBlocks ) {
-			labelToBlock[ basicBlock.Label->GetLabel() ] = &basicBlock;
-		}
-	}
+	void CCanon::generateTraces() {
+		// Сюда будем хранить переупорядоченные блоки
+		std::vector<CBasicBlock> reorderedBlocks;
 
-	void CTraceSchedule::generateTraces( std::vector<CBasicBlock>& basicBlocks ) {
 		// Хранит флаги посещения блоков
 		std::map<const Temp::CLabel*, bool> isBlockVisited;
-		for ( auto& basicBlock : basicBlocks ) {
+		for ( auto& basicBlock : _basicBlocks ) {
 			isBlockVisited[ basicBlock.Label->GetLabel() ] = false;
 		}
 
 		// Обходим все блоки
-		for ( auto& basicBlock : basicBlocks ) {
+		for ( auto& basicBlock : _basicBlocks ) {
 			// Создаём новый "след" (trace)
 			std::vector<CBasicBlock*> currentTrace;
 
@@ -285,31 +291,35 @@ namespace Canon
 					const Temp::CLabel* ifTrueLabel = currentBlock->GetCJUMP()->GetIfTrue();
 					const Temp::CLabel* ifTrueLabel = currentBlock->GetCJUMP()->GetIfFalse();
 				}
-					
+
 			}
 
 			// Закрывает след, перенеся все элементы в конечный список
 			reorderedBlocks.insert( reorderedBlocks.end(), currentTrace.begin(), currentTrace.end() );
 			currentTrace.clear();
 		}
+
+		// Переносим блоки
+		_basicBlocks.clear();
+		_basicBlocks = std::vector<CBasicBlock>( reorderedBlocks );
 	}
 
-	void CTraceSchedule::optimizeCJUMPBlocks() {
+	void CCanon::optimizeCJUMPBlocks() {
 		// Перебираем все блоки 
-		for ( std::vector<CBasicBlock*>::iterator basicBlock = reorderedBlocks.begin(), nextBasicBlock = reorderedBlocks.begin() + 1;
-			nextBasicBlock != reorderedBlocks.end();
+		for ( std::vector<CBasicBlock>::iterator basicBlock = _basicBlocks.begin(), nextBasicBlock = _basicBlocks.begin() + 1;
+			nextBasicBlock != _basicBlocks.end();
 			basicBlock++, nextBasicBlock++
-		) {
+			) {
 			// Если блок заканчивается CJUMP'ом
 			const IRTree::CJUMP* jumpStatement = ( *basicBlock )->GetCJUMP();
 			if ( jumpStatement != nullptr ) {
 				// Получаем true и false метки
 				const Temp::CLabel* falseLabel = jumpStatement->GetIfFalse();
 				const Temp::CLabel* trueLabel = jumpStatement->GetIfFalse();
-				
+
 				// Проверяем метку следующего блока
 				const Temp::CLabel* nextBlockLabel = ( *nextBasicBlock )->Label->GetLabel();
-				
+
 				// Если falsе-блок уже идёт за CJUMP-ом - просто продолжаем цикл
 				if ( nextBlockLabel == falseLabel ) {
 					continue;
@@ -320,28 +330,28 @@ namespace Canon
 					const IRTree::IExp *rightExpression = jumpStatement->GetRight();
 					IRTree::TCJump operation;
 					switch ( jumpStatement->GetRelop() ) {
-						case CJ_EQ:
-							operation = CJ_NE;
-							break;
-						case CJ_NE:
-							operation = CJ_EQ;
-							break;
-						case CJ_GE:
-							operation = CJ_LT;
-							break;
-						case CJ_LT:
-							operation = CJ_GE;
-							break;
-						case CJ_LE:
-							operation = CJ_GT;
-							break;
-						case CJ_GT:
-							operation = CJ_LE;
-							break;
-						default:
-							break;
+					case CJ_EQ:
+						operation = CJ_NE;
+						break;
+					case CJ_NE:
+						operation = CJ_EQ;
+						break;
+					case CJ_GE:
+						operation = CJ_LT;
+						break;
+					case CJ_LT:
+						operation = CJ_GE;
+						break;
+					case CJ_LE:
+						operation = CJ_GT;
+						break;
+					case CJ_GT:
+						operation = CJ_LE;
+						break;
+					default:
+						break;
 					}
-					( *basicBlock )->Jump = new CJUMP(operation, leftExpression, rightExpression, falseLabel, trueLabel);
+					( *basicBlock )->Jump = new CJUMP( operation, leftExpression, rightExpression, falseLabel, trueLabel );
 				}
 				else {
 					// В противном случае за CJUMP идёт что-то вообще другое - для этого мы
@@ -349,20 +359,20 @@ namespace Canon
 					CBasicBlock* newBlock = new CBasicBlock();
 					// Создаём новую метку
 					const Temp::CLabel* newLabel = new Temp::CLabel();
-					newBlock->Label = new IRTree::LABEL(newLabel);
+					newBlock->Label = new IRTree::LABEL( newLabel );
 					newBlock->Jump = new JUMP( jumpStatement->GetIfFalse() );
 
 					// Перевешиваем false-метку
-					(*basicBlock)->Jump = new CJUMP(
+					( *basicBlock )->Jump = new CJUMP(
 						jumpStatement->GetRelop(),
 						jumpStatement->GetLeft(),
 						jumpStatement->GetRight(),
 						jumpStatement->GetIfTrue(),
 						newLabel
-					);
+						);
 
 					// Вставляем новый блок в последовательность
-					auto insertedBlockIterator = reorderedBlocks.insert( nextBasicBlock, newBlock );
+					auto insertedBlockIterator = _basicBlocks.insert( nextBasicBlock, newBlock );
 					// Переопределяем счётчики
 					basicBlock = insertedBlockIterator;
 					nextBasicBlock = insertedBlockIterator + 1;
@@ -371,25 +381,27 @@ namespace Canon
 		}
 	}
 
-	void CTraceSchedule::translateToStatements() {
-		// Перебираем пары блоков
-		auto basicBlock = reorderedBlocks.begin();
-		auto nextBasicBlock = basicBlock + 1;
-
+	void CCanon::translateToStatements() {
 		// Список операций
 		std::list<const IRTree::IStm*> statements;
+		
+		// Перебираем пары блоков
+		auto basicBlock = _basicBlocks.begin();
+		auto nextBasicBlock = basicBlock + 1;
+
+		
 		// Сразу добавляем в начало метку первого блока и его инструкции
 
-		while ( nextBasicBlock != reorderedBlocks.end() ) {
+		while ( nextBasicBlock != _basicBlocks.end() ) {
 			// Добавляем инструкции первого блока
-			for ( auto block : ( *basicBlock )->FlowStatements ) {
+			for ( auto block : basicBlock->FlowStatements ) {
 				statements.push_back( block );
 			}
 
 			// Смотрим, что находится на стыке блоков. Если первый блок завершается JUMP'ом на метку,
 			// которая идёт на следующий блок - удаляем таковые как ненужные
-			const IRTree::JUMP* jumpStatement = ( *basicBlock )->GetJUMP();
-			const IRTree::LABEL* nextBlockLabel = ( *nextBasicBlock )->Label;
+			const IRTree::JUMP* jumpStatement = basicBlock->GetJUMP();
+			const IRTree::LABEL* nextBlockLabel = nextBasicBlock->Label;
 			bool isOmmited = false;
 
 			if ( jumpStatement != nullptr ) {
@@ -408,9 +420,17 @@ namespace Canon
 			nextBasicBlock++;
 		}
 		// Добавляем в конец инструкции и переход последнего блока
-		for ( auto block : ( *basicBlock )->FlowStatements ) {
+		for ( auto block : basicBlock->FlowStatements ) {
 			statements.push_back( block );
 		}
-		statements.push_back( ( *basicBlock )->Jump );
+		statements.push_back( basicBlock->Jump );
+
+		// Теперь список из IStm переводим в CStmList
+		// Строим с конца
+		const CStmList* list = nullptr;
+		for ( auto statement = statements.rbegin(); statement != statements.rend(); statement++ ) {
+			list = new CStmList( *statement, list );
+		}
+		_canonizedStatementsList = list;
 	}
 }

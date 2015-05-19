@@ -58,12 +58,9 @@ void CMiniJavaCompiler::simplifyIRTree() {
 		// Для каждого из фрагментов упрощаем дерево
 		for ( auto fragment : fragments ) {
 			
-			// Упорядочиваем в линию
-			const IRTree::CStmList* statementList = Canon::CCanon::Linearize( fragment.rootStatement );
-
-			// Разбиваем на базовые блоки
-			Canon::CStatementsSplitter splitter( fragment.methodFrame, statementList );
-
+			Canon::CCanon canonizer( fragment.rootStatement, fragment.methodFrame );
+			canonizer.Canonize();
+			_canonizedFragments[fragment] = canonizer.GetCanonizedStatements();
 		}
 	}
 }

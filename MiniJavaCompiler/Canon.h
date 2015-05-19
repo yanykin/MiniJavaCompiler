@@ -74,7 +74,37 @@ namespace Canon
 	// Приведение кода к линейному виду
 	class CCanon {
 	public:
-		static const CStmList* Linearize( const IStm* statement );
+		CCanon( const IStm* statement, const Frame::CFrame* frame );
+		void Canonize(); // совершает все необходимые операции упрощения
+		const CStmList* GetCanonizedStatements() const {
+			return _canonizedStatementsList;
+		}
+
+	private:
+		const IStm* _statement;				// корень IR-дерева, которое мы упрощаем
+		const Frame::CFrame* _methodFrame;	// фрейм метода, с которым мы работаем
+		const CStmList* _linearizedStatements; // упорядоченная структура дерева
+
+		std::vector<CBasicBlock> _basicBlocks; // базовые блоки, на которые разбит метод
+		const CStmList* _canonizedStatementsList; // список уже переупорядоченных инструкций
+
+		void linearizeStatetment();				// Упорядочивает инструкии в линию
+		void split();					// Делит последовательность инструкции на базовые блоки
+		void connect();					// Соединяет блоки между собой, используя недостающие переходы
+		void generateTraces();			// Генерирует покрытия и тем самым переупорядочивает блоки
+		void optimizeCJUMPBlocks();		// Оптимизирует условные переходы
+		void translateToStatements();	// Переводит в конечное дерево
+
+		// Проверяет тип выражения
+		static bool isLABEL( const IStm* statement ) {
+			return dynamic_cast< const IRTree::LABEL* >( statement ) != nullptr;
+		}
+		static bool isJUMP( const IStm* statement ) {
+			return dynamic_cast< const IRTree::JUMP* >( statement ) != nullptr;
+		};
+		static bool isCJUMP( const IStm* statement ) {
+			return dynamic_cast< const IRTree::CJUMP* >( statement ) != nullptr;
+		};
 	};
 	
 	// Вспомогательная структура базового блока
@@ -102,57 +132,4 @@ namespace Canon
 		const IRTree::JUMP* GetJUMP() const { return dynamic_cast< const IRTree::JUMP* >( Jump ); }
 		const IRTree::CJUMP* GetCJUMP() const { return dynamic_cast< const IRTree::CJUMP* >( Jump ); }
 	};
-
-	// Разбиение на базовые блоки
-	class CStatementsSplitter {
-	public:
-		CStatementsSplitter( const Frame::CFrame* method, const CStmList* statements );
-		std::vector<CStmList*> Blocks; // Сами базовые блоки
-
-	private:
-		void split( const CStmList* statements ); // Разбиение на блоки
-		CBasicBlock buffer; // аккумулятор выражений для блока
-		std::vector<CBasicBlock> foundBlocks; // найденные блоки
-
-		// Проверяет тип выражения
-		static bool isLABEL( const IStm* statement ) {
-			return dynamic_cast< const IRTree::LABEL* >( statement ) != nullptr;
-		}
-		static bool isJUMP( const IStm* statement ) {
-			return dynamic_cast< const IRTree::JUMP* >( statement ) != nullptr;
-		};
-		static bool isCJUMP( const IStm* statement ) {
-			return dynamic_cast< const IRTree::CJUMP* >( statement ) != nullptr;
-		};
-
-		// Соединяем блоки между собой, добавляя отсутствующие инструкии LABEL и JUMP
-		void connectBlocks(const Frame::CFrame* methodFrame);
-
-	};
-
-	// Выстраивание блоков в односторонний порядок
-	class CTraceSchedule {
-	public:
-		CTraceSchedule( std::vector<CBasicBlock>& basicBlocks );
-		const CStmList* Statements;
-
-		const CStmList* GetReorderedStatements() {
-			return Statements;
-		}
-
-	private:
-		std::map<const Temp::CLabel*, CBasicBlock*> labelToBlock; // отображение меток в блоки
-		std::vector<CBasicBlock*> reorderedBlocks; // тот же список блоков, но уже переупорядоченных
-
-		// Обходит блоки по меткам
-		void generateTraces(std::vector<CBasicBlock>& basicBlocks);
-
-		// Оптимизирует блоки по CJUMP'ам, чтобы блок за false-меткой шёл сразу
-		void optimizeCJUMPBlocks();
-
-		// Переводит базовые блоки в набор инструкций
-		void translateToStatements();
-	};
-
-
 }
