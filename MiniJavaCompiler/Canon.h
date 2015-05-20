@@ -71,6 +71,32 @@ namespace Canon
 	const CStmList* linear( const IStm* s, const CStmList* l );
 	const CStmList* linearize( const IStm* s );
 
+	// ¬спомогательна€ структура базового блока
+	struct CBasicBlock {
+		CBasicBlock() : Label( nullptr ), Jump( nullptr ) {};
+		const LABEL* Label; // метка 
+		std::vector < const IStm* > FlowStatements; // выражени€ потока выполнени€ данного блока
+		const IStm* Jump; // (без-)условный прыжок на следующий блок
+
+		// —троит новый список выражений
+		const CStmList* ConvertToStmList() {
+			return nullptr;
+		}
+
+		void Clear() {
+			Label = nullptr;
+			Jump = nullptr;
+			FlowStatements.clear();
+		}
+
+		void AddStatement( const IStm* statement ) {
+			FlowStatements.push_back( statement );
+		}
+
+		const IRTree::JUMP* GetJUMP() const { return dynamic_cast< const IRTree::JUMP* >( Jump ); }
+		const IRTree::CJUMP* GetCJUMP() const { return dynamic_cast< const IRTree::CJUMP* >( Jump ); }
+	};
+
 	// ѕриведение кода к линейному виду
 	class CCanon {
 	public:
@@ -107,29 +133,5 @@ namespace Canon
 		};
 	};
 	
-	// ¬спомогательна€ структура базового блока
-	struct CBasicBlock {
-		CBasicBlock(): Label(nullptr), Jump(nullptr) {};
-		const LABEL* Label; // метка 
-		std::vector < const IStm* > FlowStatements; // выражени€ потока выполнени€ данного блока
-		const IStm* Jump; // (без-)условный прыжок на следующий блок
-
-		// —троит новый список выражений
-		const CStmList* ConvertToStmList() {
-			return nullptr;
-		}
-
-		void Clear() {
-			Label = nullptr;
-			Jump = nullptr;
-			FlowStatements.clear();
-		}
-
-		void AddStatement( const IStm* statement ) {
-			FlowStatements.push_back( statement );
-		}
-
-		const IRTree::JUMP* GetJUMP() const { return dynamic_cast< const IRTree::JUMP* >( Jump ); }
-		const IRTree::CJUMP* GetCJUMP() const { return dynamic_cast< const IRTree::CJUMP* >( Jump ); }
-	};
+	
 }

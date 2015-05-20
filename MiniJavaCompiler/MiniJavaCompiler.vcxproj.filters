@@ -72,6 +72,9 @@
     <ClCompile Include="MiniJavaCompiler.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Instruction.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">
@@ -149,6 +152,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="MiniJavaCompiler.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Instruction.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

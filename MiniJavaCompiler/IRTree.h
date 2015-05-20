@@ -221,7 +221,7 @@ namespace IRTree
 		{
 		};
 		JUMP( const Temp::CLabel* l )
-			: exp( new NAME( l ) ), targets( new Temp::CLabelList( l, nullptr ) )
+			: exp( new NAME( l ) ), targets( new Temp::CLabelList( l ) )
 		{
 		};
 		const IExp* GetExp() const { return exp; }
@@ -279,6 +279,19 @@ namespace IRTree
 		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
 	private:
 		const Temp::CLabel* label;
+	};
+
+	// Небольшой класс, помогающий восстанавить тип узла
+	class CTypeHelper {
+	public:
+		static const SEQ* IsSEQ( const IStm* stm ) { return dynamic_cast< const SEQ* >( stm ); }
+		static const IRTree::MOVE* IsMOVE( const IStm* stm ) { return dynamic_cast< const IRTree::MOVE* >( stm ); }
+
+		// IExp
+		static const MEM* IsMEM( const IExp* exp ) { return dynamic_cast< const MEM* >( exp ); }
+		static const BINOP* IsBINOP( const IExp* exp ) { return dynamic_cast< const BINOP* >( exp ); }
+		static const CONST* IsCONST( const IExp* exp ) { return dynamic_cast< const CONST* >( exp ); }
+		static const CALL* IsCALL( const IExp* exp ) { return dynamic_cast< const CALL* >( exp ); }
 	};
 };
 

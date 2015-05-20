@@ -23,10 +23,10 @@ public:
 	virtual void Visit( const ESEQ* node ) = 0;
 
 	// Подклассы IRTree::IStm
-	virtual void Visit( const MOVE* node ) = 0;
+	virtual void Visit( const IRTree::MOVE* node ) = 0;
 	virtual void Visit( const EXP* node ) = 0;
 	virtual void Visit( const JUMP* node ) = 0;
 	virtual void Visit( const CJUMP* node ) = 0;
 	virtual void Visit( const SEQ* node ) = 0;
-	virtual void Visit( const LABEL* node ) = 0;
+	virtual void Visit( const IRTree::LABEL* node ) = 0;
 };

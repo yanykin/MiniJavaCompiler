@@ -271,10 +271,10 @@ namespace Canon
 		// Обходим все блоки
 		for ( auto& basicBlock : _basicBlocks ) {
 			// Создаём новый "след" (trace)
-			std::vector<CBasicBlock*> currentTrace;
+			std::vector<CBasicBlock> currentTrace;
 
 			// Метка обходимого блока
-			CBasicBlock* currentBlock = &basicBlock;
+			CBasicBlock currentBlock = basicBlock;
 			const Temp::CLabel* labelOfCurrentBlock = basicBlock.Label->GetLabel();
 
 			// Пока остались непосещённые блоки
@@ -284,12 +284,12 @@ namespace Canon
 				currentTrace.push_back( currentBlock );
 
 				// Проверяем блоки, куда можно перейти с текущего
-				if ( currentBlock->GetJUMP() ) {
-					const Temp::CLabel* jumpLabel = currentBlock->GetJUMP()->GetTargets()->GetHead();
+				if ( currentBlock.GetJUMP() ) {
+					const Temp::CLabel* jumpLabel = currentBlock.GetJUMP()->GetTargets()->GetHead();
 				}
-				else if ( currentBlock->GetCJUMP() ) {
-					const Temp::CLabel* ifTrueLabel = currentBlock->GetCJUMP()->GetIfTrue();
-					const Temp::CLabel* ifTrueLabel = currentBlock->GetCJUMP()->GetIfFalse();
+				else if ( currentBlock.GetCJUMP() ) {
+					const Temp::CLabel* ifTrueLabel = currentBlock.GetCJUMP()->GetIfTrue();
+					const Temp::CLabel* ifFalseLabel = currentBlock.GetCJUMP()->GetIfFalse();
 				}
 
 			}
@@ -311,14 +311,14 @@ namespace Canon
 			basicBlock++, nextBasicBlock++
 			) {
 			// Если блок заканчивается CJUMP'ом
-			const IRTree::CJUMP* jumpStatement = ( *basicBlock )->GetCJUMP();
+			const IRTree::CJUMP* jumpStatement = basicBlock->GetCJUMP();
 			if ( jumpStatement != nullptr ) {
 				// Получаем true и false метки
 				const Temp::CLabel* falseLabel = jumpStatement->GetIfFalse();
 				const Temp::CLabel* trueLabel = jumpStatement->GetIfFalse();
 
 				// Проверяем метку следующего блока
-				const Temp::CLabel* nextBlockLabel = ( *nextBasicBlock )->Label->GetLabel();
+				const Temp::CLabel* nextBlockLabel = nextBasicBlock->Label->GetLabel();
 
 				// Если falsе-блок уже идёт за CJUMP-ом - просто продолжаем цикл
 				if ( nextBlockLabel == falseLabel ) {
@@ -351,19 +351,19 @@ namespace Canon
 					default:
 						break;
 					}
-					( *basicBlock )->Jump = new CJUMP( operation, leftExpression, rightExpression, falseLabel, trueLabel );
+					basicBlock->Jump = new CJUMP( operation, leftExpression, rightExpression, falseLabel, trueLabel );
 				}
 				else {
 					// В противном случае за CJUMP идёт что-то вообще другое - для этого мы
 					// создаём вспомогательный блок с пустым телом
-					CBasicBlock* newBlock = new CBasicBlock();
+					CBasicBlock newBlock;
 					// Создаём новую метку
 					const Temp::CLabel* newLabel = new Temp::CLabel();
-					newBlock->Label = new IRTree::LABEL( newLabel );
-					newBlock->Jump = new JUMP( jumpStatement->GetIfFalse() );
+					newBlock.Label = new IRTree::LABEL( newLabel );
+					newBlock.Jump = new JUMP( jumpStatement->GetIfFalse() );
 
 					// Перевешиваем false-метку
-					( *basicBlock )->Jump = new CJUMP(
+					basicBlock->Jump = new CJUMP(
 						jumpStatement->GetRelop(),
 						jumpStatement->GetLeft(),
 						jumpStatement->GetRight(),

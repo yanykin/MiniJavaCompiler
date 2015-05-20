@@ -15,6 +15,9 @@ TErrorCode CMiniJavaCompiler::Compile( const std::string& sourceCodeFileName, co
 	parseToSyntaxTree();
 	createSymbolTable();
 	checkTypes();
+	translateToIRTree();
+	simplifyIRTree();
+	return this->GetLastError();
 }
 
 void CMiniJavaCompiler::parseToSyntaxTree() {
@@ -60,7 +63,7 @@ void CMiniJavaCompiler::simplifyIRTree() {
 			
 			Canon::CCanon canonizer( fragment.rootStatement, fragment.methodFrame );
 			canonizer.Canonize();
-			_canonizedFragments[fragment] = canonizer.GetCanonizedStatements();
+			_canonizedFragments[&fragment] = canonizer.GetCanonizedStatements();
 		}
 	}
 }
