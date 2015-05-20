@@ -64,6 +64,8 @@ namespace Temp
 			_head = t1;
 			_tail = new CTempList( t2, t3 );
 		}
+		const CTemp* GetHead() const { return _head; }
+		const CTempList* GetTail() const { return _tail; }
 	private:
 		const CTemp* _head;
 		const CTempList* _tail;

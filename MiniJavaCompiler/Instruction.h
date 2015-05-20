@@ -41,11 +41,67 @@ namespace CodeGeneration {
 			return _jumpTargets;	
 		}
 
+		// Возвращает готовую ассемблерную команду
+		
+		std::string Format( std::map<Temp::CTemp*, std::string> ) {
+			
+			// Заполняем отображение
+			std::map<std::string, std::string> placeholderValues;
+			
+			int i = 0;
+			const Temp::CTempList* list = nullptr;
+			const Temp::CTemp* temp = nullptr;
+			// Перебираем используемые переменные (`s0, `s1 ... )
+			i = 0;
+			list = this->UsedVariables();
+			while ( list ) {
+				temp = list->GetHead();
+				placeholderValues[ std::string(PLACEHOLDER, 1) + "s" + std::to_string( i ) ] = temp->Name();
+				list = list->GetTail();
+			}
+
+			// Перебираем определяемые переменнные (`d0, `d1 ... )
+			i = 0;
+			list = this->DefinedVariables();
+			while ( list ) {
+				temp = list->GetHead();
+				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "d" + std::to_string( i ) ] = temp->Name();
+				list = list->GetTail();
+			}
+			// Перебираем метки (`j0, `j1 ... )
+			i = 0;
+			const Temp::CLabelList* labelList = this->JumpTargets();
+			const Temp::CLabel* label = nullptr;
+			while ( labelList ) {
+				label = labelList->GetHead();
+				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "j" + std::to_string( i ) ] = label->Name();
+				labelList = labelList->GetTail();
+			}
+
+			std::string command = AsmCodeTemplate;
+			// Теперь модифицируем команду, заменяя placeholders на значения
+			for ( auto& item : placeholderValues ) {
+				std::string placeholder = item.first;
+				std::string value = item.second;
+
+				// Находим положение
+				size_t placeholderPosition = command.find( placeholder );
+				if ( placeholderPosition != std::string::npos ) {
+					// Делаем замену
+					command.replace( placeholderPosition, placeholder.length(), value );
+				}
+			}
+
+			// Возвращаем сформированную команду
+			return command;
+		}
 
 	private:
 		const Temp::CTempList* _usedVars;
 		const Temp::CTempList* _definedVars;
 		const Temp::CLabelList* _jumpTargets;
+
+		static const char PLACEHOLDER = '`';
 	};
 
 	class MOVE : public IInstruction {
