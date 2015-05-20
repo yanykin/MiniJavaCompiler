@@ -15,7 +15,7 @@ public:
 	const CExpList* kids() { return src->GetArgs(); }
 
 	void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
-	//IStm build( CExpList kids ) { return new MOVE( dst, src.build( kids ) ); }
+	const IStm* build( const CExpList* kids ) { return new MOVE( dst, src->build( kids ) ); }
 private:
 	const TEMP* dst;
 	const CALL* src;
@@ -26,11 +26,10 @@ class ExpCall: public IStm
 public:
 	ExpCall( const CALL* c ) : call( c ) {};
 
-	// что есть дети Stm?? уже в дереве или где?
-	//const CExpList* kids() { return call->kids; }
+	const CExpList* kids() { return call->kids(); }
 
 	void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
-	//public IStm build( Tree.ExpList kids ) { return new Tree.EXP( call.build( kids ) );}
+	const IStm* build( const CExpList* kids ) { return new EXP( call->build( kids ) ); }
 private:
 	const CALL* call;
 };
