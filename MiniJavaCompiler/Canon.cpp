@@ -124,18 +124,14 @@ namespace Canon
 
 	const IStm* reorder_stm( const IStm* s )
 	{
-		// что есть дети Stm?? уже в дереве или где?
-		//StmExpList x = reorder( s.kids() );
-		//return seq( x.stm, s.build( x.exps ) );
-		return nullptr;
+		const StmExpList* x = reorder( s->kids() );
+		return seq( x->GetStm(), s->build( x->GetExps() ) );
 	}
 
 	const ESEQ* reorder_exp( const IExp* e )
 	{
-		// что есть дети Exp?? уже в дереве или где?
-		//StmExpList x = reorder( e.kids() );
-		//return new Tree.ESEQ( x.stm, e.build( x.exps ) );
-		return nullptr;
+		const StmExpList* x = reorder( e->kids() );
+		return new ESEQ( x->GetStm(), e->build( x->GetExps() ) );
 	}
 
 	const CStmList* linear( const SEQ* s, const CStmList* l )

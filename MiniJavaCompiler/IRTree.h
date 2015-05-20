@@ -4,6 +4,7 @@
 #pragma once
 #include "Temp.h"
 #include "IRTreeVisitor.h"
+#include <cassert>
 
 namespace IRTree
 {
@@ -12,12 +13,17 @@ namespace IRTree
 	public:
 		virtual ~IStm() {};
 		virtual void Accept( IIRTreeVisitor *visitor ) const = 0;
+		virtual const CExpList* kids() const;
+		virtual const IStm* build( const CExpList* kids ) const;
 	};
+
 	class IExp
 	{
 	public:
 		virtual ~IExp() {};
 		virtual void Accept( IIRTreeVisitor *visitor ) const = 0;
+		virtual const CExpList* kids() const;
+		virtual const IExp* build( const CExpList* kids ) const;
 	};
 
 	// константы
@@ -64,7 +70,7 @@ namespace IRTree
 		};
 		const IExp* GetHead() const { return head; }
 		const CExpList* GetTail() const { return tail; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IExp* head;
 		const CExpList* tail;
@@ -79,7 +85,7 @@ namespace IRTree
 		};
 		const IStm* GetHead() const { return head; }
 		const CStmList* GetTail() const { return tail; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
 	private:
 		const IStm* head;
 		const CStmList* tail;
@@ -93,7 +99,9 @@ namespace IRTree
 		{
 		};
 		int GetValue() const { return value; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return nullptr; }
+		virtual const IExp* build( const CExpList* kids ) const { return this; }
 	private:
 		int value;
 	};
@@ -106,7 +114,9 @@ namespace IRTree
 		{
 		};
 		const Temp::CLabel* GetLabel() const { return label; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return nullptr; }
+		virtual const IExp* build( const CExpList* kids ) const { return this; }
 	private:
 		const Temp::CLabel* label;
 	};
@@ -119,7 +129,9 @@ namespace IRTree
 		{
 		};
 		const Temp::CTemp* GetTemp() const { return temp; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return nullptr; }
+		virtual const IExp* build( const CExpList* kids ) const { return this; }
 	private:
 		const Temp::CTemp* temp;
 	};
@@ -134,7 +146,9 @@ namespace IRTree
 		TBinop GetBinop() const { return binop; }
 		const IExp* GetLeft() const { return left; }
 		const IExp* GetRight() const { return right; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return new CExpList( left, new CExpList( right, nullptr ) ); }
+		virtual const IExp* build( const CExpList* kids ) const { return new BINOP( binop, kids->GetHead(), kids->GetTail()->GetHead() ); }
 	private:
 		const TBinop binop;
 		const IExp* left;
@@ -149,7 +163,9 @@ namespace IRTree
 		{
 		};
 		const IExp* GetExp() const { return exp; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return new CExpList( exp, nullptr ); }
+		virtual const IExp* build( const CExpList* kids ) const { return new MEM( kids->GetHead() ); }
 	private:
 		const IExp* exp;
 	};
@@ -163,7 +179,9 @@ namespace IRTree
 		};
 		const IExp* GetFunc() const { return func; }
 		const CExpList* GetArgs() const { return args; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return new CExpList( func, args ); }
+		virtual const IExp* build( const CExpList* kids ) const { return new CALL( kids->GetHead(), kids->GetTail() ); }
 	private:
 		const IExp* func;
 		const CExpList* args;
@@ -178,7 +196,9 @@ namespace IRTree
 		};
 		const IStm* GetStm() const { return stm; }
 		const IExp* GetExp() const { return exp; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return nullptr; assert( false ); } // kids() not applicable to ESEQ
+		virtual const IExp* build( const CExpList* kids ) const { return nullptr; assert( false ); } // build() not applicable to ESEQ
 	private:
 		const IStm* stm;
 		const IExp* exp;
@@ -194,7 +214,23 @@ namespace IRTree
 		};
 		const IExp* GetDst() const { return dst; }
 		const IExp* GetSrc() const { return src; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const
+		{
+			const MEM* castedDst = dynamic_cast< const MEM* >( dst );
+			if( castedDst != 0 )
+				return new CExpList( castedDst->GetExp(), new CExpList( src, nullptr ) );
+			else
+				return new CExpList( src, nullptr );
+		}
+		virtual const IStm* build( const CExpList* kids ) const
+		{
+			const MEM* castedDst = dynamic_cast< const MEM* >( dst );
+			if( castedDst != 0 )
+				return new MOVE( new MEM( kids->GetHead() ), kids->GetTail()->GetHead() );
+			else
+				return new MOVE( dst, kids->GetHead() );
+		}
 	private:
 		const IExp* dst;
 		const IExp* src;
@@ -208,7 +244,9 @@ namespace IRTree
 		{
 		};
 		const IExp* GetExp() const { return exp; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return new CExpList( exp, nullptr ); }
+		virtual const IStm* build( const CExpList* kids ) const { return new EXP( kids->GetHead() ); }
 	private:
 		const IExp* exp;
 	};
@@ -226,7 +264,9 @@ namespace IRTree
 		};
 		const IExp* GetExp() const { return exp; }
 		const Temp::CLabelList* GetTargets() const { return targets; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return new CExpList( exp, nullptr ); }
+		virtual const IStm* build( const CExpList* kids ) const { return new JUMP( kids->GetHead(), targets ); }
 	private:
 		const IExp* exp;
 		const Temp::CLabelList* targets;
@@ -244,7 +284,9 @@ namespace IRTree
 		const IExp* GetRight() const { return  right; }
 		const Temp::CLabel* GetIfTrue() const { return iftrue; }
 		const Temp::CLabel* GetIfFalse() const { return iffalse; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return new CExpList( left, new CExpList( right, nullptr ) ); }
+		virtual const IStm* build( const CExpList* kids ) const { return new CJUMP( relop, kids->GetHead(), kids->GetTail()->GetHead(), iftrue, iffalse ); }
 	private:
 		TCJump relop;
 		const IExp* left;
@@ -262,7 +304,9 @@ namespace IRTree
 		};
 		const IStm* GetLeft() const { return left; }
 		const IStm* GetRight() const { return right; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return nullptr; assert( false ); } // kids() not applicable to SEQ
+		virtual const IStm* build( const CExpList* kids ) const { return nullptr; assert( false ); } // build() not applicable to SEQ
 	private:
 		const IStm* left;
 		const IStm* right;
@@ -276,7 +320,9 @@ namespace IRTree
 		{
 		};
 		const Temp::CLabel* GetLabel() const { return label; }
-		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); };
+		void Accept( IIRTreeVisitor *visitor ) const { visitor->Visit( this ); }
+		virtual const CExpList* kids() const { return nullptr; }
+		virtual const IStm* build( const CExpList* kids ) const { return this; }
 	private:
 		const Temp::CLabel* label;
 	};
