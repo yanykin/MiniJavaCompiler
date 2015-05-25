@@ -12,10 +12,10 @@ class MoveCall: public IStm
 public:
 	MoveCall( const TEMP* d, const CALL* s ) : dst(d), src(s) {};
 
-	const CExpList* kids() { return src->GetArgs(); }
+	virtual const CExpList* kids() const { return src->GetArgs(); }
 
-	void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
-	const IStm* build( const CExpList* kids ) { return new MOVE( dst, src->build( kids ) ); }
+	virtual void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
+	virtual const IStm* build( const CExpList* kids ) const { return new MOVE( dst, src->build( kids ) ); }
 private:
 	const TEMP* dst;
 	const CALL* src;
@@ -26,10 +26,10 @@ class ExpCall: public IStm
 public:
 	ExpCall( const CALL* c ) : call( c ) {};
 
-	const CExpList* kids() { return call->kids(); }
+	virtual const CExpList* kids() const { return call->kids(); }
 
-	void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
-	const IStm* build( const CExpList* kids ) { return new EXP( call->build( kids ) ); }
+	virtual void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
+	virtual const IStm* build( const CExpList* kids ) const { return new EXP( call->build( kids ) ); }
 private:
 	const CALL* call;
 };

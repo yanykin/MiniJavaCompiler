@@ -13,8 +13,8 @@ namespace IRTree
 	public:
 		virtual ~IStm() {};
 		virtual void Accept( IIRTreeVisitor *visitor ) const = 0;
-		virtual const CExpList* kids() const;
-		virtual const IStm* build( const CExpList* kids ) const;
+		virtual const CExpList* kids() const = 0;
+		virtual const IStm* build( const CExpList* kids ) const = 0;
 	};
 
 	class IExp
@@ -22,8 +22,8 @@ namespace IRTree
 	public:
 		virtual ~IExp() {};
 		virtual void Accept( IIRTreeVisitor *visitor ) const = 0;
-		virtual const CExpList* kids() const;
-		virtual const IExp* build( const CExpList* kids ) const;
+		virtual const CExpList* kids() const = 0;
+		virtual const IExp* build( const CExpList* kids ) const = 0;
 	};
 
 	// константы
