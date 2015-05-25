@@ -7,13 +7,28 @@ void CCodeGenerator::emit(IInstruction* instruction)  {
 	_instructions.push_back( instruction );
 }
 
-std::list<IInstruction*> CCodeGenerator::generateCode( IRTree::IStm* rootStatement ) {
-	std::list<IInstruction*> instructions;
+TInstructionsList CCodeGenerator::generateCode( const IRTree::IStm* rootStatement ) {
+	TInstructionsList instructions;
 	munchStm( rootStatement );
 	instructions.insert( instructions.begin(), _instructions.begin(), _instructions.end() );
 	_instructions.clear();
 
 	return instructions;
+}
+
+void CCodeGenerator::Generate() {
+	// Обходим всю цепочку инструкций
+	const IRTree::CStmList* list = _statements;
+	while ( list != nullptr ) {
+		const IRTree::IStm* statement = list->GetHead();
+		this->generateCode( statement );
+		// Переходим к следующему элементу
+		list = list->GetTail();
+	}
+}
+
+TInstructionsList CCodeGenerator::GetInstrucions() const {
+	return _instructions;
 }
 
 // === IStm ===

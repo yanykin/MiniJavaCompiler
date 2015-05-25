@@ -5,7 +5,6 @@
     #include <cmath>
 	#include "GrammaticRules.h"
 	#include "CoordinatesHolder.h"
-
 	extern int yyerror( IProgram* mainProgram, char* msg );
     extern int yylex();
 %}

@@ -19,6 +19,9 @@
     <Filter Include="LexHCpp">
       <UniqueIdentifier>{efb073cc-8b61-413b-b233-014fd9b29976}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Examples">
+      <UniqueIdentifier>{4dcf7a9e-f02e-46e6-83c5-6703e7738f23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -160,6 +163,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Parser.output" />
+    <None Include="Factorial.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="BinarySearch.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="BubbleSort.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="TreeVisitor.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="QuickSort.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="LinearSearch.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="LinkedList.minijava">
+      <Filter>Examples</Filter>
+    </None>
+    <None Include="BinaryTree.minijava">
+      <Filter>Examples</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ForDebug.txt" />

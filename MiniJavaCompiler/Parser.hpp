@@ -41,7 +41,7 @@ extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 2058 of yacc.c  */
-#line 18 "Parser.y"
+#line 17 "Parser.y"
 
 	#include "GrammaticSymbols.h"
 	#include "TerminalSymbols.h"
@@ -90,7 +90,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 27 "Parser.y"
+#line 26 "Parser.y"
 
 	int int_val;
 	char* string_val;

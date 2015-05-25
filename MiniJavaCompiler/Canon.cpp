@@ -178,10 +178,14 @@ namespace Canon
 		// Базовый блок
 		CBasicBlock currentBasicBlock;
 		currentBasicBlock.Clear();
+		bool isCleared = true; // флаг, сбрасывающийся, как только мы добавили новую инструкцию
 
 		// Начинаем перебор выражений
-		const IStm* currentExp = _linearizedStatements->GetHead();
-		while ( currentExp ) {
+		const CStmList* list = _linearizedStatements;
+		while ( list ) {
+
+			const IStm* currentExp = list->GetHead();
+
 
 			// Проверяем тип
 			if ( isLABEL( currentExp ) ) {
@@ -191,6 +195,7 @@ namespace Canon
 				_basicBlocks.push_back( currentBasicBlock );
 				currentBasicBlock.Clear();
 				currentBasicBlock.Label = dynamic_cast<const IRTree::LABEL*>( currentExp );
+				isCleared = false;
 
 			}
 			else if ( isCJUMP( currentExp ) || isJUMP( currentExp ) ) {
@@ -198,27 +203,35 @@ namespace Canon
 				currentBasicBlock.Jump = currentExp;
 				_basicBlocks.push_back( currentBasicBlock );
 				currentBasicBlock.Clear();
+				isCleared = true;
 			}
 			else {
 				// Иначе просто переносим инструкцию в блок
 				currentBasicBlock.AddStatement( currentExp );
+				isCleared = false;
 			}
 
 			// Переходим к новому выражению
-			const CStmList* tail = _linearizedStatements->GetTail();
-			if ( tail ) {
-				currentExp = tail->GetHead();
-			}
+			list = list->GetTail();
+		}
+		// Оставшийся хвост нужно добавить
+		if ( !isCleared ) {
+			_basicBlocks.push_back( currentBasicBlock );
 		}
 	}
 
 	void CCanon::connect() {
+		// Блоков нет - выходим
+		if ( _basicBlocks.empty() ) {
+			return;
+		}
+
 		const IStm* labelOfCurrentBlock = nullptr;
 		const IStm* jumpOfCurrentBlock = nullptr;
 
 		// Будем двигаться по парам блоков, изучая стыки
 		auto& previousBlock = _basicBlocks.begin();
-		auto& nextBlock = ( _basicBlocks.begin() )++;
+		auto& nextBlock = previousBlock + 1;
 
 		// Если у первого блока отсутствует метка
 		if ( !previousBlock->Label ) {
@@ -249,8 +262,8 @@ namespace Canon
 		}
 
 		// Если у последнего блока отсутствует переход, то мы должны создаём новый переход на эпилог функции (специальная метка)
-		if ( !nextBlock->Jump ) {
-			nextBlock->Jump = new JUMP( _methodFrame->GetEpilogueLabel() );
+		if ( !previousBlock->Jump ) {
+			previousBlock->Jump = new JUMP( _methodFrame->GetEpilogueLabel() );
 		}
 	}
 

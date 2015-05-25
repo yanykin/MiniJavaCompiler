@@ -1,67 +1,26 @@
-#include <iostream>
-#include <cstdlib>
-#include <cctype>
-#include "Parser.hpp"
+#include "MiniJavaCompiler.h"
 
-#include "SymbolTableBuilder.h"
-#include "TypeChecker.h"
-#include "PrettyPrinter.h"
-
-#include "Translate.h"
-#include "IRTreePrinter.h"
-
-int main()
+int main(int argc, char* argv[])
 {
-	IProgram* mainProgram = 0;
-	int result = yyparse(mainProgram);
+	if ( argc != 3 ) {
+		std::cout << "Usage: " << argv[ 0 ] << " SOURCE_FILE_NAME ASM_OUTPUT_FILE_NAME" << std::endl;
+		exit( 1 );
+	}
 
-	if ( result == 0 ) {
-		/*
-		std::cout << "Success." << std::endl;
-		std::cout << "Reducing for starting token." << std::endl;
-		*/
+	MiniJavaCompiler::CMiniJavaCompiler compiler;
+	std::string sourceFileName = argv[ 1 ];
+	std::string asmOutputFileName = argv[ 2 ];
 
-		CPrettyPrinter prettyPrinter;
-		mainProgram->Accept( &prettyPrinter );
-		
-
-		CSymbolTableBuilder *tableBuilder = new CSymbolTableBuilder();
-		mainProgram->Accept( tableBuilder );
-		if ( tableBuilder->IsTableCorrect() ) {
-			CTypeChecker *typeChecker = new CTypeChecker( tableBuilder->GetConstructedTable() );
-			mainProgram->Accept( typeChecker );
-			if ( typeChecker->IsAllCorrect() ) {
-				std::cout << "Program is correct! :)" << std::endl;
-
-				// —троим дерево промежуточного представлени€
-				Translate::CTranslate *translator = new Translate::CTranslate( tableBuilder->GetConstructedTable() );
-				mainProgram->Accept( translator );
-				CIRTreePrinter *irTreePrinter = new CIRTreePrinter( "graphviz.txt" );
-				irTreePrinter->OpenFile();
-
-				if ( translator ) {
-					size_t methodsCounter = 1;
-					for ( auto& method : translator->Methods ) {
-						irTreePrinter->ResetPrinter( "fragment" + std::to_string( methodsCounter ) + "_", method.fullMethodName);
-						method.rootStatement->Accept( irTreePrinter );
-						methodsCounter += 1;
-
-						irTreePrinter->WriteGraphStructureToTheFile();
-					}
-				}
-				
-				irTreePrinter->CloseFile();
-				delete irTreePrinter;
-			}
-			delete typeChecker;
-		}
-		delete tableBuilder;
+	MiniJavaCompiler::TErrorCode errorCode = compiler.Compile( sourceFileName, asmOutputFileName );
+	if ( errorCode == MiniJavaCompiler::EC_NoError ) {
+		std::cout << "Success" << std::endl;
 	}
 	else {
-		std::cout << "Fail." << std::endl;
+		std::cout
+			<< "Error code: "
+			<< errorCode
+			<< " (" << MiniJavaCompiler::CMiniJavaCompiler::GetCodeDescription( errorCode ) << ")"
+			<< std::endl;
 	}
-	fflush( stdout );
-	// std::cin.ignore( std::numeric_limits<std::streamsize>::max() );
-	system( "pause" );
-	return result;
+	return 0;
 }

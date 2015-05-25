@@ -71,6 +71,23 @@ namespace Temp
 		const CTempList* _tail;
 	};
 
+	// Отображение "метка" -> "текстовое отображение"
+	class ITempMap {
+	public:
+		virtual std::string Map(const CTemp* temp) = 0;
+		virtual ~ITempMap() {};
+	};
+	class CDefaultTempMap : public ITempMap {
+		std::string Map( const CTemp* temp ) {
+			if ( temp ) {
+				return temp->Name();
+			}
+			else {
+				return "TEMP_NOT_FOUND";
+			}
+		}
+	};
+
 	// Лист меток
 	class CLabelList
 	{

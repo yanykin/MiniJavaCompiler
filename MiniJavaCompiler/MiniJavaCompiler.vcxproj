@@ -46,6 +46,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <CompileAs>CompileAsCpp</CompileAs>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -59,6 +60,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <CompileAs>CompileAsCpp</CompileAs>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -131,7 +133,15 @@
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BinarySearch.minijava" />
+    <None Include="BinaryTree.minijava" />
+    <None Include="BubbleSort.minijava" />
+    <None Include="Factorial.minijava" />
+    <None Include="LinearSearch.minijava" />
+    <None Include="LinkedList.minijava" />
     <None Include="Parser.output" />
+    <None Include="QuickSort.minijava" />
+    <None Include="TreeVisitor.minijava" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ForDebug.txt" />

@@ -11,15 +11,72 @@ namespace CodeGeneration {
 	
 	// Абстрактный класс машинной инструкции
 	class IInstruction {
+	protected:
+		static const char PLACEHOLDER = '`';
+		std::string AsmCodeTemplate;
+
 	public:
 		virtual ~IInstruction() {};
-		std::string AsmCodeTemplate;
 		virtual const Temp::CTempList* UsedVariables() const = 0;
 		virtual const Temp::CTempList* DefinedVariables() const = 0;
 		virtual const Temp::CLabelList* JumpTargets() const = 0;
 
-		std::string Format( const std::map<Temp::CTemp*, std::string>& mapping) const;
+		std::string Format( Temp::ITempMap* mapping ) const {
+
+			// Заполняем отображение
+			std::map<std::string, std::string> placeholderValues;
+
+			int i = 0;
+			const Temp::CTempList* list = nullptr;
+			const Temp::CTemp* temp = nullptr;
+			// Перебираем используемые переменные (`s0, `s1 ... )
+			i = 0;
+			list = this->UsedVariables();
+			while ( list ) {
+				temp = list->GetHead();
+				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "s" + std::to_string( i ) ] = mapping->Map( temp );
+				list = list->GetTail();
+			}
+
+			// Перебираем определяемые переменнные (`d0, `d1 ... )
+			i = 0;
+			list = this->DefinedVariables();
+			while ( list ) {
+				temp = list->GetHead();
+				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "d" + std::to_string( i ) ] = mapping->Map( temp );
+				list = list->GetTail();
+			}
+			// Перебираем метки (`j0, `j1 ... )
+			i = 0;
+			const Temp::CLabelList* labelList = this->JumpTargets();
+			const Temp::CLabel* label = nullptr;
+			while ( labelList ) {
+				label = labelList->GetHead();
+				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "j" + std::to_string( i ) ] = mapping->Map( temp );
+				labelList = labelList->GetTail();
+			}
+
+			std::string command = AsmCodeTemplate;
+			// Теперь модифицируем команду, заменяя placeholders на значения
+			for ( auto& item : placeholderValues ) {
+				std::string placeholder = item.first;
+				std::string value = item.second;
+
+				// Находим положение
+				size_t placeholderPosition = command.find( placeholder );
+				if ( placeholderPosition != std::string::npos ) {
+					// Делаем замену
+					command.replace( placeholderPosition, placeholder.length(), value );
+				}
+			}
+
+			// Возвращаем сформированную команду
+			return command;
+		}
 	};
+
+	// Небольшой alias
+	typedef std::list<IInstruction*> TInstructionsList;
 
 	class OPER : public IInstruction {
 	public:
@@ -43,65 +100,14 @@ namespace CodeGeneration {
 
 		// Возвращает готовую ассемблерную команду
 		
-		std::string Format( std::map<Temp::CTemp*, std::string> ) {
-			
-			// Заполняем отображение
-			std::map<std::string, std::string> placeholderValues;
-			
-			int i = 0;
-			const Temp::CTempList* list = nullptr;
-			const Temp::CTemp* temp = nullptr;
-			// Перебираем используемые переменные (`s0, `s1 ... )
-			i = 0;
-			list = this->UsedVariables();
-			while ( list ) {
-				temp = list->GetHead();
-				placeholderValues[ std::string(PLACEHOLDER, 1) + "s" + std::to_string( i ) ] = temp->Name();
-				list = list->GetTail();
-			}
-
-			// Перебираем определяемые переменнные (`d0, `d1 ... )
-			i = 0;
-			list = this->DefinedVariables();
-			while ( list ) {
-				temp = list->GetHead();
-				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "d" + std::to_string( i ) ] = temp->Name();
-				list = list->GetTail();
-			}
-			// Перебираем метки (`j0, `j1 ... )
-			i = 0;
-			const Temp::CLabelList* labelList = this->JumpTargets();
-			const Temp::CLabel* label = nullptr;
-			while ( labelList ) {
-				label = labelList->GetHead();
-				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "j" + std::to_string( i ) ] = label->Name();
-				labelList = labelList->GetTail();
-			}
-
-			std::string command = AsmCodeTemplate;
-			// Теперь модифицируем команду, заменяя placeholders на значения
-			for ( auto& item : placeholderValues ) {
-				std::string placeholder = item.first;
-				std::string value = item.second;
-
-				// Находим положение
-				size_t placeholderPosition = command.find( placeholder );
-				if ( placeholderPosition != std::string::npos ) {
-					// Делаем замену
-					command.replace( placeholderPosition, placeholder.length(), value );
-				}
-			}
-
-			// Возвращаем сформированную команду
-			return command;
-		}
+		
 
 	private:
 		const Temp::CTempList* _usedVars;
 		const Temp::CTempList* _definedVars;
 		const Temp::CLabelList* _jumpTargets;
 
-		static const char PLACEHOLDER = '`';
+		
 	};
 
 	class MOVE : public IInstruction {
@@ -152,17 +158,20 @@ namespace CodeGeneration {
 		_statements(statements), _methodFrame(methodFrame) {
 
 		}
+		void Generate(); // запускает генерацию кода
+		TInstructionsList GetInstrucions() const; // возвращает список сгенерированных инструкций
+
 	private:
 		const CStmList* _statements; // Выражения для данного фрейма
 		const Frame::CFrame* _methodFrame; // Сам фрейм
-		std::list<IInstruction*> _instructions; // сгенерируемые машинные инструкции
+		TInstructionsList _instructions; // сгенерируемые машинные инструкции
 
 		CTypeHelper _helper;
 
 		void emit( IInstruction* instruction ); // добавляем новую инструкцию
 
 		// Генерирует инструкции для всего дерева
-		std::list<IInstruction*> generateCode( IRTree::IStm* rootStatement );
+		std::list<IInstruction*> generateCode( const IRTree::IStm* rootStatement );
 
 		// Вспомогательные функции для быстрого создания списка
 		Temp::CTempList*  L( Temp::CTemp* t1 ) { return new Temp::CTempList( t1 ); }

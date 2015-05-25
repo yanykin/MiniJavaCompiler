@@ -3,7 +3,7 @@
 
 using namespace MiniJavaCompiler;
 
-CMiniJavaCompiler::CMiniJavaCompiler()
+CMiniJavaCompiler::CMiniJavaCompiler() : lastOccuredError( EC_NoError )
 {
 }
 
@@ -12,19 +12,36 @@ CMiniJavaCompiler::~CMiniJavaCompiler()
 }
 
 TErrorCode CMiniJavaCompiler::Compile( const std::string& sourceCodeFileName, const std::string& asmOutputFileName ) {
+	_sourceCodeFileName = sourceCodeFileName;
+  	_asmOutputFileName = asmOutputFileName;
+
+	lastOccuredError = EC_NoError;
+
 	parseToSyntaxTree();
 	createSymbolTable();
 	checkTypes();
 	translateToIRTree();
 	simplifyIRTree();
+	generateInstructions();
+
 	return this->GetLastError();
 }
 
 void CMiniJavaCompiler::parseToSyntaxTree() {
 	// Если ошибки на предыдущем шаге не произошло
 	if ( lastOccuredError == EC_NoError ) {
-		int result = yyparse( this->syntaxTree );
-		lastOccuredError == 0 ? EC_NoError : EC_ParseError;
+		
+		// Переопределяем переменную, отвечающую за источник входных данных
+		yyin = fopen(_sourceCodeFileName.c_str(), "r");
+
+		if ( yyin == nullptr ) {
+			lastOccuredError = EC_SourceFileNotFoundError;
+		}
+		else {
+			int result = yyparse( this->syntaxTree );
+			lastOccuredError == 0 ? EC_NoError : EC_ParseError;
+		}
+
 	}
 }
 
@@ -64,6 +81,43 @@ void CMiniJavaCompiler::simplifyIRTree() {
 			Canon::CCanon canonizer( fragment.rootStatement, fragment.methodFrame );
 			canonizer.Canonize();
 			_canonizedFragments[&fragment] = canonizer.GetCanonizedStatements();
+		}
+	}
+}
+
+void CMiniJavaCompiler::generateInstructions() {
+	if ( lastOccuredError == EC_NoError ) {
+		// Для каждого из фрагментов
+		for ( auto fragment : _canonizedFragments ) {
+			// Создаём генератор кода
+			CodeGeneration::CCodeGenerator generator( fragment.second, fragment.first->methodFrame );
+			generator.Generate();
+			// Список инструкций
+			_instructionLists[ fragment.first ] = generator.GetInstrucions();
+		}
+	}
+}
+
+void CMiniJavaCompiler::writeInstrucions() {
+	if ( lastOccuredError == EC_NoError ) {
+		// Открываем файл для записи
+		std::ofstream asmOutputFile( _asmOutputFileName );
+		// Если файл удалось открыть
+		if ( asmOutputFile ) {
+			for ( auto fragment : _instructionLists ) {
+				// Сначала записываем имя метода
+				asmOutputFile << "[" << fragment.first->fullMethodName << "]" << std::endl;
+				// Далее записываем все команды
+				for ( auto command : fragment.second ) {
+					std::string commandString = command->Format(new Temp::CDefaultTempMap());
+				}
+			}
+			// Разделитель между методами
+			asmOutputFile << std::endl;
+			asmOutputFile.close();
+		}
+		else {
+			lastOccuredError = EC_AsmOutputFileError;
 		}
 	}
 }

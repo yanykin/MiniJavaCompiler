@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>&lt; ForDebug.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Factorial.minijava Factorial.asm</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>&lt; ForDebug.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Factorial.minijava Factorial.asm</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
