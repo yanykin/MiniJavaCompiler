@@ -81,6 +81,9 @@
     <ClCompile Include="ControlFlowGraphBuilder.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="InterferenceGraph.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Lexer.l">

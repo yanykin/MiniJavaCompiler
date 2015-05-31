@@ -75,6 +75,7 @@
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GrammaticRules.h" />
     <ClCompile Include="Instruction.cpp" />
+    <ClCompile Include="InterferenceGraph.cpp" />
     <ClCompile Include="IRTreePrinter.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />

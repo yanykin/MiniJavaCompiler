@@ -22,7 +22,7 @@ public:
     bool HasEdge( const T* from, const T* to );
 
     // ѕолучит текущий список вершин
-    std::vector<T*> GetVertices();
+    const std::vector<T*> GetVertices() const;
 
     // ѕолучить список вершин, в которые можно попасть
     std::vector<T*> GetListOut( const T* vert);
@@ -101,7 +101,7 @@ bool CDirectGraph<T>::HasEdge( const T* from, const T* to ){
 }
 
 template<typename T>
-std::vector<T*> CDirectGraph<T>::GetVertices(){
+const std::vector<T*> CDirectGraph<T>::GetVertices() const {
     return vertices;
 }
 
