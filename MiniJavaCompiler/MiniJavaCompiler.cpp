@@ -21,6 +21,7 @@ TErrorCode CMiniJavaCompiler::Compile( const std::string& sourceCodeFileName, co
 	createSymbolTable();
 	checkTypes();
 	translateToIRTree();
+	printIRTree();
 	simplifyIRTree();
 	generateInstructions();
 
@@ -70,6 +71,24 @@ void CMiniJavaCompiler::translateToIRTree() {
 		Translate::CTranslate *translator = new Translate::CTranslate( tableBuilder->GetConstructedTable() );
 		syntaxTree->Accept( translator );
 		fragments = translator->Methods;
+	}
+}
+
+void CMiniJavaCompiler::printIRTree()
+{
+	// Если ошибки на предыдущем шаге не произошло
+	if( lastOccuredError == EC_NoError ) {
+		CIRTreePrinter *irTreePrinter = new CIRTreePrinter( "graphviz.txt" );
+		irTreePrinter->OpenFile();
+
+		size_t methodsCounter = 1;
+		for( auto& method : fragments ) {
+			irTreePrinter->ResetPrinter( "fragment" + std::to_string( methodsCounter ) + "_", method.fullMethodName );
+			method.rootStatement->Accept( irTreePrinter );
+			methodsCounter += 1;
+			irTreePrinter->WriteGraphStructureToTheFile();
+		}
+		irTreePrinter->CloseFile();
 	}
 }
 

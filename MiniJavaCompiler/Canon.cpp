@@ -1,4 +1,5 @@
 #include "Canon.h"
+#include "IRTreePrinter.h"
 
 
 namespace Canon
@@ -8,15 +9,15 @@ namespace Canon
 	bool isNop( const IStm* a )
 	{
 		const EXP* exp = dynamic_cast< const EXP* >( a );
-		return exp != 0
-			&& dynamic_cast< const CONST* >( exp->GetExp() ) != 0;
+		return exp != nullptr
+			&& dynamic_cast< const CONST* >( exp->GetExp() ) != nullptr;
 	}
 
 	bool commute( const IStm* a, const IExp* b )
 	{
 		return isNop( a )
-			|| dynamic_cast< const NAME* >( b ) != 0
-			|| dynamic_cast< const CONST* >( b ) != 0;
+			|| dynamic_cast< const NAME* >( b ) != nullptr
+			|| dynamic_cast< const CONST* >( b ) != nullptr;
 	}
 
 	const IStm* seq( const IStm* a, const IStm* b )
@@ -32,7 +33,7 @@ namespace Canon
 
 	const IStm* do_stm( const SEQ* s )
 	{
-		return seq( do_stm( s->GetLeft() ), do_stm( s->GetLeft() ) );
+		return seq( do_stm( s->GetLeft() ), do_stm( s->GetRight() ) );
 	}
 
 	const IStm* do_stm( const MOVE* s )
@@ -42,9 +43,9 @@ namespace Canon
 
 		const ESEQ* seseq = dynamic_cast< const ESEQ* >( s->GetDst() );
 
-		if( stemp != 0 && scall != 0 ) {
+		if( stemp != nullptr && scall != nullptr ) {
 			return reorder_stm( new MoveCall( stemp, scall ) );
-		} else if( seseq != 0 ) {
+		} else if( seseq != nullptr ) {
 			return do_stm( new SEQ( seseq->GetStm(),
 				new MOVE( seseq->GetExp(), s->GetSrc() ) ) );
 		} else {
@@ -55,8 +56,29 @@ namespace Canon
 	const IStm* do_stm( const EXP* s )
 	{
 		const CALL* scall = dynamic_cast< const CALL* >( s->GetExp() );
-		if( scall != 0 ) {
+		if( scall != nullptr ) {
 			return reorder_stm( new ExpCall( scall ) );
+		} else {
+			return reorder_stm( s );
+		}
+	}
+
+	const IStm* do_stm( const IStm* s )
+	{
+		const SEQ* sseq = dynamic_cast< const SEQ* >( s );
+		const MOVE* smove = dynamic_cast< const MOVE* >( s );
+		const EXP* sexp = dynamic_cast< const EXP* >( s );
+
+		if( sseq != nullptr ) {
+			return do_stm( sseq );
+		} else if( smove != nullptr ) {
+			return do_stm( smove );
+		} else if( sexp != nullptr ) {
+			if( isNop( s ) ) {
+				return nullptr;
+			} else {
+				return do_stm( sexp );
+			}
 		} else {
 			return reorder_stm( s );
 		}
@@ -67,23 +89,6 @@ namespace Canon
 		const IStm* stms = do_stm( e->GetStm() );
 		const ESEQ* b = do_exp( e->GetExp() );
 		return new ESEQ( seq( stms, b->GetStm() ), b->GetExp() );
-	}
-
-	const IStm* do_stm( const IStm* s )
-	{
-		const SEQ* sseq = dynamic_cast< const SEQ* >( s );
-		const MOVE* smove = dynamic_cast< const MOVE* >( s );
-		const EXP* sexp = dynamic_cast< const EXP* >( s );
-
-		if( sseq != 0 ) {
-			return do_stm( sseq );
-		} else if( smove != 0 ) {
-			return do_stm( smove );
-		} else if( sexp != 0 ) {
-			return do_stm( sexp );
-		} else {
-			return reorder_stm( s );
-		}
 	}
 
 	const ESEQ* do_exp( const IExp* e )
@@ -111,7 +116,7 @@ namespace Canon
 				const StmExpList* bb = reorder( exps->GetTail() );
 				if( commute( bb->GetStm(), aa->GetExp() ) )
 					return new StmExpList( seq( aa->GetStm(), bb->GetStm() ),
-					new CExpList( aa->GetExp(), bb->GetExps() ) );
+						new CExpList( aa->GetExp(), bb->GetExps() ) );
 				else {
 					Temp::CTemp* t = new Temp::CTemp();
 					return new StmExpList(
@@ -124,6 +129,9 @@ namespace Canon
 
 	const IStm* reorder_stm( const IStm* s )
 	{
+		if( s == nullptr ) {
+			return nullptr;
+		}
 		const StmExpList* x = reorder( s->kids() );
 		return seq( x->GetStm(), s->build( x->GetExps() ) );
 	}
@@ -142,16 +150,24 @@ namespace Canon
 	const CStmList* linear( const IStm* s, const CStmList* l )
 	{
 		const SEQ* sseq = dynamic_cast< const SEQ* >( s );
-		if( sseq != 0 ) {
+		if( sseq != nullptr ) {
 			return linear( sseq, l );
 		} else {
-			return new CStmList( s, l );
+			if( s != nullptr ) {
+				return new CStmList( s, l );
+			} else {
+				return l;
+			}
 		}
 	}
 
 	const CStmList* linearize( const IStm* s )
 	{
-		return linear( do_stm( s ), nullptr );
+		if( s != nullptr ) {
+			return linear( do_stm( s ), nullptr );
+		} else {
+			return nullptr;
+		}
 	}
 
 	// === CCanon ===
@@ -170,6 +186,23 @@ namespace Canon
 
 	void CCanon::linearizeStatetment() {
 		_linearizedStatements = linearize( _statement );
+
+		const CStmList* list = _linearizedStatements;
+
+		CIRTreePrinter *irTreePrinter = new CIRTreePrinter( "test.txt" );
+		irTreePrinter->OpenFile();
+
+		size_t methodsCounter = 1;
+		while( list ) {
+			irTreePrinter->ResetPrinter( "fragment" + std::to_string( methodsCounter ) + "_", "fragment" + std::to_string( methodsCounter ) );
+			list->GetHead()->Accept( irTreePrinter );
+			methodsCounter += 1;
+			irTreePrinter->WriteGraphStructureToTheFile();
+
+			// Переходим к новому выражению
+			list = list->GetTail();
+		}
+		irTreePrinter->CloseFile();
 	}
 
 	void CCanon::split() {
@@ -185,7 +218,6 @@ namespace Canon
 		while ( list ) {
 
 			const IStm* currentExp = list->GetHead();
-
 
 			// Проверяем тип
 			if ( isLABEL( currentExp ) ) {

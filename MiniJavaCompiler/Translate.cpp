@@ -121,7 +121,6 @@ void CTranslate::Visit( const CVariableDeclarationList* node )
 	variableDeclaration->Accept( this );
 }
 
-// TODO
 void CTranslate::Visit( const CMethodDeclaration* node )
 {
 	// TODO: в какой-то момент должен строиться фрейм для вызова этой функции
@@ -227,12 +226,12 @@ void CTranslate::Visit( const CStatementList* node )
 	IStatement* nextStatement = node->GetNextStatement();
 
 	statement->Accept( this );
-	const IStm* head = lastWrapper->ToStm();
+	const IRTree::IStm* head = lastWrapper->ToStm();
 
 	if ( nextStatement ) {
 		nextStatement->Accept( this );
-		const IStm* tail = lastWrapper->ToStm();
-		lastWrapper = new Translate::CStmConverter( new SEQ( head, tail ) );
+		const IRTree::IStm* tail = lastWrapper->ToStm();
+		lastWrapper = new Translate::CStmConverter( new IRTree::SEQ( head, tail ) );
 	} else {
 		lastWrapper = new Translate::CStmConverter( head );
 	}
@@ -452,12 +451,10 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	IRTree::NAME* functionName = new IRTree::NAME( functionLabel );
 
 	expList = nullptr;
-	// TODO: получить параметры в виде IRTree::CExpList
 	if ( params ) {
 		params->Accept( this );
 	}
 	IRTree::CExpList* args = expList;
-	// TODO: возвращать построенный список через lastWrapper (?!)
 	
 
 	Temp::CTemp* returned = new Temp::CTemp();
@@ -561,14 +558,14 @@ void CTranslate::Visit( const CExpressionList* node )
 	IExpression *nextExpression = node->GetNextExpression();
 
 	expression->Accept( this );
-	const IExp* expListHead = lastWrapper->ToExp();
+	const IRTree::IExp* expListHead = lastWrapper->ToExp();
 
 	// const IExp* expListTail = nullptr;
 
-	if ( nextExpression ) {
+	if ( nextExpression != nullptr ) {
 		nextExpression->Accept( this );
 		// expListTail = lastWrapper->ToExp();
 	}
 	
-	expList = new CExpList( expListHead, expList );
+	expList = new IRTree::CExpList( expListHead, expList );
 }
