@@ -21,6 +21,12 @@ public:
     bool HasVertex( T* vertPtr );
     bool HasEdge( T* from, T* to );
 
+    // ѕолучит текущий список вершин
+    std::vector<T*> GetVertices();
+
+    // ѕолучить список вершин, в которые можно попасть
+    std::vector<Y*> GetListOut( const T* vert);
+
 private:
 
     // —писки вершин, из которых можно попасть в i-ую вершину
@@ -92,4 +98,15 @@ bool CDirectGraph<T>::HasEdge( T* from, T* to ){
     }
 
     return false;
+}
+
+template<typename T>
+std::vector<T*> CDirectGraph<T>::GetVertices(){
+    return vertices;
+}
+
+template<typename T>
+std::vector<Y*> CDirectGraph<T>::GetListOut( const T* vert ) {
+    assert( HasVertex( vert ) );
+    return collectionListsOut[vert];
 }

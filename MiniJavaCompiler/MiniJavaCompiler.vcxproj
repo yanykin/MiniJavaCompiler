@@ -70,6 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Canon.cpp" />
+    <ClCompile Include="ControlFlowGraphBuilder.cpp" />
     <ClCompile Include="CoordinatesHolder.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GrammaticRules.h" />
@@ -114,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canon.h" />
+    <ClInclude Include="ControlFlowGraphBuilder.h" />
     <ClInclude Include="CoordinatesHolder.h" />
     <ClInclude Include="DirectGraph.h" />
     <ClInclude Include="Frame.h" />
