@@ -18,6 +18,14 @@ namespace Temp
 
 		const std::string& Name() const { return name; }
 
+        bool operator ==( const CLabel& other ) const {
+            return name == other.name;
+        }
+
+        bool operator != ( const CLabel& other ) const {
+            return !( this->operator== ( other ) );
+        }
+
 	private:
 		// Счётчик для создания уникальных идентификаторов
 		static int nextUniqueId;
@@ -39,6 +47,14 @@ namespace Temp
 		explicit CTemp( const Symbol::CSymbol* symbol );
 
 		const std::string& Name() const { return name; }
+
+        bool operator ==( const CTemp& other ) const {
+            return name == other.name;
+        }
+
+        bool operator != ( const CTemp& other ) const {
+            return !( this->operator== ( other ) );
+        }
 
 	private:
 		// Счётчик для создания уникальных имён
@@ -108,3 +124,20 @@ namespace Temp
 		const CLabelList* tail;
 	};
 };
+
+namespace std {
+
+    template<>
+    struct hash<Temp::CTemp> {
+        size_t operator()( const Temp::CTemp& val ) const {
+            return hash<string>()( val.Name() );
+        }
+    };
+
+    template<>
+    struct hash<Temp::CLabel> {
+        size_t operator()( const Temp::CLabel& val ) const {
+            return hash<string>( )( val.Name( ) );
+        }
+    };
+}
