@@ -70,7 +70,7 @@ namespace RegisterAllocation {
         for( auto& vertex : notLabels ) {
             const Temp::CLabelList* labelList = vertex->instruction->JumpTargets();
             while( labelList->GetHead() != NULL ) {
-                auto it = labels.find( *labelList->GetHead );
+                auto it = labels.find( *(labelList->GetHead()) );
                 if( it != labels.end() ){
                     if( !controlFlowGraph.HasEdge( vertex, it->second ) ) {
                         controlFlowGraph.AddEdge( vertex, it->second );
@@ -106,6 +106,10 @@ namespace RegisterAllocation {
         }
 
         return false;
+    }
+
+    bool CControlFlowVertex::operator==( const CControlFlowVertex& other ) const {
+        return instruction == other.instruction;
     }
 
 }

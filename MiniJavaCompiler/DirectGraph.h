@@ -18,22 +18,22 @@ public:
     void AddEdge( T* from, T* to );
 
     //  Проверка на наличие элементов в графе
-    bool HasVertex( T* vertPtr );
-    bool HasEdge( T* from, T* to );
+    bool HasVertex( const T* vertPtr );
+    bool HasEdge( const T* from, const T* to );
 
     // Получит текущий список вершин
     std::vector<T*> GetVertices();
 
     // Получить список вершин, в которые можно попасть
-    std::vector<Y*> GetListOut( const T* vert);
+    std::vector<T*> GetListOut( const T* vert);
 
 private:
 
     // Списки вершин, из которых можно попасть в i-ую вершину
-    std::map<T*, std::vector<T*>> collectionListsIn;
+    std::map<const T*, std::vector<T*>> collectionListsIn;
 
     // Списки вершин, в которые можно попасть из i-ой вершины
-    std::map<T*, std::vector<T*>> collectionListsOut;
+    std::map<const T*, std::vector<T*>> collectionListsOut;
 
     // Массив вершин
     std::vector<T*> vertices;
@@ -76,10 +76,10 @@ void CDirectGraph<T>::AddEdge( T* from, T* to ){
 }
 
 template<typename T>
-bool CDirectGraph<T>::HasVertex( T* vertPtr ){
+bool CDirectGraph<T>::HasVertex( const T* vertPtr ){
     assert( vertPtr != NULL );
 
-    for( auto i = vertices.begin; i != vertices.end( ); ++i ){
+    for( auto i = vertices.begin(); i != vertices.end( ); ++i ){
         if( *i == vertPtr ) {
             return true;
         }
@@ -88,7 +88,7 @@ bool CDirectGraph<T>::HasVertex( T* vertPtr ){
 }
 
 template<typename T>
-bool CDirectGraph<T>::HasEdge( T* from, T* to ){
+bool CDirectGraph<T>::HasEdge( const T* from, const T* to ){
     assert( from != NULL && to != NULL );
 
     for( auto i = collectionListsIn[to].begin( ); i != collectionListsIn[to].end( ); ++i ){
@@ -106,7 +106,7 @@ std::vector<T*> CDirectGraph<T>::GetVertices(){
 }
 
 template<typename T>
-std::vector<Y*> CDirectGraph<T>::GetListOut( const T* vert ) {
+std::vector<T*> CDirectGraph<T>::GetListOut( const T* vert ) {
     assert( HasVertex( vert ) );
     return collectionListsOut[vert];
 }

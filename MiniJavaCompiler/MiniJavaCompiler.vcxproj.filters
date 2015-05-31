@@ -169,6 +169,9 @@
     <ClInclude Include="ControlFlowGraphBuilder.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="InterferenceGraph.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parser.output" />
