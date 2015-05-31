@@ -1,6 +1,8 @@
 // Author: Nikolay Levshin
 // Реализация направленного графа
 
+#pragma once
+
 #include <map>
 #include <vector>
 #include <assert.h>
