@@ -71,6 +71,7 @@
   <ItemGroup>
     <ClCompile Include="Canon.cpp" />
     <ClCompile Include="CoordinatesHolder.cpp" />
+    <ClCompile Include="DirectGraph.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GrammaticRules.h" />
     <ClCompile Include="Instruction.cpp" />
@@ -115,7 +116,6 @@
   <ItemGroup>
     <ClInclude Include="Canon.h" />
     <ClInclude Include="CoordinatesHolder.h" />
-    <ClInclude Include="DirectGraph.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GrammaticSymbols.h" />
     <ClInclude Include="Instruction.h" />
