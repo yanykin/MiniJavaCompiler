@@ -98,6 +98,10 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Parser.hpp</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Parser.hpp</AdditionalInputs>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+<<<<<<< HEAD
+=======
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+>>>>>>> origin/master
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +112,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">win_bison -d -v -t --report=state -o%(Filename).cpp %(Identity)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Filename).hpp;%(Filename).output</Outputs>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+<<<<<<< HEAD
+=======
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+>>>>>>> origin/master
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
