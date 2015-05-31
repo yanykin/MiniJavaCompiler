@@ -154,7 +154,7 @@ namespace CodeGeneration {
 	// Класс, отвечающий за генерацию машинного кода
 	class CCodeGenerator {
 	public:
-		CCodeGenerator( const CStmList* statements, const Frame::CFrame* methodFrame ):
+		CCodeGenerator( const IRTree::CStmList* statements, const Frame::CFrame* methodFrame ) :
 		_statements(statements), _methodFrame(methodFrame) {
 
 		}
@@ -162,11 +162,11 @@ namespace CodeGeneration {
 		TInstructionsList GetInstrucions() const; // возвращает список сгенерированных инструкций
 
 	private:
-		const CStmList* _statements; // Выражения для данного фрейма
+		const IRTree::CStmList* _statements; // Выражения для данного фрейма
 		const Frame::CFrame* _methodFrame; // Сам фрейм
 		TInstructionsList _instructions; // сгенерируемые машинные инструкции
 
-		CTypeHelper _helper;
+		IRTree::CTypeHelper _helper;
 
 		void emit( IInstruction* instruction ); // добавляем новую инструкцию
 

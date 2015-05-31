@@ -2,6 +2,7 @@
 #include <string>
 
 using namespace CodeGeneration;
+using namespace IRTree;
 
 void CCodeGenerator::emit(IInstruction* instruction)  {
 	_instructions.push_back( instruction );
