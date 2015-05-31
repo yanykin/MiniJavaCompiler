@@ -80,11 +80,11 @@ namespace CodeGeneration {
 
 	class OPER : public IInstruction {
 	public:
-		OPER( const std::string& asmCode, Temp::CTempList* dst, Temp::CTempList* src, Temp::CLabelList* jumps ) :
+		OPER( const std::string& asmCode, const Temp::CTempList* dst, const Temp::CTempList* src, const Temp::CLabelList* jumps ) :
 			_usedVars( dst ), _definedVars( src ), _jumpTargets( jumps ) {
 			AsmCodeTemplate = asmCode;
 		};
-		OPER( const std::string& asmCode, Temp::CTempList* dst, Temp::CTempList* src ) :
+		OPER( const std::string& asmCode, const Temp::CTempList* dst, const Temp::CTempList* src ) :
 			_usedVars( dst ), _definedVars( src ), _jumpTargets( nullptr ) {
 			AsmCodeTemplate = asmCode;
 		};
@@ -112,7 +112,7 @@ namespace CodeGeneration {
 
 	class MOVE : public IInstruction {
 	public:
-		MOVE( const std::string& asmCode, Temp::CTemp* dst, Temp::CTemp* src ):
+		MOVE( const std::string& asmCode, const Temp::CTemp* dst, const Temp::CTemp* src ) :
 			_destination(dst), _source(src) {
 			AsmCodeTemplate = asmCode;
 		}
@@ -174,9 +174,9 @@ namespace CodeGeneration {
 		std::list<IInstruction*> generateCode( const IRTree::IStm* rootStatement );
 
 		// Вспомогательные функции для быстрого создания списка
-		Temp::CTempList*  L( Temp::CTemp* t1 ) { return new Temp::CTempList( t1 ); }
-		Temp::CTempList*  L( Temp::CTemp* t1, Temp::CTemp* t2 ) { return new Temp::CTempList( t1, t2 ); }
-		Temp::CTempList*  L( Temp::CTemp* t1, Temp::CTemp* t2, Temp::CTemp* t3 ) { return new Temp::CTempList( t1, t2, t3 ); }
+		Temp::CTempList*  L( const Temp::CTemp* t1 ) { return new Temp::CTempList( t1 ); }
+		Temp::CTempList*  L( const Temp::CTemp* t1, const Temp::CTemp* t2 ) { return new Temp::CTempList( t1, t2 ); }
+		Temp::CTempList*  L( const Temp::CTemp* t1, const Temp::CTemp* t2, const Temp::CTemp* t3 ) { return new Temp::CTempList( t1, t2, t3 ); }
 
 		Temp::CLabelList* L( const Temp::CLabel* l1 ) { return new Temp::CLabelList( l1 ); }
 		Temp::CLabelList* L( const Temp::CLabel* l1, const Temp::CLabel* l2 ) { return new Temp::CLabelList( l1, l2 ); }
@@ -190,17 +190,17 @@ namespace CodeGeneration {
 		void munchStm( const IRTree::SEQ* seq );
 		void munchStm( const IRTree::LABEL* label );
 
-		Temp::CTemp* munchExp( const IRTree::IExp* expression );
-		Temp::CTemp* munchExp( const IRTree::CONST* constExp );
-		Temp::CTemp* munchExp( const IRTree::NAME* name );
+		const Temp::CTemp* munchExp( const IRTree::IExp* expression );
+		const Temp::CTemp* munchExp( const IRTree::CONST* constExp );
+		const Temp::CTemp* munchExp( const IRTree::NAME* name );
 		const Temp::CTemp* munchExp( const IRTree::TEMP* temp );
-		Temp::CTemp* munchExp( const IRTree::BINOP* binop );
-		Temp::CTemp* munchExp( const IRTree::MEM* mem );
-		Temp::CTemp* munchExp( const IRTree::CALL* call );
+		const Temp::CTemp* munchExp( const IRTree::BINOP* binop );
+		const Temp::CTemp* munchExp( const IRTree::MEM* mem );
+		const Temp::CTemp* munchExp( const IRTree::CALL* call );
 
 		// Обходит список аргументов вызываемой функции и строит список временных переменных, куда
 		// они сохраняются
-		Temp::CTempList* munchArgs(const IRTree::CExpList* expList);
+		const Temp::CTempList* munchArgs( const IRTree::CExpList* expList );
 
 		// Для каждой команды создаём отдельный метод и проверяем, накрывает ли тайл данный узел
 		// IStm

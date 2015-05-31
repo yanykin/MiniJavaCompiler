@@ -53,8 +53,8 @@ void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
 	const IRTree::MEM* destinationMemory = _helper.IsMEM(move->GetDst());
 	const IRTree::MEM* sourceMemory = _helper.IsMEM( move->GetSrc() );
 
-	Temp::CTemp* s0 = munchExp( destinationMemory->GetExp() );
-	Temp::CTemp* s1 = munchExp( sourceMemory->GetExp() );
+	const Temp::CTemp* s0 = munchExp( destinationMemory->GetExp() );
+	const Temp::CTemp* s1 = munchExp( sourceMemory->GetExp() );
 
 	// Случай 0: обе части - обращения по памяти
 	if ( destinationMemory && sourceMemory ) {	
@@ -83,13 +83,13 @@ void CCodeGenerator::munchStm( const IRTree::EXP* exp ) {
 	// Проверяем тип дочернего узла
 	const IRTree::CALL* call = _helper.IsCALL( exp->GetExp() );
 	if ( call ) {
-		Temp::CTemp* f = munchExp( call->GetFunc() );
-		Temp::CTempList* l = munchArgs( call->GetArgs() );
+		const Temp::CTemp* f = munchExp( call->GetFunc() );
+		const Temp::CTempList* l = munchArgs( call->GetArgs() );
 		emit( new OPER("CALL `s0", nullptr, new Temp::CTempList(f, l)));
 	}
 	else {
 		Temp::CTemp* d0 = new Temp::CTemp();
-		Temp::CTemp* s0 = munchExp( exp->GetExp() );
+		const Temp::CTemp* s0 = munchExp( exp->GetExp() );
 		emit( new MOVE( "MOVE `d0, `s0", d0, s0 ) );
 	}
 	
@@ -108,8 +108,8 @@ void CCodeGenerator::munchStm( const IRTree::CJUMP* cjump ) {
 	const Temp::CLabel* trueLabel = cjump->GetIfTrue();
 	const Temp::CLabel* falseLabel = cjump->GetIfFalse();
 
-	Temp::CTemp* leftArg = munchExp( cjump->GetLeft() );
-	Temp::CTemp* rightArg = munchExp( cjump->GetRight() );
+	const Temp::CTemp* leftArg = munchExp( cjump->GetLeft() );
+	const Temp::CTemp* rightArg = munchExp( cjump->GetRight() );
 
 	// Создаёт команду сравнения
 	emit(new OPER("CMP `s0, `s1", nullptr, L(leftArg, rightArg)));
@@ -147,18 +147,21 @@ void CCodeGenerator::munchStm( const IRTree::CJUMP* cjump ) {
 }
 
 // === IExp ===
-Temp::CTemp* CCodeGenerator::munchExp( const IRTree::IExp* expression ) {
+const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::IExp* expression )
+{
 	return nullptr;
 }
 
-Temp::CTemp* CCodeGenerator::munchExp( const IRTree::CONST* constExp ) {
+const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::CONST* constExp )
+{
 	Temp::CTemp* r = new Temp::CTemp();
 	std::string command = "MOV `d0, " + std::to_string( constExp->GetValue() );
 	emit( new MOVE( command, r, nullptr ) );
 	return r;
 }
 
-Temp::CTemp* CCodeGenerator::munchExp( const IRTree::NAME* name ) {
+const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::NAME* name )
+{
 	return nullptr;
 }
 
@@ -166,10 +169,11 @@ const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::TEMP* temp ) {
 	return temp->GetTemp();
 }
 
-Temp::CTemp* CCodeGenerator::munchExp( const IRTree::BINOP* binop ) {
+const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::BINOP* binop )
+{
 	Temp::CTemp* r = new Temp::CTemp();
-	Temp::CTemp* leftOperand = munchExp( binop->GetLeft() );
-	Temp::CTemp* rightOperand = munchExp( binop->GetRight() );
+	const Temp::CTemp* leftOperand = munchExp( binop->GetLeft() );
+	const Temp::CTemp* rightOperand = munchExp( binop->GetRight() );
 	// Заносим первый аргумент в промежуточную переменную
 	emit( new MOVE("MOV `d0, `s0", r, leftOperand) );
 	// Применяем операцию
@@ -203,9 +207,10 @@ Temp::CTemp* CCodeGenerator::munchExp( const IRTree::BINOP* binop ) {
 	return r;
 }
 
-Temp::CTemp* CCodeGenerator::munchExp( const IRTree::MEM* mem ) {
-	Temp::CTemp* r = new Temp::CTemp();
-	Temp::CTemp* m = munchExp( mem->GetExp() );
+const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::MEM* mem )
+{
+	const Temp::CTemp* r = new Temp::CTemp();
+	const Temp::CTemp* m = munchExp( mem->GetExp() );
 	// Заносим значение по ячейке памяти
 	emit( new MOVE("MOV `d0, [`s0]", r, m));
 
@@ -213,14 +218,16 @@ Temp::CTemp* CCodeGenerator::munchExp( const IRTree::MEM* mem ) {
 	return r;
 }
 
-Temp::CTemp* CCodeGenerator::munchExp( const IRTree::CALL* call ){
+const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::CALL* call )
+{
 	return nullptr;
 }
 
-Temp::CTempList* CCodeGenerator::munchArgs( const IRTree::CExpList* expList ) {
+const Temp::CTempList* CCodeGenerator::munchArgs( const IRTree::CExpList* expList )
+{
 	const IRTree::CExpList* list = expList;
 
-	std::list<Temp::CTemp*> temps;
+	std::list<const Temp::CTemp*> temps;
 
 	const IRTree::IExp* currentExrpession = list->GetHead();
 	while ( currentExrpession ) {
