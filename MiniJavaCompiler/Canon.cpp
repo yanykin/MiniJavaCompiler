@@ -369,29 +369,7 @@ namespace Canon
 					const IRTree::IExp *leftExpression = jumpStatement->GetLeft();
 					const IRTree::IExp *rightExpression = jumpStatement->GetRight();
 					IRTree::TCJump operation;
-					switch ( jumpStatement->GetRelop() ) {
-					case CJ_EQ:
-						operation = CJ_NE;
-						break;
-					case CJ_NE:
-						operation = CJ_EQ;
-						break;
-					case CJ_GE:
-						operation = CJ_LT;
-						break;
-					case CJ_LT:
-						operation = CJ_GE;
-						break;
-					case CJ_LE:
-						operation = CJ_GT;
-						break;
-					case CJ_GT:
-						operation = CJ_LE;
-						break;
-					default:
-						break;
-					}
-					basicBlock->Jump = new CJUMP( operation, leftExpression, rightExpression, falseLabel, trueLabel );
+					basicBlock->Jump = new CJUMP( jumpStatement->GetNegRelop(), leftExpression, rightExpression, falseLabel, trueLabel );
 				}
 				else {
 					// В противном случае за CJUMP идёт что-то вообще другое - для этого мы
