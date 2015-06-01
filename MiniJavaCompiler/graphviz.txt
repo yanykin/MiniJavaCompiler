@@ -9,18 +9,32 @@ fragment1_5 -> fragment1_6
 fragment1_5 -> fragment1_7
 fragment1_7 -> fragment1_8
 fragment1_7 -> fragment1_9
-fragment1_4 -> fragment1_10
+fragment1_9 -> fragment1_10
+fragment1_10 -> fragment1_11
+fragment1_10 -> fragment1_12
+fragment1_12 -> fragment1_13
+fragment1_12 -> fragment1_14
+fragment1_9 -> fragment1_15
+fragment1_7 -> fragment1_16
+fragment1_4 -> fragment1_17
 fragment1_0[ label = "Factorial$main" ]
 fragment1_1[ label = "EXP" ]
 fragment1_2[ label = "CALL" ]
 fragment1_3[ label = "NAME System.out.println" ]
 fragment1_4[ label = "ESEQ" ]
 fragment1_5[ label = "MOVE" ]
-fragment1_6[ label = "TEMP T2" ]
+fragment1_6[ label = "TEMP T1" ]
 fragment1_7[ label = "CALL" ]
 fragment1_8[ label = "NAME Factorial$ComputeFac" ]
-fragment1_9[ label = "CONST 10" ]
-fragment1_10[ label = "TEMP T2" ]
+fragment1_9[ label = "ESEQ" ]
+fragment1_10[ label = "MOVE" ]
+fragment1_11[ label = "TEMP T0" ]
+fragment1_12[ label = "CALL" ]
+fragment1_13[ label = "NAME malloc" ]
+fragment1_14[ label = "CONST 0" ]
+fragment1_15[ label = "TEMP T0" ]
+fragment1_16[ label = "CONST 10" ]
+fragment1_17[ label = "TEMP T1" ]
 fragment2_0 -> fragment2_1
 fragment2_1 -> fragment2_2
 fragment2_2 -> fragment2_3
@@ -29,64 +43,38 @@ fragment2_4 -> fragment2_5
 fragment2_5 -> fragment2_6
 fragment2_6 -> fragment2_7
 fragment2_6 -> fragment2_8
-fragment2_8 -> fragment2_9
-fragment2_9 -> fragment2_10
-fragment2_10 -> fragment2_11
-fragment2_11 -> fragment2_12
+fragment2_6 -> fragment2_9
+fragment2_6 -> fragment2_10
+fragment2_6 -> fragment2_11
+fragment2_5 -> fragment2_12
 fragment2_12 -> fragment2_13
-fragment2_13 -> fragment2_14
-fragment2_13 -> fragment2_15
-fragment2_13 -> fragment2_16
-fragment2_13 -> fragment2_17
-fragment2_13 -> fragment2_18
-fragment2_12 -> fragment2_19
-fragment2_19 -> fragment2_20
-fragment2_19 -> fragment2_21
+fragment2_12 -> fragment2_14
+fragment2_14 -> fragment2_15
+fragment2_15 -> fragment2_16
+fragment2_14 -> fragment2_17
+fragment2_4 -> fragment2_18
+fragment2_18 -> fragment2_19
+fragment2_18 -> fragment2_20
+fragment2_3 -> fragment2_21
 fragment2_21 -> fragment2_22
 fragment2_21 -> fragment2_23
-fragment2_11 -> fragment2_24
+fragment2_23 -> fragment2_24
 fragment2_24 -> fragment2_25
-fragment2_24 -> fragment2_26
-fragment2_10 -> fragment2_27
-fragment2_27 -> fragment2_28
-fragment2_27 -> fragment2_29
+fragment2_23 -> fragment2_26
+fragment2_26 -> fragment2_27
+fragment2_26 -> fragment2_28
+fragment2_28 -> fragment2_29
 fragment2_29 -> fragment2_30
 fragment2_29 -> fragment2_31
-fragment2_9 -> fragment2_32
-fragment2_8 -> fragment2_33
-fragment2_6 -> fragment2_34
-fragment2_6 -> fragment2_35
-fragment2_6 -> fragment2_36
-fragment2_5 -> fragment2_37
-fragment2_37 -> fragment2_38
-fragment2_37 -> fragment2_39
+fragment2_31 -> fragment2_32
+fragment2_31 -> fragment2_33
+fragment2_31 -> fragment2_34
+fragment2_34 -> fragment2_35
+fragment2_34 -> fragment2_36
+fragment2_28 -> fragment2_37
+fragment2_2 -> fragment2_38
+fragment2_1 -> fragment2_39
 fragment2_39 -> fragment2_40
-fragment2_40 -> fragment2_41
-fragment2_39 -> fragment2_42
-fragment2_4 -> fragment2_43
-fragment2_43 -> fragment2_44
-fragment2_43 -> fragment2_45
-fragment2_3 -> fragment2_46
-fragment2_46 -> fragment2_47
-fragment2_46 -> fragment2_48
-fragment2_48 -> fragment2_49
-fragment2_49 -> fragment2_50
-fragment2_48 -> fragment2_51
-fragment2_51 -> fragment2_52
-fragment2_52 -> fragment2_53
-fragment2_52 -> fragment2_54
-fragment2_54 -> fragment2_55
-fragment2_55 -> fragment2_56
-fragment2_55 -> fragment2_57
-fragment2_57 -> fragment2_58
-fragment2_57 -> fragment2_59
-fragment2_59 -> fragment2_60
-fragment2_60 -> fragment2_61
-fragment2_60 -> fragment2_62
-fragment2_54 -> fragment2_63
-fragment2_2 -> fragment2_64
-fragment2_1 -> fragment2_65
-fragment2_65 -> fragment2_66
 fragment2_0[ label = "Fac$ComputeFac" ]
 fragment2_1[ label = "SEQ" ]
 fragment2_2[ label = "SEQ" ]
@@ -94,64 +82,38 @@ fragment2_3[ label = "SEQ" ]
 fragment2_4[ label = "SEQ" ]
 fragment2_5[ label = "SEQ" ]
 fragment2_6[ label = "CJUMP" ]
-fragment2_7[ label = "!=" ]
-fragment2_8[ label = "ESEQ" ]
-fragment2_9[ label = "SEQ" ]
-fragment2_10[ label = "SEQ" ]
-fragment2_11[ label = "SEQ" ]
+fragment2_7[ label = "<" ]
+fragment2_8[ label = "TEMP T3" ]
+fragment2_9[ label = "CONST 1" ]
+fragment2_10[ label = "LABEL CLABEL_6" ]
+fragment2_11[ label = "LABEL CLABEL_7" ]
 fragment2_12[ label = "SEQ" ]
-fragment2_13[ label = "CJUMP" ]
-fragment2_14[ label = "<" ]
-fragment2_15[ label = "TEMP T4" ]
-fragment2_16[ label = "CONST 1" ]
-fragment2_17[ label = "LABEL CLABEL_6" ]
-fragment2_18[ label = "LABEL CLABEL_7" ]
-fragment2_19[ label = "SEQ" ]
-fragment2_20[ label = "LABEL CLABEL_6" ]
-fragment2_21[ label = "MOVE" ]
-fragment2_22[ label = "TEMP T7" ]
-fragment2_23[ label = "CONST 1" ]
-fragment2_24[ label = "JUMP" ]
-fragment2_25[ label = "NAME CLABEL_8" ]
-fragment2_26[ label = "LABEL CLABEL_8" ]
-fragment2_27[ label = "SEQ" ]
-fragment2_28[ label = "LABEL CLABEL_7" ]
+fragment2_13[ label = "LABEL CLABEL_6" ]
+fragment2_14[ label = "MOVE" ]
+fragment2_15[ label = "MEM" ]
+fragment2_16[ label = "TEMP T4" ]
+fragment2_17[ label = "CONST 1" ]
+fragment2_18[ label = "JUMP" ]
+fragment2_19[ label = "NAME CLABEL_8" ]
+fragment2_20[ label = "LABEL CLABEL_8" ]
+fragment2_21[ label = "SEQ" ]
+fragment2_22[ label = "LABEL CLABEL_7" ]
+fragment2_23[ label = "MOVE" ]
+fragment2_24[ label = "MEM" ]
+fragment2_25[ label = "TEMP T4" ]
+fragment2_26[ label = "MUL (*)" ]
+fragment2_27[ label = "TEMP T3" ]
+fragment2_28[ label = "ESEQ" ]
 fragment2_29[ label = "MOVE" ]
-fragment2_30[ label = "TEMP T7" ]
-fragment2_31[ label = "CONST 0" ]
-fragment2_32[ label = "LABEL CLABEL_8" ]
-fragment2_33[ label = "TEMP T7" ]
-fragment2_34[ label = "CONST 0" ]
-fragment2_35[ label = "LABEL CLABEL_9" ]
-fragment2_36[ label = "LABEL CLABEL_10" ]
-fragment2_37[ label = "SEQ" ]
-fragment2_38[ label = "LABEL CLABEL_9" ]
-fragment2_39[ label = "MOVE" ]
-fragment2_40[ label = "MEM" ]
-fragment2_41[ label = "TEMP T5" ]
-fragment2_42[ label = "CONST 1" ]
-fragment2_43[ label = "JUMP" ]
-fragment2_44[ label = "NAME CLABEL_11" ]
-fragment2_45[ label = "LABEL CLABEL_11" ]
-fragment2_46[ label = "SEQ" ]
-fragment2_47[ label = "LABEL CLABEL_10" ]
-fragment2_48[ label = "MOVE" ]
-fragment2_49[ label = "MEM" ]
-fragment2_50[ label = "TEMP T5" ]
-fragment2_51[ label = "MEM" ]
-fragment2_52[ label = "MUL (*)" ]
-fragment2_53[ label = "TEMP T4" ]
-fragment2_54[ label = "ESEQ" ]
-fragment2_55[ label = "MOVE" ]
-fragment2_56[ label = "TEMP T6" ]
-fragment2_57[ label = "CALL" ]
-fragment2_58[ label = "NAME Fac$ComputeFac" ]
-fragment2_59[ label = "MEM" ]
-fragment2_60[ label = "MINUS (-)" ]
-fragment2_61[ label = "TEMP T4" ]
-fragment2_62[ label = "CONST 1" ]
-fragment2_63[ label = "TEMP T6" ]
-fragment2_64[ label = "LABEL CLABEL_11" ]
-fragment2_65[ label = "EXP" ]
-fragment2_66[ label = "TEMP T5" ]
+fragment2_30[ label = "TEMP T5" ]
+fragment2_31[ label = "CALL" ]
+fragment2_32[ label = "NAME Fac$ComputeFac" ]
+fragment2_33[ label = "TEMP T2" ]
+fragment2_34[ label = "MINUS (-)" ]
+fragment2_35[ label = "TEMP T3" ]
+fragment2_36[ label = "CONST 1" ]
+fragment2_37[ label = "TEMP T5" ]
+fragment2_38[ label = "LABEL CLABEL_8" ]
+fragment2_39[ label = "EXP" ]
+fragment2_40[ label = "TEMP T4" ]
 }

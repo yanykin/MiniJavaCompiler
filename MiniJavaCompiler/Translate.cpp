@@ -266,18 +266,19 @@ void CTranslate::Visit( const CIfStatement* node )
 	lastWrapper = nullptr;
 
 	condition->Accept( this );
-	const IRTree::IExp* exp = lastWrapper->ToExp();
-	lastWrapper = nullptr;
-
 	Temp::CLabel* T = new Temp::CLabel(); // метка для блока true
 	Temp::CLabel* F = new Temp::CLabel(); // метка для блока false
 	Temp::CLabel* D = new Temp::CLabel(); // метка после тела if
+
+	const IRTree::IStm* jump = lastWrapper->ToConditional( T, F );
+
+	
 	lastWrapper = new Translate::CStmConverter( new IRTree::SEQ
 		( new IRTree::SEQ
 			( new IRTree::SEQ
 				( new IRTree::SEQ
-					// сравниваем exp с 0
-					( new IRTree::CJUMP( IRTree::CJ_NE, exp, new IRTree::CONST( 0 ), T, F ),
+					// условие
+					( jump,
 					// блок true
 					new IRTree::SEQ( new IRTree::LABEL( T ), trueStm ) ),
 					new IRTree::JUMP( D ) ),
@@ -291,10 +292,6 @@ void CTranslate::Visit( const CWhileStatement* node )
 	IExpression* condition = node->GetCondition();
 	IStatement* statement = node->GetStatement();
 
-	condition->Accept( this );
-	const IRTree::IExp* exp = lastWrapper->ToExp();
-	lastWrapper = nullptr;
-	
 	statement->Accept( this );
 	const IRTree::IStm* body = lastWrapper->ToStm();
 	lastWrapper = nullptr;
@@ -303,13 +300,18 @@ void CTranslate::Visit( const CWhileStatement* node )
 	Temp::CLabel* T = new Temp::CLabel(); // метка для тела
 	Temp::CLabel* F = new Temp::CLabel(); // метка после тела while
 
+	condition->Accept( this );
+	const IRTree::IStm* jump = lastWrapper->ToConditional( T, F );
+	lastWrapper = nullptr;
+
+
 	lastWrapper = new Translate::CStmConverter( new IRTree::SEQ
 		( new IRTree::SEQ
 			( new IRTree::SEQ
 				// создаем метку test для проверки условия
 				( new IRTree::LABEL( test ),
-				// сравниваем exp с 0
-				( new IRTree::CJUMP( IRTree::CJ_NE, exp, new IRTree::CONST( 0 ), T, F ) ) ),
+				// условие
+				jump  ),
 				// блок true: вополняется тело, JUMP на метку test
 				( new IRTree::SEQ( new IRTree::LABEL( T ), new IRTree::SEQ(body, new IRTree::JUMP(test) ) ) ) ),
 				// блок false: выход
@@ -381,13 +383,13 @@ void CTranslate::Visit( const CBinaryOperatorExpression* node )
 
 	switch( node->GetOperator() ) {
 		case TBinaryOperator::BO_PLUS:
-			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, left, right ) ) );
+			lastWrapper = new Translate::CExpConverter( new IRTree::BINOP( IRTree::BO_PLUS, left, right ) );
 			break;
 		case TBinaryOperator::BO_MINUS:
-			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MINUS, left, right ) ) );
+			lastWrapper = new Translate::CExpConverter( new IRTree::BINOP( IRTree::BO_MINUS, left, right ) );
 			break;
 		case TBinaryOperator::BO_MULTIPLY:
-			lastWrapper = new Translate::CExpConverter( new IRTree::MEM( new IRTree::BINOP( IRTree::BO_MUL, left, right ) ) );
+			lastWrapper = new Translate::CExpConverter( new IRTree::BINOP( IRTree::BO_MUL, left, right ) );
 			break;
 		case TBinaryOperator::BO_LESS:
 			lastWrapper = new Translate::CRelativeCmpWrapper( IRTree::CJ_LT, left, right );
@@ -455,7 +457,7 @@ void CTranslate::Visit( const CMethodCallExpression* node )
 	if ( params ) {
 		params->Accept( this );
 	}
-	IRTree::CExpList* args = expList;
+	IRTree::CExpList* args = new IRTree::CExpList(exprToBeCalled, expList );
 	
 
 	Temp::CTemp* returned = new Temp::CTemp();
@@ -526,12 +528,11 @@ void CTranslate::Visit( const CNewObjectExpression* node )
 
 	const IRTree::NAME* mallocName = new IRTree::NAME( mallocLabel );
 	const IRTree::CALL* mallocCall = new IRTree::CALL( mallocName, new IRTree::CExpList( new IRTree::CONST( countOfFields ), nullptr ) );
-	Temp::CTemp* resultTemp = new Temp::CTemp();
+	const Temp::CTemp* resultTemp = currentFrame->ThisPointer();
 	const IRTree::TEMP* tempTemp = new IRTree::TEMP( resultTemp );
 
 	// инициализация
-	const IRTree::CALL* memSetCall = nullptr;
-	const IRTree::SEQ* mallocMoveMemset = new IRTree::SEQ( new IRTree::MOVE( tempTemp, mallocCall ), new IRTree::EXP( memSetCall ) );
+	const IRTree::MOVE* mallocMoveMemset = new IRTree::MOVE( tempTemp, mallocCall );
 	lastWrapper = new Translate::CExpConverter( new IRTree::ESEQ( mallocMoveMemset, tempTemp ) );
 }
 

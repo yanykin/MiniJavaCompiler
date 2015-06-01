@@ -37,7 +37,18 @@ namespace Frame {
 			prologueLabel( Temp::CLabel() ),
 			startLabel( Temp::CLabel() ),
 			epilogueLabel( Temp::CLabel() )
-		{};
+		{
+			const Temp::CTemp* eax = new Temp::CTemp( Symbol::CSymbol::GetSymbol( "EAX" ) );
+			// const Temp::CTemp* ebx = new Temp::CTemp( Symbol::CSymbol::GetSymbol( "EBX" ) );
+			const Temp::CTemp* ecx = new Temp::CTemp( Symbol::CSymbol::GetSymbol( "ECX" ) );
+			const Temp::CTemp* edx = new Temp::CTemp( Symbol::CSymbol::GetSymbol( "EDX" ) );
+
+			callDefArgs = new Temp::CTempList(
+				eax, new Temp::CTempList(
+					ecx, new Temp::CTempList( edx )
+				)
+			);
+		};
 
 		// Добавить аргумент функции
 		void AddFormal( const Symbol::CSymbol* name );
@@ -64,6 +75,12 @@ namespace Frame {
 		const Temp::CLabel* GetPrologueLanel() const { return &prologueLabel; }
 		const Temp::CLabel* GetStartLabel() const { return &startLabel; }
 		const Temp::CLabel* GetEpilogueLabel() const { return &epilogueLabel; }
+
+		// Возвращает регистры, затираемые после вызова CALL
+		const Temp::CTempList* callDefArgs;
+		const Temp::CTempList* GetCallDefArgs() const {
+			return callDefArgs;
+		}
 
 	private:
 		static const int wordSize = 4; // Размер машинного слова для нашей платформы
