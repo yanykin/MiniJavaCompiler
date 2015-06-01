@@ -340,7 +340,7 @@ void CTranslate::Visit( const CAssignmentStatement* node )
 	const IRTree::IExp* rightExp = lastWrapper->ToExp();
 	lastWrapper = nullptr;
 
-	lastWrapper = new Translate::CStmConverter( new IRTree::MOVE( leftExp, rightExp ) );
+	lastWrapper = new Translate::CStmConverter( new IRTree::MOVE( new IRTree::MEM( leftExp ), rightExp ) );
 }
 
 void CTranslate::Visit( const CArrayElementAssignmentStatement* node )
@@ -353,11 +353,12 @@ void CTranslate::Visit( const CArrayElementAssignmentStatement* node )
 	}
 	Symbol::CSymbol* varName = Symbol::CSymbol::GetSymbol( node->GetArrayName() );
 
+	const IRTree::IExp* leftExp = currentFrame->FindLocalOrFormal( varName )->GetExp( currentFrame->FramePointer() );
 	IExpression* index = node->GetIndexExpression();
 	index->Accept( this );
-	const IRTree::IExp* indexExp = new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, lastWrapper->ToExp(), new IRTree::CONST( 1 ) ) );
-	const IRTree::IExp* zeroIndexExp = currentFrame->FindLocalOrFormal( varName )->GetExp( currentFrame->FramePointer() );
-	const IRTree::IExp* leftExp = new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, zeroIndexExp, indexExp ) );
+	const IRTree::IExp* indexExp = new IRTree::BINOP( IRTree::BO_PLUS, lastWrapper->ToExp(), new IRTree::CONST( 1 ) );
+	const IRTree::IExp* realSize = new IRTree::BINOP( IRTree::BO_MUL, indexExp, new IRTree::CONST( currentFrame->GetWordSize() ) );
+	leftExp = new IRTree::MEM( new IRTree::BINOP( IRTree::BO_PLUS, new IRTree::MEM( leftExp ), realSize ) );
 
 	IExpression *expression = node->GetRightValue();
 	expression->Accept( this );

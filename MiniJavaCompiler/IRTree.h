@@ -280,6 +280,22 @@ namespace IRTree
 		{
 		};
 		TCJump GetRelop() const { return relop; }
+		TCJump GetNegRelop() const {
+			switch( relop ) {
+				case CJ_EQ:  return CJ_NE;
+				case CJ_NE:  return CJ_EQ;
+				case CJ_LT:  return CJ_GE;
+				case CJ_GE:  return CJ_LT;
+				case CJ_GT:  return CJ_LE;
+				case CJ_LE:  return CJ_GT;
+				case CJ_ULT: return CJ_UGE;
+				case CJ_UGE: return CJ_ULT;
+				case CJ_UGT: return CJ_ULE;
+				case CJ_ULE: return CJ_UGT;
+				default:
+					assert( false );
+			}
+		}
 		const IExp* GetLeft() const { return left; }
 		const IExp* GetRight() const { return  right; }
 		const Temp::CLabel* GetIfTrue() const { return iftrue; }
@@ -330,14 +346,14 @@ namespace IRTree
 	// Небольшой класс, помогающий восстанавить тип узла
 	class CTypeHelper {
 	public:
-		static const SEQ* IsSEQ( const IStm* stm ) { return dynamic_cast< const SEQ* >( stm ); }
+		static const IRTree::SEQ* IsSEQ( const IStm* stm ) { return dynamic_cast< const SEQ* >( stm ); }
 		static const IRTree::MOVE* IsMOVE( const IStm* stm ) { return dynamic_cast< const IRTree::MOVE* >( stm ); }
 
 		// IExp
-		static const MEM* IsMEM( const IExp* exp ) { return dynamic_cast< const MEM* >( exp ); }
-		static const BINOP* IsBINOP( const IExp* exp ) { return dynamic_cast< const BINOP* >( exp ); }
-		static const CONST* IsCONST( const IExp* exp ) { return dynamic_cast< const CONST* >( exp ); }
-		static const CALL* IsCALL( const IExp* exp ) { return dynamic_cast< const CALL* >( exp ); }
+		static const IRTree::MEM* IsMEM( const IExp* exp ) { return dynamic_cast< const MEM* >( exp ); }
+		static const IRTree::BINOP* IsBINOP( const IExp* exp ) { return dynamic_cast< const BINOP* >( exp ); }
+		static const IRTree::CONST* IsCONST( const IExp* exp ) { return dynamic_cast< const CONST* >( exp ); }
+		static const IRTree::CALL* IsCALL( const IExp* exp ) { return dynamic_cast< const CALL* >( exp ); }
 	};
 };
 

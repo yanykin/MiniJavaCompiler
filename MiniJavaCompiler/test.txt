@@ -61,11 +61,13 @@ fragment9_0[ label = "fragment9" ]
 fragment9_1[ label = "LABEL CLABEL_9" ]
 fragment10_0 -> fragment10_1
 fragment10_1 -> fragment10_2
-fragment10_1 -> fragment10_3
+fragment10_2 -> fragment10_3
+fragment10_1 -> fragment10_4
 fragment10_0[ label = "fragment10" ]
 fragment10_1[ label = "MOVE" ]
-fragment10_2[ label = "TEMP CTEMP_5" ]
-fragment10_3[ label = "CONST 1" ]
+fragment10_2[ label = "MEM" ]
+fragment10_3[ label = "TEMP CTEMP_5" ]
+fragment10_4[ label = "CONST 1" ]
 fragment11_0 -> fragment11_1
 fragment11_1 -> fragment11_2
 fragment11_1 -> fragment11_3
@@ -81,42 +83,51 @@ fragment13_1 -> fragment13_2
 fragment13_1 -> fragment13_3
 fragment13_0[ label = "fragment13" ]
 fragment13_1[ label = "MOVE" ]
-fragment13_2[ label = "TEMP CTEMP_8" ]
-fragment13_3[ label = "TEMP CTEMP_4" ]
+fragment13_2[ label = "TEMP CTEMP_9" ]
+fragment13_3[ label = "TEMP CTEMP_5" ]
 fragment14_0 -> fragment14_1
 fragment14_1 -> fragment14_2
 fragment14_1 -> fragment14_3
-fragment14_3 -> fragment14_4
-fragment14_4 -> fragment14_5
-fragment14_5 -> fragment14_6
-fragment14_5 -> fragment14_7
 fragment14_0[ label = "fragment14" ]
 fragment14_1[ label = "MOVE" ]
-fragment14_2[ label = "TEMP CTEMP_6" ]
-fragment14_3[ label = "CALL" ]
-fragment14_4[ label = "MEM" ]
-fragment14_5[ label = "MINUS (-)" ]
-fragment14_6[ label = "TEMP CTEMP_4" ]
-fragment14_7[ label = "CONST 1" ]
+fragment14_2[ label = "TEMP CTEMP_8" ]
+fragment14_3[ label = "TEMP CTEMP_4" ]
 fragment15_0 -> fragment15_1
 fragment15_1 -> fragment15_2
 fragment15_1 -> fragment15_3
 fragment15_3 -> fragment15_4
 fragment15_4 -> fragment15_5
-fragment15_4 -> fragment15_6
+fragment15_5 -> fragment15_6
+fragment15_5 -> fragment15_7
 fragment15_0[ label = "fragment15" ]
 fragment15_1[ label = "MOVE" ]
-fragment15_2[ label = "TEMP CTEMP_5" ]
-fragment15_3[ label = "MEM" ]
-fragment15_4[ label = "MUL (*)" ]
-fragment15_5[ label = "TEMP CTEMP_8" ]
-fragment15_6[ label = "TEMP CTEMP_6" ]
+fragment15_2[ label = "TEMP CTEMP_6" ]
+fragment15_3[ label = "CALL" ]
+fragment15_4[ label = "MEM" ]
+fragment15_5[ label = "MINUS (-)" ]
+fragment15_6[ label = "TEMP CTEMP_4" ]
+fragment15_7[ label = "CONST 1" ]
 fragment16_0 -> fragment16_1
+fragment16_1 -> fragment16_2
+fragment16_2 -> fragment16_3
+fragment16_1 -> fragment16_4
+fragment16_4 -> fragment16_5
+fragment16_5 -> fragment16_6
+fragment16_5 -> fragment16_7
 fragment16_0[ label = "fragment16" ]
-fragment16_1[ label = "LABEL CLABEL_11" ]
+fragment16_1[ label = "MOVE" ]
+fragment16_2[ label = "MEM" ]
+fragment16_3[ label = "TEMP CTEMP_9" ]
+fragment16_4[ label = "MEM" ]
+fragment16_5[ label = "MUL (*)" ]
+fragment16_6[ label = "TEMP CTEMP_8" ]
+fragment16_7[ label = "TEMP CTEMP_6" ]
 fragment17_0 -> fragment17_1
-fragment17_1 -> fragment17_2
 fragment17_0[ label = "fragment17" ]
-fragment17_1[ label = "EXP" ]
-fragment17_2[ label = "TEMP CTEMP_5" ]
+fragment17_1[ label = "LABEL CLABEL_11" ]
+fragment18_0 -> fragment18_1
+fragment18_1 -> fragment18_2
+fragment18_0[ label = "fragment18" ]
+fragment18_1[ label = "EXP" ]
+fragment18_2[ label = "TEMP CTEMP_5" ]
 }

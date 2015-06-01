@@ -54,8 +54,8 @@ void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
 	const IRTree::MEM* destinationMemory = _helper.IsMEM(move->GetDst());
 	const IRTree::MEM* sourceMemory = _helper.IsMEM( move->GetSrc() );
 
-	const Temp::CTemp* s0 = munchExp( destinationMemory->GetExp() );
-	const Temp::CTemp* s1 = munchExp( sourceMemory->GetExp() );
+	const Temp::CTemp* s0 = munchExp( destinationMemory ? destinationMemory->GetExp() : nullptr );
+	const Temp::CTemp* s1 = munchExp( sourceMemory ? sourceMemory->GetExp() : nullptr );
 
 	// Случай 0: обе части - обращения по памяти
 	if ( destinationMemory && sourceMemory ) {	

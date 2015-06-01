@@ -1,7 +1,6 @@
 #include "Canon.h"
 #include "IRTreePrinter.h"
 
-
 namespace Canon
 {
 	StmExpList* nopNull = new StmExpList( new EXP( new CONST( 0 ) ), nullptr );
@@ -224,20 +223,20 @@ namespace Canon
 				// Если встретили метку, то она указывает на начало нового блока
 
 				// Завершаем предыдущий блок
-				_basicBlocks.push_back( currentBasicBlock );
-				currentBasicBlock.Clear();
+				if( isCleared == false ) {
+					_basicBlocks.push_back( currentBasicBlock );
+					currentBasicBlock.Clear();
+				}
 				currentBasicBlock.Label = dynamic_cast<const IRTree::LABEL*>( currentExp );
 				isCleared = false;
 
-			}
-			else if ( isCJUMP( currentExp ) || isJUMP( currentExp ) ) {
+			} else if ( isCJUMP( currentExp ) || isJUMP( currentExp ) ) {
 				// Если встретили прыжок, то он завершает блок
 				currentBasicBlock.Jump = currentExp;
 				_basicBlocks.push_back( currentBasicBlock );
 				currentBasicBlock.Clear();
 				isCleared = true;
-			}
-			else {
+			} else {
 				// Иначе просто переносим инструкцию в блок
 				currentBasicBlock.AddStatement( currentExp );
 				isCleared = false;
