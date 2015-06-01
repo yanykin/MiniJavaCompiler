@@ -25,6 +25,7 @@ namespace CodeGeneration {
 
 			// Заполняем отображение
 			std::map<std::string, std::string> placeholderValues;
+			std::string placeholderString( 1, PLACEHOLDER );
 
 			int i = 0;
 			const Temp::CTempList* list = nullptr;
@@ -34,7 +35,7 @@ namespace CodeGeneration {
 			list = this->UsedVariables();
 			while ( list ) {
 				temp = list->GetHead();
-				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "s" + std::to_string( i ) ] = mapping->Map( temp );
+				placeholderValues[ placeholderString + "s" + std::to_string( i ) ] = mapping->Map( temp );
 				list = list->GetTail();
 			}
 
@@ -43,7 +44,7 @@ namespace CodeGeneration {
 			list = this->DefinedVariables();
 			while ( list ) {
 				temp = list->GetHead();
-				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "d" + std::to_string( i ) ] = mapping->Map( temp );
+				placeholderValues[ placeholderString + "d" + std::to_string( i ) ] = mapping->Map( temp );
 				list = list->GetTail();
 			}
 			// Перебираем метки (`j0, `j1 ... )
@@ -52,7 +53,7 @@ namespace CodeGeneration {
 			const Temp::CLabel* label = nullptr;
 			while ( labelList ) {
 				label = labelList->GetHead();
-				placeholderValues[ std::string( PLACEHOLDER, 1 ) + "j" + std::to_string( i ) ] = mapping->Map( temp );
+				placeholderValues[ placeholderString + "j" + std::to_string( i ) ] = label->Name();
 				labelList = labelList->GetTail();
 			}
 
@@ -81,11 +82,11 @@ namespace CodeGeneration {
 	class OPER : public IInstruction {
 	public:
 		OPER( const std::string& asmCode, const Temp::CTempList* dst, const Temp::CTempList* src, const Temp::CLabelList* jumps ) :
-			_usedVars( dst ), _definedVars( src ), _jumpTargets( jumps ) {
+			_usedVars( src ), _definedVars( dst ), _jumpTargets( jumps ) {
 			AsmCodeTemplate = asmCode;
 		};
 		OPER( const std::string& asmCode, const Temp::CTempList* dst, const Temp::CTempList* src ) :
-			_usedVars( dst ), _definedVars( src ), _jumpTargets( nullptr ) {
+			_usedVars( src ), _definedVars( dst ), _jumpTargets( nullptr ) {
 			AsmCodeTemplate = asmCode;
 		};
 		const Temp::CTempList* UsedVariables() const {
@@ -117,10 +118,10 @@ namespace CodeGeneration {
 			AsmCodeTemplate = asmCode;
 		}
 		const Temp::CTempList* UsedVariables() const {
-			return new Temp::CTempList( _destination );
+			return new Temp::CTempList( _source );
 		}
 		const Temp::CTempList* DefinedVariables() const {
-			return new Temp::CTempList( _source );
+			return new Temp::CTempList( _destination );
 		}
 		const Temp::CLabelList* JumpTargets() const {
 			return nullptr;
@@ -197,6 +198,10 @@ namespace CodeGeneration {
 		const Temp::CTemp* munchExp( const IRTree::BINOP* binop );
 		const Temp::CTemp* munchExp( const IRTree::MEM* mem );
 		const Temp::CTemp* munchExp( const IRTree::CALL* call );
+
+		// Обрабатывают вызов функции и процедуры и возвращают true, если удалось это сделать
+		bool munchFunctionCall( const IRTree::MOVE* move );
+		bool munchProcedureCall( const IRTree::EXP* exp );
 
 		// Обходит список аргументов вызываемой функции и строит список временных переменных, куда
 		// они сохраняются

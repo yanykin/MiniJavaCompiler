@@ -1,12 +1,29 @@
 [Factorial$main]
-MOV `s0, `s1
+CALL T2
+JUMP CLABEL_2
 [Fac$ComputeFac]
-MOV `s0, `s1
-MOV `s0, `s1
-MOV [`s0], `s1]
-MOV `s0, `s1
-MOV `s0, `s1
-MOV `s0, `s1
-MOV `s0, [`s1]
-MOV [`s0], `s1]
+CLABEL_12: 
+JUMP CLABEL_7
+CLABEL_6: 
+MOV T10, 1
+MOV T10, `s1
+JUMP CLABEL_8
+CLABEL_7: 
+MOV T11, 0
+MOV T11, `s1
+CLABEL_13: 
+JUMP CLABEL_10
+CLABEL_9: 
+MOV T12, 1
+MOV [T12], `s1
+JUMP CLABEL_11
+CLABEL_10: 
+MOV T5, `s1
+MOV T4, `s1
+MOV T13, T8
+IMUL T13, T6
+MOV T9, [`s1]
+MOV [T14], `s1
+MOV T15 <- T5
+JUMP CLABEL_5
 

@@ -348,12 +348,18 @@ namespace IRTree
 	public:
 		static const IRTree::SEQ* IsSEQ( const IStm* stm ) { return dynamic_cast< const SEQ* >( stm ); }
 		static const IRTree::MOVE* IsMOVE( const IStm* stm ) { return dynamic_cast< const IRTree::MOVE* >( stm ); }
+		static const IRTree::EXP* IsEXP( const IStm* stm ) { return dynamic_cast< const EXP* >( stm ); }
+		static const IRTree::JUMP* IsJUMP( const IStm* stm ) { return dynamic_cast< const JUMP* >( stm ); }
+		static const IRTree::CJUMP* IsCJUMP( const IStm* stm ) { return dynamic_cast< const CJUMP* >( stm ); }
+		static const IRTree::LABEL* IsLABEL( const IStm* stm ) { return dynamic_cast< const LABEL* >( stm ); }
 
 		// IExp
 		static const IRTree::MEM* IsMEM( const IExp* exp ) { return dynamic_cast< const MEM* >( exp ); }
 		static const IRTree::BINOP* IsBINOP( const IExp* exp ) { return dynamic_cast< const BINOP* >( exp ); }
 		static const IRTree::CONST* IsCONST( const IExp* exp ) { return dynamic_cast< const CONST* >( exp ); }
 		static const IRTree::CALL* IsCALL( const IExp* exp ) { return dynamic_cast< const CALL* >( exp ); }
+		static const IRTree::NAME* IsNAME( const IExp* exp ) { return dynamic_cast< const NAME* >( exp ); }
+		static const IRTree::TEMP* IsTEMP( const IExp* exp ) { return dynamic_cast< const TEMP* >( exp ); }
 	};
 };
 

@@ -32,11 +32,30 @@ void CCodeGenerator::munchStm( const IRTree::IStm* statement ) {
 	if ( !statement ) {
 		return;
 	}
-	const IRTree::MOVE* move = _helper.IsMOVE( statement );
-	if ( move ) {
-		munchStm( move );
-	}
 	
+	const IRTree::MOVE* moveStm = _helper.IsMOVE( statement );
+	const IRTree::EXP* expStm = _helper.IsEXP( statement );
+	const IRTree::SEQ* seqStm = _helper.IsSEQ( statement );
+	const IRTree::JUMP* jumpStm = _helper.IsJUMP( statement );
+	const IRTree::CJUMP* cjumpStm = _helper.IsCJUMP( statement );
+	const IRTree::LABEL* labelStm = _helper.IsLABEL( statement );
+	if ( moveStm ) {
+		munchStm( moveStm );
+	} else if ( expStm ) {
+		munchStm( expStm );
+	}
+	else if ( seqStm ) {
+		munchStm( seqStm );
+	}
+	else if ( jumpStm ) {
+		munchStm( jumpStm );
+	}
+	else if ( cjumpStm ) {
+		munchStm( cjumpStm );
+	}
+	else if ( labelStm ) {
+		munchStm( labelStm );
+	}
 }
 
 void CCodeGenerator::munchStm( const IRTree::SEQ* seq ) {
@@ -45,12 +64,19 @@ void CCodeGenerator::munchStm( const IRTree::SEQ* seq ) {
 }
 
 void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
+	// Проверяем частный случай, когда мы вызываем функцию и куда-то передаём полученное значение
+	if ( munchFunctionCall( move ) ) {
+		return;
+	}
+
 	// Получаем левую и правую части
 	const IRTree::MEM* destinationMemory = _helper.IsMEM(move->GetDst());
 	const IRTree::MEM* sourceMemory = _helper.IsMEM( move->GetSrc() );
 
-	const Temp::CTemp* s0 = munchExp( destinationMemory ? destinationMemory->GetExp() : nullptr );
-	const Temp::CTemp* s1 = munchExp( sourceMemory ? sourceMemory->GetExp() : nullptr );
+	// const Temp::CTemp* s0 = munchExp( destinationMemory ? destinationMemory->GetExp() : nullptr );
+	// const Temp::CTemp* s1 = munchExp( sourceMemory ? sourceMemory->GetExp() : nullptr );
+	const Temp::CTemp* s0 = munchExp( destinationMemory ? destinationMemory->GetExp() : move->GetDst() );
+	const Temp::CTemp* s1 = munchExp( sourceMemory ? sourceMemory->GetExp() : move->GetSrc() );
 
 	// Случай 0: обе части - обращения по памяти
 	if ( destinationMemory && sourceMemory ) {	
@@ -59,11 +85,11 @@ void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
 
 		// Добавляем две операции
 		emit(new OPER("MOV `s0, [`s1]", nullptr, L(t, s0)));
-		emit( new OPER( "MOV [`s0], `s1]", nullptr, L( s1, t ) ) );
+		emit( new OPER( "MOV [`s0], `s1", nullptr, L( s1, t ) ) );
 	}
 	// Случай 1: левая часть - обращение по памяти, правая - нет
 	if ( destinationMemory && !sourceMemory ) {
-		emit( new OPER( "MOV [`s0], `s1]", nullptr, L( s0, s1 ) ) );
+		emit( new OPER( "MOV [`s0], `s1", nullptr, L( s0, s1 ) ) );
 	}
 	// Случай 2: правая часть - обращение по памяти, левая - нет
 	if ( sourceMemory && !destinationMemory ) {
@@ -76,19 +102,14 @@ void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
 }
 
 void CCodeGenerator::munchStm( const IRTree::EXP* exp ) {
-	// Проверяем тип дочернего узла
-	const IRTree::CALL* call = _helper.IsCALL( exp->GetExp() );
-	if ( call ) {
-		const Temp::CTemp* f = munchExp( call->GetFunc() );
-		const Temp::CTempList* l = munchArgs( call->GetArgs() );
-		emit( new OPER("CALL `s0", nullptr, new Temp::CTempList(f, l)));
+	// Пытаемся обработать вызов процедуры
+	if ( munchProcedureCall( exp ) ) {
+		return;
 	}
-	else {
-		Temp::CTemp* d0 = new Temp::CTemp();
-		const Temp::CTemp* s0 = munchExp( exp->GetExp() );
-		emit( new MOVE( "MOVE `d0, `s0", d0, s0 ) );
-	}
-	
+
+	Temp::CTemp* d0 = new Temp::CTemp();
+	const Temp::CTemp* s0 = munchExp( exp->GetExp() );
+	emit( new MOVE( "MOV `d0 <- `s0", d0, s0 ) );
 }
 
 void CCodeGenerator::munchStm( const IRTree::LABEL* label ) {
@@ -114,27 +135,27 @@ void CCodeGenerator::munchStm( const IRTree::CJUMP* cjump ) {
 	switch( cjump->GetRelop() ) {
 		case IRTree::CJ_EQ:
 			emit( new OPER( "JE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "JNE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JNE `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_NE:
 			emit( new OPER( "JNE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "JE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JE `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_GT:
 			emit( new OPER( "JG `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "JLE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JLE `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_LT:
 			emit( new OPER( "JL `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "JGE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JGE `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_GE:
 			emit( new OPER( "JGE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "JL `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JL `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_LE:
 			emit( new OPER( "JLE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "JG `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JG `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		default:
 			break;
@@ -144,7 +165,34 @@ void CCodeGenerator::munchStm( const IRTree::CJUMP* cjump ) {
 // === IExp ===
 const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::IExp* expression )
 {
-	return nullptr;
+	const IRTree::MEM* memExp = _helper.IsMEM( expression );
+	const IRTree::BINOP* binopExp = _helper.IsBINOP( expression );
+	const IRTree::CONST* constExp = _helper.IsCONST( expression );
+	const IRTree::CALL* callExp = _helper.IsCALL( expression );
+	const IRTree::NAME* nameExp = _helper.IsNAME( expression );
+	const IRTree::TEMP* tempExp = _helper.IsTEMP( expression );
+
+	if ( memExp ) {
+		return munchExp( memExp );
+	}
+	else if ( binopExp ) {
+		return munchExp( binopExp );
+	}
+	else if ( constExp ) {
+		return munchExp( constExp );
+	}
+	else if ( callExp ) {
+		return munchExp( callExp );
+	}
+	else if ( nameExp ) {
+		return munchExp( nameExp );
+	}
+	else if ( tempExp ) {
+		return munchExp( tempExp );
+	}
+	else {
+		return nullptr;
+	}
 }
 
 const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::CONST* constExp )
@@ -223,8 +271,8 @@ const Temp::CTempList* CCodeGenerator::munchArgs( const IRTree::CExpList* expLis
 
 	std::list<const Temp::CTemp*> temps;
 
-	const IRTree::IExp* currentExrpession = list->GetHead();
-	while ( currentExrpession ) {
+	while ( list ) {
+		const IRTree::IExp* currentExrpession = list->GetHead();
 		temps.push_back( munchExp( currentExrpession ) );
 		// Переходим к следующему аргументу
 		list = list->GetTail();
@@ -238,4 +286,31 @@ const Temp::CTempList* CCodeGenerator::munchArgs( const IRTree::CExpList* expLis
 
 	// Возвращаем результат
 	return tempsList;
+}
+
+bool CCodeGenerator::munchFunctionCall( const IRTree::MOVE* move ) {
+	const IRTree::TEMP* tempExp = _helper.IsTEMP( move->GetDst() );
+	const IRTree::CALL* callExp = _helper.IsCALL( move->GetSrc() );
+	if ( !tempExp || !callExp ) {
+		return false;
+	}
+	// Обрабатываем вызов функции
+
+
+	return true;
+}
+
+bool CCodeGenerator::munchProcedureCall( const IRTree::EXP* exp ) {
+	const IRTree::CALL* callExp = _helper.IsCALL( exp->GetExp() );
+	if ( !callExp ) {
+		return false;
+	}
+	// Обрабатываем вызов функции
+
+	const Temp::CTemp* r = munchExp( callExp->GetFunc() );
+	const Temp::CTempList* l = munchArgs( callExp->GetArgs() );
+
+	emit(new OPER("CALL `s0", nullptr, new Temp::CTempList(r, l)));
+	// TODO: calldefs - модифицируемые call'ом регистры/переменные
+	return true;
 }

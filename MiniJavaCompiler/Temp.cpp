@@ -2,13 +2,13 @@
 
 using namespace Temp;
 
-const std::string CTemp::suffix = "CTEMP";
-const std::string CTemp::separator = "_";
+const std::string CTemp::suffix = "T";
+const std::string CTemp::separator = "";
 int CTemp::nextUniqueId = 0;
 
 // Конструктор без параметров
 CTemp::CTemp() {
-	name = suffix + "_" + std::to_string( nextUniqueId );
+	name = suffix + separator + std::to_string( nextUniqueId );
 	nextUniqueId += 1;
 }
 
@@ -25,7 +25,7 @@ int CLabel::nextUniqueId = 0;
 
 // Конструктор без параметров
 CLabel::CLabel() {
-	name = suffix + "_" + std::to_string( nextUniqueId );
+	name = suffix + separator + std::to_string( nextUniqueId );
 	nextUniqueId += 1;
 }
 
