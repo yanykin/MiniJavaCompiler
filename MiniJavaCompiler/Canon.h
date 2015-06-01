@@ -12,7 +12,7 @@ class MoveCall: public IStm
 public:
 	MoveCall( const TEMP* d, const CALL* s ) : dst(d), src(s) {};
 
-	virtual const CExpList* kids() const { return src->GetArgs(); }
+	virtual const CExpList* kids() const { return src->kids(); }
 
 	virtual void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
 	virtual const IStm* build( const CExpList* kids ) const { return new MOVE( dst, src->build( kids ) ); }
