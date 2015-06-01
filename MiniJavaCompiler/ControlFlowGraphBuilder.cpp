@@ -29,7 +29,8 @@ namespace RegisterAllocation {
 
         std::vector<CControlFlowVertex*> vertices;
 
-        vertices = controlFlowGraph.GetVertices();
+        controlFlowGraph.BuidDFSVertices();
+        vertices = controlFlowGraph.GetDFSVertices();
 
         do {
             isChanging = false;
@@ -69,14 +70,16 @@ namespace RegisterAllocation {
 
         for( auto& vertex : notLabels ) {
             const Temp::CLabelList* labelList = vertex->instruction->JumpTargets();
-            while( labelList->GetHead() != NULL ) {
-                auto it = labels.find( *(labelList->GetHead()) );
-                if( it != labels.end() ){
-                    if( !controlFlowGraph.HasEdge( vertex, it->second ) ) {
-                        controlFlowGraph.AddEdge( vertex, it->second );
+            if( labelList != NULL ) {
+                while( labelList->GetHead( ) != NULL ) {
+                    auto it = labels.find( *( labelList->GetHead( ) ) );
+                    if( it != labels.end( ) ){
+                        if( !controlFlowGraph.HasEdge( vertex, it->second ) ) {
+                            controlFlowGraph.AddEdge( vertex, it->second );
+                        }
                     }
+                    labelList = labelList->GetTail( );
                 }
-                labelList = labelList->GetTail();
             }
         }
     }

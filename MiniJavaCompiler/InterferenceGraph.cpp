@@ -51,7 +51,7 @@ namespace RegisterAllocation {
     }
 
     void CInterferenceGraphBuilder::Build( const CDirectGraph<CControlFlowVertex>& controlFlowGraph ) {
-        const std::vector<CControlFlowVertex*>& vertices = controlFlowGraph.GetVertices();
+        std::vector<CControlFlowVertex*> vertices = controlFlowGraph.GetVertices();
         
         // Заполняем граф вершинами
         std::unordered_set<Temp::CTemp> tempSet;
