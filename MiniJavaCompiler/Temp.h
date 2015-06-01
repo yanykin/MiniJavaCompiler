@@ -125,19 +125,24 @@ namespace Temp
 	};
 };
 
-namespace std {
+namespace std
+{
 
-    template<>
-    struct hash<Temp::CTemp> {
-        size_t operator()( const Temp::CTemp& val ) const {
-            return hash<string>()( val.Name() );
-        }
-    };
+	template<>
+	struct hash < Temp::CTemp >
+	{
+		size_t operator()( const Temp::CTemp& val ) const
+		{
+			return hash<string>()( val.Name() );
+		}
+	};
 
-    template<>
-    struct hash<Temp::CLabel> {
-        size_t operator()( const Temp::CLabel& val ) const {
-            return hash<string>( )( val.Name( ) );
-        }
-    };
+	template<>
+	struct hash < Temp::CLabel >
+	{
+		size_t operator()( const Temp::CLabel& val ) const
+		{
+			return hash<string>()( val.Name() );
+		}
+	};
 }

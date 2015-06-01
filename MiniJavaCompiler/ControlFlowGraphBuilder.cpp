@@ -5,13 +5,13 @@ namespace RegisterAllocation {
     CControlFlowVertex::CControlFlowVertex( const CodeGeneration::IInstruction* instr ) : instruction( instr ) {
 
         const Temp::CTempList* definedVars = instr->DefinedVariables();
-        while( definedVars != NULL ) {
+        while( definedVars != NULL || definedVars->GetHead() != NULL ) {
             defs.insert( *( definedVars->GetHead() ) );
             definedVars = definedVars->GetTail();
         }
 
         const Temp::CTempList* usesVars = instr->UsedVariables();
-        while( usesVars != NULL ) {
+        while( usesVars != NULL || usesVars->GetHead() != NULL ) {
             uses.insert( *( usesVars->GetHead() ) );
             usesVars = usesVars->GetTail();
         }

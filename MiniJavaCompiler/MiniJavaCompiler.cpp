@@ -24,6 +24,7 @@ TErrorCode CMiniJavaCompiler::Compile( const std::string& sourceCodeFileName, co
 	simplifyIRTree();
 	printIRTree();
 	generateInstructions();
+	writeInstrucions();
     generateControlFlowGraph();
 
 	return this->GetLastError();
