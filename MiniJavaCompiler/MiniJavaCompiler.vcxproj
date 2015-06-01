@@ -82,6 +82,7 @@
     <ClCompile Include="MiniJavaCompiler.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PrettyPrinter.cpp" />
+    <ClCompile Include="RegisterMap.cpp" />
     <ClCompile Include="Symbol.cpp" />
     <ClCompile Include="SymbolTableBuilder.cpp" />
     <ClCompile Include="Table.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="MiniJavaCompiler.h" />
     <ClInclude Include="NonTerminalSymbols.h" />
     <ClInclude Include="PrettyPrinter.h" />
+    <ClInclude Include="RegisterMap.h" />
     <ClInclude Include="Symbol.h" />
     <ClInclude Include="SymbolTableBuilder.h" />
     <ClInclude Include="Table.h" />

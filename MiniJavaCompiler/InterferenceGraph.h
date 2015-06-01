@@ -20,10 +20,28 @@ namespace RegisterAllocation {
         public:
 
             // Добавить вершину
-            void AddVertice( const Temp::CTemp vert );
+            void AddVertice( const Temp::CTemp& vert );
 
             // Добавить ребро
             void AddEdge( const Temp::CTemp& from, const Temp::CTemp& to );
+
+            // Удалить вершину
+            void RemoveVertice( const Temp::CTemp& vert );
+
+            // Получить размер
+            size_t GetSize() { return vertices.size(); }
+
+            // Получить соседей вершины
+            const std::unordered_set<Temp::CTemp>& GetNeigbours( const Temp::CTemp& vert ) const;
+
+            // Получить список вершин
+            const std::unordered_set<Temp::CTemp>& GetVertices() { return vertices; }
+
+            // Gлучить степень вершины
+            size_t GetDegree( const Temp::CTemp& vert );
+
+            // Есть ли данная вершина в графе?
+            bool HasVetrice( const Temp::CTemp& vert ) { return vertices.find( vert ) != vertices.end(); }
 
         private:
             std::unordered_map<Temp::CTemp, std::unordered_set<Temp::CTemp>> edges;

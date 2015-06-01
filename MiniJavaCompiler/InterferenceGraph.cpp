@@ -4,7 +4,7 @@
 
 namespace RegisterAllocation {
 
-    void CInterferenceGraphBuilder::CInterferenceGraph::AddVertice( const Temp::CTemp vert ) {
+    void CInterferenceGraphBuilder::CInterferenceGraph::AddVertice( const Temp::CTemp& vert ) {
         assert( vertices.find( vert ) == vertices.end() );
         vertices.insert( vert );
 
@@ -20,6 +20,34 @@ namespace RegisterAllocation {
 
         // Добавляем ребро
         edges[from].insert( to );
+    }
+
+    void CInterferenceGraphBuilder::CInterferenceGraph::RemoveVertice( const Temp::CTemp& vert ) {
+        assert( vertices.find( vert ) != vertices.end() );
+
+        // Удаляем все входящие ребра
+        for( auto& vertList : edges ) {
+            auto vertPtr =vertList.second.find( vert );
+            if( vertPtr != vertList.second.end() ) {
+                vertList.second.erase( vertPtr );
+            }
+        }
+
+        // Удаляем исходящие ребра
+        edges.erase( vert );
+
+        // Удаляем вершины
+        vertices.erase( vert );
+    }
+
+    const std::unordered_set<Temp::CTemp>& CInterferenceGraphBuilder::CInterferenceGraph::GetNeigbours( const Temp::CTemp& vert ) const {
+        assert( vertices.find( vert ) != vertices.end() );
+        return edges.find(vert)->second;
+    }
+
+    size_t CInterferenceGraphBuilder::CInterferenceGraph::GetDegree( const Temp::CTemp& vert ) {
+        assert( vertices.find( vert ) != vertices.end() );
+        return edges[vert].size();
     }
 
     void CInterferenceGraphBuilder::Build( const CDirectGraph<CControlFlowVertex>& controlFlowGraph ) {
