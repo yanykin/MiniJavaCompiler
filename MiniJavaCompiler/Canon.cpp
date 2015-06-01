@@ -429,6 +429,14 @@ namespace Canon
 					isOmmited = true;
 				}
 			}
+			/*
+			else if ( cjumpStatement != nullptr ) {
+				if ( cjumpStatement->GetIfFalse() == nextBlockLabel->GetLabel() ) {
+					isOmmited = true;
+				}
+			}
+			*/
+			
 
 			if ( !isOmmited ) {
 				if ( jumpStatement ) {
@@ -440,9 +448,8 @@ namespace Canon
 				else {
 					assert(false, "Jump is null!" );
 				}
-				
-				statements.push_back( nextBlockLabel );
 			}
+			statements.push_back( nextBlockLabel );
 
 			// Проверяем, что 
 			basicBlock++;

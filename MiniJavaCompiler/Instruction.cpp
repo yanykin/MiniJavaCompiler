@@ -75,8 +75,8 @@ void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
 
 	// const Temp::CTemp* s0 = munchExp( destinationMemory ? destinationMemory->GetExp() : nullptr );
 	// const Temp::CTemp* s1 = munchExp( sourceMemory ? sourceMemory->GetExp() : nullptr );
-	const Temp::CTemp* s0 = munchExp( destinationMemory ? destinationMemory->GetExp() : move->GetDst() );
-	const Temp::CTemp* s1 = munchExp( sourceMemory ? sourceMemory->GetExp() : move->GetSrc() );
+	const Temp::CTemp* d0 = munchExp( destinationMemory ? destinationMemory->GetExp() : move->GetDst() );
+	const Temp::CTemp* s0 = munchExp( sourceMemory ? sourceMemory->GetExp() : move->GetSrc() );
 
 	// —лучай 0: обе части - обращени€ по пам€ти
 	if ( destinationMemory && sourceMemory ) {	
@@ -85,19 +85,19 @@ void CCodeGenerator::munchStm( const IRTree::MOVE* move ) {
 
 		// ƒобавл€ем две операции
 		emit(new MOVE("\tMOV `d0, [`s0]", t,  s0));
-		emit( new MOVE("\tMOV [`d0], `s0", s1, t ) );
+		emit( new MOVE("\tMOV [`d0], `s0", d0, t ) );
 	}
 	// —лучай 1: лева€ часть - обращение по пам€ти, права€ - нет
 	if ( destinationMemory && !sourceMemory ) {
-		emit( new MOVE( "\tMOV [`d0], `s0", s0, s1 ) );
+		emit( new MOVE( "\tMOV [`d0], `s0", d0, s0 ) );
 	}
 	// —лучай 2: права€ часть - обращение по пам€ти, лева€ - нет
 	if ( sourceMemory && !destinationMemory ) {
-		emit( new MOVE( "\tMOV `d0, [`s0]", s0, s1 ) );
+		emit( new MOVE( "\tMOV `d0, [`s0]", d0, s0 ) );
 	}
 	// —лучай 3: обе части - просто какие-то выражени€
 	if ( !sourceMemory && !destinationMemory ) {
-		emit( new MOVE( "\tMOV `d0, `s0", s0, s1 ) );
+		emit( new MOVE( "\tMOV `d0, `s0", d0, s0 ) );
 	}
 }
 
@@ -109,7 +109,7 @@ void CCodeGenerator::munchStm( const IRTree::EXP* exp ) {
 
 	Temp::CTemp* d0 = new Temp::CTemp();
 	const Temp::CTemp* s0 = munchExp( exp->GetExp() );
-	emit( new MOVE( "\tMOV `d0 <- `s0", d0, s0 ) );
+	emit( new MOVE( "\tMOV `d0, `s0", d0, s0 ) );
 }
 
 void CCodeGenerator::munchStm( const IRTree::LABEL* label ) {

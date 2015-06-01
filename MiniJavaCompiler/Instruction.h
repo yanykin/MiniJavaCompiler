@@ -37,6 +37,7 @@ namespace CodeGeneration {
 				temp = list->GetHead();
 				placeholderValues[ placeholderString + "s" + std::to_string( i ) ] = mapping->Map( temp );
 				list = list->GetTail();
+				i += 1;
 			}
 
 			// Перебираем определяемые переменнные (`d0, `d1 ... )
@@ -46,6 +47,7 @@ namespace CodeGeneration {
 				temp = list->GetHead();
 				placeholderValues[ placeholderString + "d" + std::to_string( i ) ] = mapping->Map( temp );
 				list = list->GetTail();
+				i += 1;
 			}
 			// Перебираем метки (`j0, `j1 ... )
 			i = 0;
@@ -55,6 +57,7 @@ namespace CodeGeneration {
 				label = labelList->GetHead();
 				placeholderValues[ placeholderString + "j" + std::to_string( i ) ] = label->Name();
 				labelList = labelList->GetTail();
+				i += 1;
 			}
 
 			std::string command = AsmCodeTemplate;
