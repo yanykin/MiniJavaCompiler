@@ -21,8 +21,8 @@ TErrorCode CMiniJavaCompiler::Compile( const std::string& sourceCodeFileName, co
 	createSymbolTable();
 	checkTypes();
 	translateToIRTree();
-	printIRTree();
 	simplifyIRTree();
+	printIRTree();
 	generateInstructions();
 
 	return this->GetLastError();

@@ -14,7 +14,7 @@ public:
 
 	virtual const CExpList* kids() const { return src->GetArgs(); }
 
-	virtual void Accept( IIRTreeVisitor *visitor ) const {} // пока пустой
+	virtual void Accept( IIRTreeVisitor *visitor ) const {}; // пока пустой
 	virtual const IStm* build( const CExpList* kids ) const { return new MOVE( dst, src->build( kids ) ); }
 private:
 	const TEMP* dst;

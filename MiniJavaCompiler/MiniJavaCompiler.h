@@ -71,7 +71,7 @@ namespace MiniJavaCompiler {
 		IProgram* syntaxTree; // корень построенного синтаксического дерева
 		std::vector<Translate::CFragment> fragments; // фрагменты IR-дерева для каждого из методов
 		std::map<Translate::CFragment*, const IRTree::CStmList* > _canonizedFragments; // отображение "фрагмент" -> "канонизированное дерево"
-		std::map <Translate::CFragment*, CodeGeneration::TInstructionsList > _instructionLists; // для каждого фрагмента хранит список сгенерированных инструкций
+		std::map<Translate::CFragment*, CodeGeneration::TInstructionsList > _instructionLists; // для каждого фрагмента хранит список сгенерированных инструкций
 		
 		CSymbolTableBuilder *tableBuilder; // "посетитель" синтаксического дерева, который строит таблицу символов
 		CTypeChecker *typeChecker; // "посетитель" синтаксического дерева, который проверяет типы данных
