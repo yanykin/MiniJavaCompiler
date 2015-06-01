@@ -17,7 +17,7 @@ void CCodeGenerator::Generate() {
 	const IRTree::CStmList* list = _statements;
 	while ( list != nullptr ) {
 		const IRTree::IStm* statement = list->GetHead();
-		this->generateCode( statement );
+		munchStm( statement );
 		// Переходим к следующему элементу
 		list = list->GetTail();
 	}
