@@ -355,7 +355,7 @@ namespace Canon
 			if ( jumpStatement != nullptr ) {
 				// Получаем true и false метки
 				const Temp::CLabel* falseLabel = jumpStatement->GetIfFalse();
-				const Temp::CLabel* trueLabel = jumpStatement->GetIfFalse();
+				const Temp::CLabel* trueLabel = jumpStatement->GetIfTrue();
 
 				// Проверяем метку следующего блока
 				const Temp::CLabel* nextBlockLabel = nextBasicBlock->Label->GetLabel();
@@ -431,6 +431,7 @@ namespace Canon
 
 		
 		// Сразу добавляем в начало метку первого блока и его инструкции
+		statements.push_back( basicBlock->Label );
 
 		while ( nextBasicBlock != _basicBlocks.end() ) {
 			// Добавляем инструкции первого блока
@@ -441,6 +442,7 @@ namespace Canon
 			// Смотрим, что находится на стыке блоков. Если первый блок завершается JUMP'ом на метку,
 			// которая идёт на следующий блок - удаляем таковые как ненужные
 			const IRTree::JUMP* jumpStatement = basicBlock->GetJUMP();
+			const IRTree::CJUMP* cjumpStatement = basicBlock->GetCJUMP();
 			const IRTree::LABEL* nextBlockLabel = nextBasicBlock->Label;
 			bool isOmmited = false;
 
@@ -451,7 +453,16 @@ namespace Canon
 			}
 
 			if ( !isOmmited ) {
-				statements.push_back( jumpStatement );
+				if ( jumpStatement ) {
+					statements.push_back( jumpStatement );
+				}
+				else if (cjumpStatement) {
+					statements.push_back( cjumpStatement );
+				}
+				else {
+					assert(false, "Jump is null!" );
+				}
+				
 				statements.push_back( nextBlockLabel );
 			}
 

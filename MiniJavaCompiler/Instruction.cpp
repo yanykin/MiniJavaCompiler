@@ -135,27 +135,27 @@ void CCodeGenerator::munchStm( const IRTree::CJUMP* cjump ) {
 	switch( cjump->GetRelop() ) {
 		case IRTree::CJ_EQ:
 			emit( new OPER( "\tJE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "\tJNE `j0", nullptr, nullptr, L( falseLabel ) ) );
+			emit( new OPER( "\tJUMP `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_NE:
 			emit( new OPER( "\tJNE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "\tJE `j0", nullptr, nullptr, L( falseLabel ) ) );
+			emit( new OPER( "\tJUMP `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_GT:
 			emit( new OPER( "\tJG `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "\tJLE `j0", nullptr, nullptr, L( falseLabel ) ) );
+			emit( new OPER( "\tJUMP `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_LT:
 			emit( new OPER( "\tJL `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "\tJGE `j0", nullptr, nullptr, L( falseLabel ) ) );
+			emit( new OPER( "\tJUMP `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_GE:
 			emit( new OPER( "\tJGE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "\tJL `j0", nullptr, nullptr, L( falseLabel ) ) );
+			emit( new OPER( "\tJUMP `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		case IRTree::CJ_LE:
 			emit( new OPER( "\tJLE `j0", nullptr, nullptr, L( trueLabel ) ) );
-			emit( new OPER( "\tJG `j0", nullptr, nullptr, L( falseLabel ) ) );
+			emit( new OPER( "\tJUMP `j0", nullptr, nullptr, L( falseLabel ) ) );
 			break;
 		default:
 			break;
