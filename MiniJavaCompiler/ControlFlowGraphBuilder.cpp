@@ -20,7 +20,7 @@ namespace RegisterAllocation {
     }
 
 
-    void CControlFlowGraphBuilder::Build( const std::vector<CodeGeneration::IInstruction*>& instructions ) {
+    void CControlFlowGraphBuilder::Build( const CodeGeneration::TInstructionsList& instructions ) {
 
         // Добавляем вершины
         AddInsructions( instructions );
@@ -42,7 +42,7 @@ namespace RegisterAllocation {
         } while( isChanging );
     }
 
-    void CControlFlowGraphBuilder::AddInsructions( const std::vector<CodeGeneration::IInstruction*>& instructions ) {
+    void CControlFlowGraphBuilder::AddInsructions( const CodeGeneration::TInstructionsList& instructions ) {
 
         std::unordered_map<Temp::CLabel, CControlFlowVertex*> labels;
         std::vector<CControlFlowVertex*> notLabels;

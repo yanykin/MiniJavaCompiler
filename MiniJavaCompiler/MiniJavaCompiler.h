@@ -15,6 +15,8 @@
 
 #include "Instruction.h"
 
+#include "ControlFlowGraphBuilder.h"
+
 // Связывает входной поток лексического анализатора с этой переменной
 extern FILE* yyin;
 
@@ -77,6 +79,9 @@ namespace MiniJavaCompiler {
 		CTypeChecker *typeChecker; // "посетитель" синтаксического дерева, который проверяет типы данных
 		Translate::CTranslate *translator; // "посетитель", который строит дерево промежуточного представления
 
+        std::map<Translate::CFragment*, CDirectGraph<RegisterAllocation::CControlFlowVertex> > _controlFlowGraphs; // граф потока управления для каждого потока
+
+
 		TErrorCode lastOccuredError; // код последней произошедшей ошибки
 		TErrorCode GetLastError() { // возвращает код последней ошибки
 			return lastOccuredError;
@@ -89,6 +94,7 @@ namespace MiniJavaCompiler {
 		void printIRTree(); // печатает дерево промежуточного представления
 		void simplifyIRTree(); // упрощает построенное IR-дерево к каноническому виду
 		void generateInstructions(); // генерирует команды ассемблера
+        void generateControlFlowGraph(); // гененрирует граф потока управления
 
 		void writeInstrucions(); // записывает полученные команды в файл
 	};

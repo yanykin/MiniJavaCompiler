@@ -47,8 +47,10 @@ namespace RegisterAllocation {
     // Механизм, строящий граф потока управления
     class CControlFlowGraphBuilder {
 
+    public:
+
         // Построить граф
-        void Build( const std::vector<CodeGeneration::IInstruction*>& instructions );
+        void Build( const CodeGeneration::TInstructionsList& instructions );
 
         // Получить построенный граф
         const CDirectGraph<CControlFlowVertex>& Get() {
@@ -60,7 +62,7 @@ namespace RegisterAllocation {
         CDirectGraph<CControlFlowVertex> controlFlowGraph;
 
         // Добавляет в граф вершины, соответствующие инструкциям
-        void AddInsructions( const std::vector<CodeGeneration::IInstruction*>& instruction );
+        void AddInsructions( const CodeGeneration::TInstructionsList& instruction );
 
         // Обновляет LiveIn LiveOut, сообщает об изменениях
         bool UpdateLiveInOut( CControlFlowVertex* vertex );

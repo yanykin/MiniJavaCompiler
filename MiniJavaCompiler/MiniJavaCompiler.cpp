@@ -24,6 +24,7 @@ TErrorCode CMiniJavaCompiler::Compile( const std::string& sourceCodeFileName, co
 	simplifyIRTree();
 	printIRTree();
 	generateInstructions();
+    generateControlFlowGraph();
 
 	return this->GetLastError();
 }
@@ -95,7 +96,7 @@ void CMiniJavaCompiler::printIRTree()
 void CMiniJavaCompiler::simplifyIRTree() {
 	if ( lastOccuredError == EC_NoError ) {
 		// Для каждого из фрагментов упрощаем дерево
-		for ( auto fragment : fragments ) {
+		for ( auto& fragment : fragments ) {
 			
 			Canon::CCanon canonizer( fragment.rootStatement, fragment.methodFrame );
 			canonizer.Canonize();
@@ -115,6 +116,17 @@ void CMiniJavaCompiler::generateInstructions() {
 			_instructionLists[ fragment.first ] = generator.GetInstrucions();
 		}
 	}
+}
+
+void CMiniJavaCompiler::generateControlFlowGraph() {
+    if( lastOccuredError == EC_NoError ) {
+        // Для каждого из фрагментов строим ГПУ
+        for( auto fragment : _canonizedFragments ) {
+            RegisterAllocation::CControlFlowGraphBuilder graphBuilder;
+            graphBuilder.Build( _instructionLists[fragment.first] );
+            _controlFlowGraphs[fragment.first] = graphBuilder.Get();
+        }
+    }
 }
 
 void CMiniJavaCompiler::writeInstrucions() {
