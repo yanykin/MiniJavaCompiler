@@ -521,7 +521,6 @@ void CTranslate::Visit( const CNewObjectExpression* node )
 	// выделение памяти
 	Temp::CLabel* mallocLabel = new Temp::CLabel( Symbol::CSymbol::GetSymbol( "malloc" ) );
 
-	// TODO: узнать у Кирилла, что со стандартными типами
 	CSymbolsTable::CClassInformation* classOfObject = table->GetClassByName( node->GetClass() );
 	int countOfFields = classOfObject->GetFieldsCount();
 
@@ -561,11 +560,8 @@ void CTranslate::Visit( const CExpressionList* node )
 	expression->Accept( this );
 	const IRTree::IExp* expListHead = lastWrapper->ToExp();
 
-	// const IExp* expListTail = nullptr;
-
 	if ( nextExpression != nullptr ) {
 		nextExpression->Accept( this );
-		// expListTail = lastWrapper->ToExp();
 	}
 	
 	expList = new IRTree::CExpList( expListHead, expList );
