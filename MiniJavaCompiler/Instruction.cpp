@@ -2,19 +2,14 @@
 #include <string>
 
 using namespace CodeGeneration;
-using namespace IRTree;
 
 void CCodeGenerator::emit(IInstruction* instruction)  {
 	_instructions.push_back( instruction );
 }
 
 TInstructionsList CCodeGenerator::generateCode( const IRTree::IStm* rootStatement ) {
-	TInstructionsList instructions;
 	munchStm( rootStatement );
-	instructions.insert( instructions.begin(), _instructions.begin(), _instructions.end() );
-	_instructions.clear();
-
-	return instructions;
+	return _instructions;
 }
 
 void CCodeGenerator::Generate() {
@@ -22,7 +17,7 @@ void CCodeGenerator::Generate() {
 	const IRTree::CStmList* list = _statements;
 	while ( list != nullptr ) {
 		const IRTree::IStm* statement = list->GetHead();
-		_instructions = this->generateCode( statement );
+		this->generateCode( statement );
 		// ѕереходим к следующему элементу
 		list = list->GetTail();
 	}
@@ -116,34 +111,33 @@ void CCodeGenerator::munchStm( const IRTree::CJUMP* cjump ) {
 	emit(new OPER("CMP `s0, `s1", nullptr, L(leftArg, rightArg)));
 
 	// ¬ зависимости от операции генерируем две команды перехода
-	switch ( cjump->GetRelop() )
-	{
-	case CJ_EQ:
-		emit( new OPER( "JE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		emit( new OPER( "JNE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		break;
-	case CJ_NE:
-		emit( new OPER( "JNE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		emit( new OPER( "JE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		break;
-	case CJ_GT:
-		emit( new OPER( "JG `j0", nullptr, nullptr, L( trueLabel ) ) );
-		emit( new OPER( "JLE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		break;
-	case CJ_LT:
-		emit( new OPER( "JL `j0", nullptr, nullptr, L( trueLabel ) ) );
-		emit( new OPER( "JGE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		break;
-	case CJ_GE:
-		emit( new OPER( "JGE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		emit( new OPER( "JL `j0", nullptr, nullptr, L( trueLabel ) ) );
-		break;
-	case CJ_LE:
-		emit( new OPER( "JLE `j0", nullptr, nullptr, L( trueLabel ) ) );
-		emit( new OPER( "JG `j0", nullptr, nullptr, L( trueLabel ) ) );
-		break;
-	default:
-		break;
+	switch( cjump->GetRelop() ) {
+		case IRTree::CJ_EQ:
+			emit( new OPER( "JE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JNE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			break;
+		case IRTree::CJ_NE:
+			emit( new OPER( "JNE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			break;
+		case IRTree::CJ_GT:
+			emit( new OPER( "JG `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JLE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			break;
+		case IRTree::CJ_LT:
+			emit( new OPER( "JL `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JGE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			break;
+		case IRTree::CJ_GE:
+			emit( new OPER( "JGE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JL `j0", nullptr, nullptr, L( trueLabel ) ) );
+			break;
+		case IRTree::CJ_LE:
+			emit( new OPER( "JLE `j0", nullptr, nullptr, L( trueLabel ) ) );
+			emit( new OPER( "JG `j0", nullptr, nullptr, L( trueLabel ) ) );
+			break;
+		default:
+			break;
 	}
 }
 
@@ -178,31 +172,30 @@ const Temp::CTemp* CCodeGenerator::munchExp( const IRTree::BINOP* binop )
 	// «аносим первый аргумент в промежуточную переменную
 	emit( new MOVE("MOV `d0, `s0", r, leftOperand) );
 	// ѕримен€ем операцию
-	switch ( binop->GetBinop() )
-	{
-	case BO_PLUS:
-		emit( new OPER( "ADD `d0, `s0", L(r), L(rightOperand) ) );
-		break;
-	case BO_MINUS:
-		emit( new OPER( "SUB `d0, `s0", L( r ), L( rightOperand ) ) );
-		break;
-	case BO_MUL:
-		emit( new OPER( "IMUL `d0, `s0", L( r ), L( rightOperand ) ) );
-		break;
-	case BO_DIV:
-		// TIP: деление в x86 прив€зано к регистрам
-		break;
-	case BO_AND:
-		emit( new OPER( "AND `d0, `s0", L( r ), L( rightOperand ) ) );
-		break;
-	case BO_OR:
-		emit( new OPER( "OR `d0, `s0", L( r ), L( rightOperand ) ) );
-		break;
-	case BO_XOR:
-		emit( new OPER( "XOR `d0, `s0", L( r ), L( rightOperand ) ) );
-		break;
-	default:
-		break;
+	switch( binop->GetBinop() ) {
+		case IRTree::BO_PLUS:
+			emit( new OPER( "ADD `d0, `s0", L( r ), L( rightOperand ) ) );
+			break;
+		case IRTree::BO_MINUS:
+			emit( new OPER( "SUB `d0, `s0", L( r ), L( rightOperand ) ) );
+			break;
+		case IRTree::BO_MUL:
+			emit( new OPER( "IMUL `d0, `s0", L( r ), L( rightOperand ) ) );
+			break;
+		case IRTree::BO_DIV:
+			// TIP: деление в x86 прив€зано к регистрам
+			break;
+		case IRTree::BO_AND:
+			emit( new OPER( "AND `d0, `s0", L( r ), L( rightOperand ) ) );
+			break;
+		case IRTree::BO_OR:
+			emit( new OPER( "OR `d0, `s0", L( r ), L( rightOperand ) ) );
+			break;
+		case IRTree::BO_XOR:
+			emit( new OPER( "XOR `d0, `s0", L( r ), L( rightOperand ) ) );
+			break;
+		default:
+			break;
 	}
 	// ¬озвращаем результат
 	return r;

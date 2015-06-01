@@ -142,6 +142,7 @@ void CMiniJavaCompiler::writeInstrucions() {
 				// Далее записываем все команды
 				for ( auto command : fragment.second ) {
 					std::string commandString = command->Format(new Temp::CDefaultTempMap());
+					asmOutputFile << commandString << std::endl;
 				}
 			}
 			// Разделитель между методами
